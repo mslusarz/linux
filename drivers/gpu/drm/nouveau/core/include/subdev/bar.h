@@ -19,8 +19,8 @@ struct nouveau_bar {
 		    u32 flags, struct nouveau_vma *);
 	int (*umap)(struct nouveau_bar *, struct nouveau_mem *,
 		    u32 flags, struct nouveau_vma *);
-	void (*unmap)(struct nouveau_bar *, struct nouveau_vma *);
-	void (*flush)(struct nouveau_bar *);
+	int (*unmap)(struct nouveau_bar *, struct nouveau_vma *);
+	int (*flush)(struct nouveau_bar *);
 };
 
 static inline struct nouveau_bar *
@@ -50,6 +50,6 @@ extern struct nouveau_oclass nvc0_bar_oclass;
 int nouveau_bar_alloc(struct nouveau_bar *, struct nouveau_object *,
 		      struct nouveau_mem *, struct nouveau_object **);
 
-void nv84_bar_flush(struct nouveau_bar *);
+int nv84_bar_flush(struct nouveau_bar *);
 
 #endif

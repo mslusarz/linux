@@ -143,8 +143,7 @@ nva3_copy_intr(struct nouveau_subdev *subdev)
 static int
 nva3_copy_tlb_flush(struct nouveau_engine *engine)
 {
-	nv50_vm_flush_engine(&engine->base, 0x0d);
-	return 0;
+	return nv50_vm_flush_engine(&engine->base, 0x0d);
 }
 
 static int

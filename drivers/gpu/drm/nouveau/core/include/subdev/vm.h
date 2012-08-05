@@ -85,7 +85,7 @@ struct nouveau_vmmgr {
 	void (*map_sg)(struct nouveau_vma *, struct nouveau_gpuobj *,
 		       struct nouveau_mem *, u32 pte, u32 cnt, dma_addr_t *);
 	void (*unmap)(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt);
-	void (*flush)(struct nouveau_vm *);
+	int  __must_check (*flush)(struct nouveau_vm *);
 };
 
 static inline struct nouveau_vmmgr *
@@ -117,8 +117,9 @@ int  nv04_vm_create(struct nouveau_vmmgr *, u64, u64, u64,
 		    struct nouveau_vm **);
 void nv04_vmmgr_dtor(struct nouveau_object *);
 
-void nv50_vm_flush_engine(struct nouveau_subdev *, int engine);
-void nvc0_vm_flush_engine(struct nouveau_subdev *, u64 addr, int type);
+int  __must_check nv50_vm_flush_engine(struct nouveau_subdev *, int engine);
+int  __must_check nvc0_vm_flush_engine(struct nouveau_subdev *, u64 addr,
+		int type);
 
 /* nouveau_vm.c */
 int  nouveau_vm_create(struct nouveau_vmmgr *, u64 offset, u64 length,
@@ -130,13 +131,15 @@ int  nouveau_vm_ref(struct nouveau_vm *, struct nouveau_vm **,
 int  nouveau_vm_get(struct nouveau_vm *, u64 size, u32 page_shift,
 		    u32 access, struct nouveau_vma *);
 void nouveau_vm_put(struct nouveau_vma *);
-void nouveau_vm_map(struct nouveau_vma *, struct nouveau_mem *);
-void nouveau_vm_map_at(struct nouveau_vma *, u64 offset, struct nouveau_mem *);
-void nouveau_vm_unmap(struct nouveau_vma *);
-void nouveau_vm_unmap_at(struct nouveau_vma *, u64 offset, u64 length);
-void nouveau_vm_map_sg(struct nouveau_vma *, u64 offset, u64 length,
-		       struct nouveau_mem *);
-void nouveau_vm_map_sg_table(struct nouveau_vma *vma, u64 delta, u64 length,
-		     struct nouveau_mem *mem);
+int  __must_check nouveau_vm_map(struct nouveau_vma *, struct nouveau_mem *);
+int  __must_check nouveau_vm_map_at(struct nouveau_vma *, u64 offset,
+		struct nouveau_mem *);
+int  /*__must_check*/ nouveau_vm_unmap(struct nouveau_vma *); //FIXME
+int  __must_check nouveau_vm_unmap_at(struct nouveau_vma *, u64 offset,
+		u64 length);
+int  __must_check nouveau_vm_map_sg(struct nouveau_vma *, u64 offset,
+		u64 length, struct nouveau_mem *);
+int  __must_check nouveau_vm_map_sg_table(struct nouveau_vma *vma, u64 delta,
+		u64 length, struct nouveau_mem *mem);
 
 #endif

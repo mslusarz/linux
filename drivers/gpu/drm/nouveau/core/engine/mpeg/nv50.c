@@ -128,8 +128,7 @@ nv50_mpeg_cclass = {
 int
 nv50_mpeg_tlb_flush(struct nouveau_engine *engine)
 {
-	nv50_vm_flush_engine(&engine->base, 0x08);
-	return 0;
+	return nv50_vm_flush_engine(&engine->base, 0x08);
 }
 
 void

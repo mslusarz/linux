@@ -262,17 +262,22 @@ nouveau_gpuobj_map_vm(struct nouveau_gpuobj *gpuobj, struct nouveau_vm *vm,
 	if (ret)
 		return ret;
 
-	nouveau_vm_map(vma, *mem);
-	return 0;
+	ret = nouveau_vm_map(vma, *mem);
+	if (ret)
+		nouveau_vm_put(vma);
+	return ret;
 }
 
-void
+int
 nouveau_gpuobj_unmap(struct nouveau_vma *vma)
 {
 	if (vma->node) {
-		nouveau_vm_unmap(vma);
+		int ret = nouveau_vm_unmap(vma);
+		if (ret)
+			return ret;
 		nouveau_vm_put(vma);
 	}
+	return 0;
 }
 
 /* the below is basically only here to support sharing the paged dma object

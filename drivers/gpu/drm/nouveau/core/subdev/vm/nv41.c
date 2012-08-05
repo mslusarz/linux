@@ -64,19 +64,22 @@ nv41_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 	}
 }
 
-static void
+static int
 nv41_vm_flush(struct nouveau_vm *vm)
 {
 	struct nv04_vm_priv *priv = (void *)vm->vmm;
+	int ret = 0;
 
 	mutex_lock(&nv_subdev(priv)->mutex);
 	nv_wr32(priv, 0x100810, 0x00000022);
 	if (!nv_wait(priv, 0x100810, 0x00000020, 0x00000020)) {
 		nv_warn(priv, "flush timeout, 0x%08x\n",
 			nv_rd32(priv, 0x100810));
+		ret = -EIO;
 	}
 	nv_wr32(priv, 0x100810, 0x00000000);
 	mutex_unlock(&nv_subdev(priv)->mutex);
+	return ret;
 }
 
 /*******************************************************************************

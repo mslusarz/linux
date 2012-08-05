@@ -40,6 +40,25 @@ struct nvc0_bar_priv {
 };
 
 static int
+nvc0_bar_unmap(struct nouveau_bar *bar, struct nouveau_vma *vma)
+{
+	struct nvc0_bar_priv *priv = (void *)bar;
+	int i = !(vma->vm == priv->bar[0].vm);
+	int ret = 0;
+
+	ret = nouveau_vm_unmap(vma);
+	if (ret)
+		return ret;
+
+	ret = nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[i].pgd->addr, 5);
+	if (ret) // ehh
+		return ret;
+
+	nouveau_vm_put(vma);
+	return ret;
+}
+
+static int
 nvc0_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 	      u32 flags, struct nouveau_vma *vma)
 {
@@ -50,9 +69,17 @@ nvc0_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 	if (ret)
 		return ret;
 
-	nouveau_vm_map(vma, mem);
-	nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[0].pgd->addr, 5);
-	return 0;
+	ret = nouveau_vm_map(vma, mem);
+	if (ret) {
+		nouveau_vm_put(vma);
+		return ret;
+	}
+
+	ret = nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[0].pgd->addr, 5);
+	if (ret)
+		nvc0_bar_unmap(bar, vma);
+
+	return ret;
 }
 
 static int
@@ -67,20 +94,17 @@ nvc0_bar_umap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 	if (ret)
 		return ret;
 
-	nouveau_vm_map(vma, mem);
-	nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[1].pgd->addr, 5);
-	return 0;
-}
+	ret = nouveau_vm_map(vma, mem);
+	if (ret) {
+		nouveau_vm_put(vma);
+		return ret;
+	}
 
-static void
-nvc0_bar_unmap(struct nouveau_bar *bar, struct nouveau_vma *vma)
-{
-	struct nvc0_bar_priv *priv = (void *)bar;
-	int i = !(vma->vm == priv->bar[0].vm);
+	ret = nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[1].pgd->addr, 5);
+	if (ret)
+		nvc0_bar_unmap(bar, vma);
 
-	nouveau_vm_unmap(vma);
-	nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[i].pgd->addr, 5);
-	nouveau_vm_put(vma);
+	return ret;
 }
 
 static int

@@ -32,13 +32,24 @@ nv04_sgdma_bind(struct ttm_tt *ttm, struct ttm_mem_reg *mem)
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
 	struct nouveau_mem *node = mem->mm_node;
 	u64 size = mem->num_pages << 12;
+	int ret = 0;
 
 	if (ttm->sg) {
+		struct sg_table *prev = node->sg;
 		node->sg = ttm->sg;
-		nouveau_vm_map_sg_table(&node->vma[0], 0, size, node);
+		ret = nouveau_vm_map_sg_table(&node->vma[0], 0, size, node);
+		if (ret) {
+			node->sg = prev;
+			return ret;
+		}
 	} else {
+		dma_addr_t *prev = node->pages;
 		node->pages = nvbe->ttm.dma_address;
-		nouveau_vm_map_sg(&node->vma[0], 0, size, node);
+		ret = nouveau_vm_map_sg(&node->vma[0], 0, size, node);
+		if (ret) {
+			node->pages = prev;
+			return ret;
+		}
 	}
 
 	nvbe->node = node;
@@ -49,8 +60,7 @@ static int
 nv04_sgdma_unbind(struct ttm_tt *ttm)
 {
 	struct nouveau_sgdma_be *nvbe = (struct nouveau_sgdma_be *)ttm;
-	nouveau_vm_unmap(&nvbe->node->vma[0]);
-	return 0;
+	return nouveau_vm_unmap(&nvbe->node->vma[0]);
 }
 
 static struct ttm_backend_func nv04_sgdma_backend = {

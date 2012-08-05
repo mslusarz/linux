@@ -60,9 +60,10 @@ nv04_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 	}
 }
 
-static void
+static int
 nv04_vm_flush(struct nouveau_vm *vm)
 {
+	return 0;
 }
 
 /*******************************************************************************

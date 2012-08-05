@@ -139,15 +139,21 @@ nv44_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 		nv44_vm_fill(pgt, priv->null, NULL, pte, cnt);
 }
 
-static void
+static int
 nv44_vm_flush(struct nouveau_vm *vm)
 {
 	struct nv04_vmmgr_priv *priv = (void *)vm->vmm;
+	int ret = 0;
+
 	nv_wr32(priv, 0x100814, priv->base.limit - NV44_GART_PAGE);
 	nv_wr32(priv, 0x100808, 0x00000020);
-	if (!nv_wait(priv, 0x100808, 0x00000001, 0x00000001))
+	if (!nv_wait(priv, 0x100808, 0x00000001, 0x00000001)) {
 		nv_error(priv, "timeout: 0x%08x\n", nv_rd32(priv, 0x100808));
+		ret = -EIO;
+	}
 	nv_wr32(priv, 0x100808, 0x00000000);
+
+	return ret;
 }
 
 /*******************************************************************************

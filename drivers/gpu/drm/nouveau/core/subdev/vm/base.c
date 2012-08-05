@@ -28,7 +28,7 @@
 #include <subdev/fb.h>
 #include <subdev/vm.h>
 
-void
+int
 nouveau_vm_map_at(struct nouveau_vma *vma, u64 delta, struct nouveau_mem *node)
 {
 	struct nouveau_vm *vm = vma->vm;
@@ -69,16 +69,16 @@ nouveau_vm_map_at(struct nouveau_vma *vma, u64 delta, struct nouveau_mem *node)
 		}
 	}
 
-	vmm->flush(vm);
+	return vmm->flush(vm);
 }
 
-void
+int
 nouveau_vm_map(struct nouveau_vma *vma, struct nouveau_mem *node)
 {
-	nouveau_vm_map_at(vma, 0, node);
+	return nouveau_vm_map_at(vma, 0, node);
 }
 
-void
+int
 nouveau_vm_map_sg_table(struct nouveau_vma *vma, u64 delta, u64 length,
 			struct nouveau_mem *mem)
 {
@@ -133,10 +133,10 @@ nouveau_vm_map_sg_table(struct nouveau_vma *vma, u64 delta, u64 length,
 
 	}
 finish:
-	vmm->flush(vm);
+	return vmm->flush(vm);
 }
 
-void
+int
 nouveau_vm_map_sg(struct nouveau_vma *vma, u64 delta, u64 length,
 		  struct nouveau_mem *mem)
 {
@@ -171,10 +171,10 @@ nouveau_vm_map_sg(struct nouveau_vma *vma, u64 delta, u64 length,
 		}
 	}
 
-	vmm->flush(vm);
+	return vmm->flush(vm);
 }
 
-void
+int
 nouveau_vm_unmap_at(struct nouveau_vma *vma, u64 delta, u64 length)
 {
 	struct nouveau_vm *vm = vma->vm;
@@ -206,13 +206,13 @@ nouveau_vm_unmap_at(struct nouveau_vma *vma, u64 delta, u64 length)
 		}
 	}
 
-	vmm->flush(vm);
+	return vmm->flush(vm);
 }
 
-void
+int
 nouveau_vm_unmap(struct nouveau_vma *vma)
 {
-	nouveau_vm_unmap_at(vma, 0, (u64)vma->node->length << 12);
+	return nouveau_vm_unmap_at(vma, 0, (u64)vma->node->length << 12);
 }
 
 static void

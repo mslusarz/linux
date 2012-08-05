@@ -54,7 +54,7 @@ int nouveau_gpuobj_dup(struct nouveau_object *, struct nouveau_gpuobj *,
 int nouveau_gpuobj_map(struct nouveau_gpuobj *, u32 acc, struct nouveau_vma *);
 int nouveau_gpuobj_map_vm(struct nouveau_gpuobj *, struct nouveau_vm *,
 			  u32 access, struct nouveau_vma *);
-void nouveau_gpuobj_unmap(struct nouveau_vma *);
+int /*__must_check*/ nouveau_gpuobj_unmap(struct nouveau_vma *);//FIXME
 
 static inline void
 nouveau_gpuobj_ref(struct nouveau_gpuobj *obj, struct nouveau_gpuobj **ref)

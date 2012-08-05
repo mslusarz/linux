@@ -42,6 +42,22 @@ struct nv50_bar_priv {
 };
 
 static int
+nv50_bar_unmap(struct nouveau_bar *bar, struct nouveau_vma *vma)
+{
+	int ret = 0;
+	ret = nouveau_vm_unmap(vma);
+	if (ret)
+		return ret;
+
+	ret = nv50_vm_flush_engine(nv_subdev(bar), 6);
+	if (ret) // ehh, cannot rollback vm_unmap...
+		return ret;
+
+	nouveau_vm_put(vma);
+	return ret;
+}
+
+static int
 nv50_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 	      u32 flags, struct nouveau_vma *vma)
 {
@@ -52,9 +68,16 @@ nv50_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 	if (ret)
 		return ret;
 
-	nouveau_vm_map(vma, mem);
-	nv50_vm_flush_engine(nv_subdev(bar), 6);
-	return 0;
+	ret = nouveau_vm_map(vma, mem);
+	if (ret) {
+		nouveau_vm_put(vma);
+		return ret;
+	}
+
+	ret = nv50_vm_flush_engine(nv_subdev(bar), 6);
+	if (ret)
+		nv50_bar_unmap(bar, vma);
+	return ret;
 }
 
 static int
@@ -68,41 +91,50 @@ nv50_bar_umap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 	if (ret)
 		return ret;
 
-	nouveau_vm_map(vma, mem);
-	nv50_vm_flush_engine(nv_subdev(bar), 6);
-	return 0;
+	ret = nouveau_vm_map(vma, mem);
+	if (ret) {
+		nouveau_vm_put(vma);
+		return ret;
+	}
+
+	ret = nv50_vm_flush_engine(nv_subdev(bar), 6);
+	if (ret)
+		nv50_bar_unmap(bar, vma);
+	return ret;
 }
 
-static void
-nv50_bar_unmap(struct nouveau_bar *bar, struct nouveau_vma *vma)
-{
-	nouveau_vm_unmap(vma);
-	nv50_vm_flush_engine(nv_subdev(bar), 6);
-	nouveau_vm_put(vma);
-}
-
-static void
+static int
 nv50_bar_flush(struct nouveau_bar *bar)
 {
 	struct nv50_bar_priv *priv = (void *)bar;
 	unsigned long flags;
+	int ret = 0;
+
 	spin_lock_irqsave(&priv->lock, flags);
 	nv_wr32(priv, 0x00330c, 0x00000001);
-	if (!nv_wait(priv, 0x00330c, 0x00000002, 0x00000000))
+	if (!nv_wait(priv, 0x00330c, 0x00000002, 0x00000000)) {
 		nv_warn(priv, "flush timeout\n");
+		ret = -EIO;
+	}
 	spin_unlock_irqrestore(&priv->lock, flags);
+	return ret;
 }
 
-void
+int
 nv84_bar_flush(struct nouveau_bar *bar)
 {
 	struct nv50_bar_priv *priv = (void *)bar;
 	unsigned long flags;
+	int ret = 0;
+
 	spin_lock_irqsave(&priv->lock, flags);
 	nv_wr32(bar, 0x070000, 0x00000001);
-	if (!nv_wait(priv, 0x070000, 0x00000002, 0x00000000))
+	if (!nv_wait(priv, 0x070000, 0x00000002, 0x00000000)) {
 		nv_warn(priv, "flush timeout\n");
+		ret = -EIO;
+	}
 	spin_unlock_irqrestore(&priv->lock, flags);
+	return ret;
 }
 
 static int
@@ -224,6 +256,13 @@ nv50_bar_dtor(struct nouveau_object *object)
 }
 
 static int
+nv50_bar_fini(struct nouveau_object *object, bool suspend)
+{
+	struct nv50_bar_priv *priv = (void *)object;
+	return nouveau_bar_fini(&priv->base, suspend);
+}
+
+static int
 nv50_bar_init(struct nouveau_object *object)
 {
 	struct nv50_bar_priv *priv = (void *)object;
@@ -235,20 +274,17 @@ nv50_bar_init(struct nouveau_object *object)
 
 	nv_mask(priv, 0x000200, 0x00000100, 0x00000000);
 	nv_mask(priv, 0x000200, 0x00000100, 0x00000100);
-	nv50_vm_flush_engine(nv_subdev(priv), 6);
+	ret = nv50_vm_flush_engine(nv_subdev(priv), 6);
+	if (ret) {
+		nv50_bar_fini(object, false);
+		return ret;
+	}
 
 	nv_wr32(priv, 0x001704, 0x00000000 | priv->mem->addr >> 12);
 	nv_wr32(priv, 0x001704, 0x40000000 | priv->mem->addr >> 12);
 	nv_wr32(priv, 0x001708, 0x80000000 | priv->bar1->node->offset >> 4);
 	nv_wr32(priv, 0x00170c, 0x80000000 | priv->bar3->node->offset >> 4);
 	return 0;
-}
-
-static int
-nv50_bar_fini(struct nouveau_object *object, bool suspend)
-{
-	struct nv50_bar_priv *priv = (void *)object;
-	return nouveau_bar_fini(&priv->base, suspend);
 }
 
 struct nouveau_oclass

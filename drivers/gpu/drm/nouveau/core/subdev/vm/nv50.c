@@ -148,32 +148,40 @@ nv50_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 	}
 }
 
-static void
+static int
 nv50_vm_flush(struct nouveau_vm *vm)
 {
 	struct nouveau_engine *engine;
-	int i;
+	int i, ret = 0;
 
 	for (i = 0; i < NVDEV_SUBDEV_NR; i++) {
 		if (atomic_read(&vm->engref[i])) {
 			engine = nouveau_engine(vm->vmm, i);
-			if (engine && engine->tlb_flush)
-				engine->tlb_flush(engine);
+			if (engine && engine->tlb_flush) {
+				ret = engine->tlb_flush(engine);
+				if (ret)
+					break;
+			}
 		}
 	}
+	return ret;
 }
 
-void
+int
 nv50_vm_flush_engine(struct nouveau_subdev *subdev, int engine)
 {
 	struct nv50_vmmgr_priv *priv = (void *)nouveau_vmmgr(subdev);
 	unsigned long flags;
+	int ret = 0;
 
 	spin_lock_irqsave(&priv->lock, flags);
 	nv_wr32(subdev, 0x100c80, (engine << 16) | 1);
-	if (!nv_wait(subdev, 0x100c80, 0x00000001, 0x00000000))
+	if (!nv_wait(subdev, 0x100c80, 0x00000001, 0x00000000)) {
 		nv_error(subdev, "vm flush timeout: engine %d\n", engine);
+		ret = -EIO;
+	}
 	spin_unlock_irqrestore(&priv->lock, flags);
+	return ret;
 }
 
 static int

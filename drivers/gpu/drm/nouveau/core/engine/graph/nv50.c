@@ -180,8 +180,7 @@ nv50_graph_cclass = {
 static int
 nv50_graph_tlb_flush(struct nouveau_engine *engine)
 {
-	nv50_vm_flush_engine(&engine->base, 0x00);
-	return 0;
+	return nv50_vm_flush_engine(&engine->base, 0x00);
 }
 
 static const struct nouveau_bitfield nv50_pgraph_status[] = {
@@ -249,6 +248,7 @@ nv84_graph_tlb_flush(struct nouveau_engine *engine)
 	unsigned long flags;
 	u64 start;
 	u32 tmp;
+	int ret = 0;
 
 	spin_lock_irqsave(&priv->lock, flags);
 	nv_mask(priv, 0x400500, 0x00000001, 0x00000000);
@@ -292,11 +292,15 @@ nv84_graph_tlb_flush(struct nouveau_engine *engine)
 		pr_cont("\n");
 	}
 
-	nv50_vm_flush_engine(&engine->base, 0x00);
+	if (timeout)
+		ret = -EIO;
+
+	if (!ret)
+		ret = nv50_vm_flush_engine(&engine->base, 0x00);
 
 	nv_mask(priv, 0x400500, 0x00000001, 0x00000001);
 	spin_unlock_irqrestore(&priv->lock, flags);
-	return timeout ? -EBUSY : 0;
+	return ret;
 }
 
 static const struct nouveau_enum nv50_mp_exec_error_names[] = {
