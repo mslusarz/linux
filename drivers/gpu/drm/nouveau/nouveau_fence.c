@@ -111,13 +111,19 @@ nouveau_fence_done(struct nouveau_fence *fence)
 int
 nouveau_fence_wait(struct nouveau_fence *fence, bool lazy, bool intr)
 {
+	struct nouveau_device *device = nv_device(fence->channel->drm->device);
+	unsigned long timeout = fence->timeout;
 	unsigned long sleep_time = NSEC_PER_MSEC / 1000;
 	ktime_t t;
 	int ret = 0;
 
+	if (timeout && nouveau_gpu_reset_in_progress(device))
+		timeout = jiffies + DRM_HZ / 5;
+
 	while (!nouveau_fence_done(fence)) {
-		if (fence->timeout && time_after_eq(jiffies, fence->timeout)) {
-			ret = -EBUSY;
+		if (timeout && time_after_eq(jiffies, timeout)) {
+			if (!nouveau_gpu_reset_in_progress(device))
+				ret = -EIO;
 			break;
 		}
 

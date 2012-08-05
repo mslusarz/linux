@@ -466,6 +466,8 @@ nouveau_device_create_(struct pci_dev *pdev, u64 name, const char *sname,
 
 	nv_subdev(device)->debug = nouveau_dbgopt(device->dbgopt, "DEVICE");
 	list_add(&device->head, &nv_devices);
+	mutex_init(&device->reset_lock);
+	atomic_set(&device->gpureset_in_progress, 0);
 done:
 	mutex_unlock(&nv_devices_mutex);
 	return ret;

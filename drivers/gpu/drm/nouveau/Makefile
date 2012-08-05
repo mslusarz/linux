@@ -189,4 +189,6 @@ nouveau-$(CONFIG_COMPAT) += nouveau_ioc32.o
 nouveau-$(CONFIG_ACPI) += nouveau_acpi.o
 nouveau-$(CONFIG_DRM_NOUVEAU_BACKLIGHT) += nouveau_backlight.o
 
+nouveau-y += nouveau_reset.o intr_rwsem.o
+
 obj-$(CONFIG_DRM_NOUVEAU)+= nouveau.o

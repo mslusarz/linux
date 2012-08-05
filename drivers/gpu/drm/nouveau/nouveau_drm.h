@@ -32,6 +32,7 @@ struct nouveau_channel;
 
 #include "nouveau_fence.h"
 #include "nouveau_bios.h"
+#include "intr_rwsem.h"
 
 struct nouveau_drm_tile {
 	struct nouveau_fence *fence;
@@ -61,6 +62,8 @@ nouveau_cli(struct drm_file *fpriv)
 struct nouveau_drm {
 	struct nouveau_cli client;
 	struct drm_device *dev;
+
+	struct intr_rwsem ioctls_rwsem;
 
 	struct nouveau_object *device;
 	struct list_head clients;
@@ -131,6 +134,8 @@ nouveau_dev(struct drm_device *dev)
 
 int nouveau_drm_suspend(struct pci_dev *, pm_message_t);
 int nouveau_drm_resume(struct pci_dev *);
+
+int nouveau_reset_device(struct nouveau_drm *drm);
 
 #define NV_FATAL(cli, fmt, args...) nv_fatal((cli), fmt, ##args)
 #define NV_ERROR(cli, fmt, args...) nv_error((cli), fmt, ##args)

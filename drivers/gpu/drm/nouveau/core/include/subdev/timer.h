@@ -15,13 +15,20 @@ bool nouveau_timer_wait_ne(void *, u64 nsec, u32 addr, u32 mask, u32 data);
 bool nouveau_timer_wait_cb(void *, u64 nsec, bool (*func)(void *), void *data);
 void nouveau_timer_alarm(void *, u32 nsec, struct nouveau_alarm *);
 
-#define NV_WAIT_DEFAULT 2000000000ULL
+static inline uint64_t nv_timeout(void *obj)
+{
+       uint64_t tm = 2000000000ULL;
+       if (nouveau_gpu_reset_in_progress(nv_device(obj)))
+               tm = 50000000; /* 50ms */
+       return tm;
+}
+
 #define nv_wait(o,a,m,v)                                                       \
-	nouveau_timer_wait_eq((o), NV_WAIT_DEFAULT, (a), (m), (v))
+	nouveau_timer_wait_eq((o), nv_timeout(o), (a), (m), (v))
 #define nv_wait_ne(o,a,m,v)                                                    \
-	nouveau_timer_wait_ne((o), NV_WAIT_DEFAULT, (a), (m), (v))
+	nouveau_timer_wait_ne((o), nv_timeout(o), (a), (m), (v))
 #define nv_wait_cb(o,c,d)                                                      \
-	nouveau_timer_wait_cb((o), NV_WAIT_DEFAULT, (c), (d))
+	nouveau_timer_wait_cb((o), nv_timeout(o), (c), (d))
 
 struct nouveau_timer {
 	struct nouveau_subdev base;

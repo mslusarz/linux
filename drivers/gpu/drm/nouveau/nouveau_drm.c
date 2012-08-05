@@ -256,6 +256,7 @@ nouveau_drm_load(struct drm_device *dev, unsigned long flags)
 
 	INIT_LIST_HEAD(&drm->clients);
 	spin_lock_init(&drm->tile.lock);
+	intr_rwsem_init(&drm->ioctls_rwsem);
 
 	/* make sure AGP controller is in a consistent state before we
 	 * (possibly) execute vbios init tables (see nouveau_agp.h)
@@ -396,7 +397,9 @@ nouveau_drm_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 {
 	struct drm_device *dev = pci_get_drvdata(pdev);
 	struct nouveau_drm *drm = nouveau_drm(dev);
+	struct nouveau_device *device = nv_device(drm->device);
 	struct nouveau_cli *cli;
+	bool suspend;
 	int ret;
 
 	if (dev->switch_power_state == DRM_SWITCH_POWER_OFF ||
@@ -420,13 +423,14 @@ nouveau_drm_suspend(struct pci_dev *pdev, pm_message_t pm_state)
 	}
 
 	NV_INFO(drm, "suspending client object trees...\n");
+	suspend = !nouveau_gpu_reset_in_progress(device);
 	list_for_each_entry(cli, &drm->clients, head) {
-		ret = nouveau_client_fini(&cli->base, true);
+		ret = nouveau_client_fini(&cli->base, suspend);
 		if (ret)
 			goto fail_client;
 	}
 
-	ret = nouveau_client_fini(&drm->client.base, true);
+	ret = nouveau_client_fini(&drm->client.base, suspend);
 	if (ret)
 		goto fail_client;
 
@@ -544,6 +548,30 @@ nouveau_drm_postclose(struct drm_device *dev, struct drm_file *fpriv)
 	nouveau_cli_destroy(cli);
 }
 
+static long
+nouveau_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+{
+	struct drm_file *file_priv = filp->private_data;
+	struct drm_device *dev = file_priv->minor->dev;
+	struct nouveau_drm *drm = dev->dev_private;
+
+	long ret = intr_rwsem_down_read_interruptible(&drm->ioctls_rwsem);
+	if (ret)
+		return -ERESTARTSYS;
+
+	ret = drm_ioctl(filp, cmd, arg);
+
+	intr_rwsem_up_read(&drm->ioctls_rwsem);
+
+	if (unlikely(ret == -EIO)) {
+		ret = nouveau_reset_device(drm);
+		if (ret == -EINTR)
+			ret = -ERESTARTSYS;
+	}
+
+	return ret;
+}
+
 static struct drm_ioctl_desc
 nouveau_ioctls[] = {
 	DRM_IOCTL_DEF_DRV(NOUVEAU_GETPARAM, nouveau_abi16_ioctl_getparam, DRM_UNLOCKED|DRM_AUTH),
@@ -565,7 +593,7 @@ nouveau_driver_fops = {
 	.owner = THIS_MODULE,
 	.open = drm_open,
 	.release = drm_release,
-	.unlocked_ioctl = drm_ioctl,
+	.unlocked_ioctl = nouveau_ioctl,
 	.mmap = nouveau_ttm_mmap,
 	.poll = drm_poll,
 	.fasync = drm_fasync,

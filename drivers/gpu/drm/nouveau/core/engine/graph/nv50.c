@@ -242,6 +242,7 @@ static void nouveau_pgraph_vstatus_print(const char *const units[], u32 status)
 static int
 nv84_graph_tlb_flush(struct nouveau_engine *engine)
 {
+	struct nouveau_device *device = nv_device(engine);
 	struct nouveau_timer *ptimer = nouveau_timer(engine);
 	struct nv50_graph_priv *priv = (void *)engine;
 	bool idle, timeout = false;
@@ -277,9 +278,10 @@ nv84_graph_tlb_flush(struct nouveau_engine *engine)
 			break;
 		}
 	} while (!idle &&
-		 !(timeout = ptimer->read(ptimer) - start > 2000000000));
+		 !(timeout = ptimer->read(ptimer) - start > nv_timeout(device)));
 
-	if (timeout && nv_printk_enabled(priv, ERROR)) {
+	if (timeout && nv_printk_enabled(priv, ERROR) &&
+			!nouveau_gpu_reset_in_progress(device)) {
 		nv_error(priv, "PGRAPH TLB flush idle timeout fail\n");
 
 		nv_error(priv, "PGRAPH_STATUS: ");

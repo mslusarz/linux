@@ -62,6 +62,10 @@ struct nouveau_device {
 	struct pci_dev *pdev;
 	u64 handle;
 
+	struct mutex reset_lock;
+	atomic_t gpureset_in_progress;
+	unsigned long last_gpu_reset;
+
 	const char *cfgopt;
 	const char *dbgopt;
 	const char *name;
@@ -131,6 +135,11 @@ nv_device_match(struct nouveau_object *object, u16 dev, u16 ven, u16 sub)
 	return device->pdev->device == dev &&
 	       device->pdev->subsystem_vendor == ven &&
 	       device->pdev->subsystem_device == sub;
+}
+
+static inline bool nouveau_gpu_reset_in_progress(struct nouveau_device *device)
+{
+       return atomic_read(&device->gpureset_in_progress) != 0;
 }
 
 #endif

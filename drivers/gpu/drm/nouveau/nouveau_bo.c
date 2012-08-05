@@ -1204,6 +1204,7 @@ nouveau_bo_move(struct ttm_buffer_object *bo, bool evict, bool intr,
 		struct ttm_mem_reg *new_mem)
 {
 	struct nouveau_drm *drm = nouveau_bdev(bo->bdev);
+	struct nouveau_device *device = nv_device(drm->device);
 	struct nouveau_bo *nvbo = nouveau_bo(bo);
 	struct ttm_mem_reg *old_mem = &bo->mem;
 	struct nouveau_drm_tile *new_tile = NULL;
@@ -1224,7 +1225,7 @@ nouveau_bo_move(struct ttm_buffer_object *bo, bool evict, bool intr,
 	}
 
 	/* CPU copy if we have no accelerated method available */
-	if (!drm->ttm.move) {
+	if (!drm->ttm.move || nouveau_gpu_reset_in_progress(device)) {
 		ret = ttm_bo_move_memcpy(bo, evict, no_wait_reserve, no_wait_gpu, new_mem);
 		goto out;
 	}
