@@ -271,6 +271,11 @@ nv84_graph_tlb_flush(struct nouveau_engine *engine)
 			if ((tmp & 7) == 1)
 				idle = false;
 		}
+
+		if (fatal_signal_pending(current)) {
+			ret = -ERESTARTSYS;
+			break;
+		}
 	} while (!idle &&
 		 !(timeout = ptimer->read(ptimer) - start > 2000000000));
 
