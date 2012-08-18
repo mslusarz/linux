@@ -274,7 +274,7 @@ nv84_graph_tlb_flush(struct nouveau_engine *engine)
 	} while (!idle &&
 		 !(timeout = ptimer->read(ptimer) - start > 2000000000));
 
-	if (timeout) {
+	if (timeout && nv_printk_enabled(priv, ERROR)) {
 		nv_error(priv, "PGRAPH TLB flush idle timeout fail\n");
 
 		nv_error(priv, "PGRAPH_STATUS: ");
@@ -414,6 +414,8 @@ nv50_priv_mp_trap(struct nv50_graph_priv *priv, int tpid, int display)
 			pc = nv_rd32(priv, addr + 0x24);
 			oplow = nv_rd32(priv, addr + 0x70);
 			ophigh = nv_rd32(priv, addr + 0x74);
+		}
+		if (display && nv_printk_enabled(priv, ERROR)) {
 			nv_error(priv, "TRAP_MP_EXEC - "
 					"TP %d MP %d: ", tpid, i);
 			nouveau_enum_print(nv50_mp_exec_error_names, status);
@@ -619,7 +621,7 @@ nv50_graph_trap_handler(struct nv50_graph_priv *priv, u32 display,
 	/* M2MF: Memory to memory copy engine. */
 	if (status & 0x002) {
 		u32 ustatus = nv_rd32(priv, 0x406800) & 0x7fffffff;
-		if (display) {
+		if (display && nv_printk_enabled(priv, ERROR)) {
 			nv_error(priv, "TRAP_M2MF");
 			nouveau_bitfield_print(nv50_graph_trap_m2mf, ustatus);
 			printk("\n");
@@ -640,7 +642,7 @@ nv50_graph_trap_handler(struct nv50_graph_priv *priv, u32 display,
 	/* VFETCH: Fetches data from vertex buffers. */
 	if (status & 0x004) {
 		u32 ustatus = nv_rd32(priv, 0x400c04) & 0x7fffffff;
-		if (display) {
+		if (display && nv_printk_enabled(priv, ERROR)) {
 			nv_error(priv, "TRAP_VFETCH");
 			nouveau_bitfield_print(nv50_graph_trap_vfetch, ustatus);
 			printk("\n");
@@ -657,7 +659,7 @@ nv50_graph_trap_handler(struct nv50_graph_priv *priv, u32 display,
 	/* STRMOUT: DirectX streamout / OpenGL transform feedback. */
 	if (status & 0x008) {
 		ustatus = nv_rd32(priv, 0x401800) & 0x7fffffff;
-		if (display) {
+		if (display && nv_printk_enabled(priv, ERROR)) {
 			nv_error(priv, "TRAP_STRMOUT");
 			nouveau_bitfield_print(nv50_graph_trap_strmout, ustatus);
 			printk("\n");
@@ -678,7 +680,7 @@ nv50_graph_trap_handler(struct nv50_graph_priv *priv, u32 display,
 	/* CCACHE: Handles code and c[] caches and fills them. */
 	if (status & 0x010) {
 		ustatus = nv_rd32(priv, 0x405018) & 0x7fffffff;
-		if (display) {
+		if (display && nv_printk_enabled(priv, ERROR)) {
 			nv_error(priv, "TRAP_CCACHE");
 			nouveau_bitfield_print(nv50_graph_trap_ccache, ustatus);
 			printk("\n");
@@ -769,7 +771,7 @@ nv50_graph_intr(struct nouveau_subdev *subdev)
 		nouveau_handle_put(handle);
 	}
 
-	if (show & 0x00100000) {
+	if ((show & 0x00100000) && nv_printk_enabled(priv, ERROR)) {
 		u32 ecode = nv_rd32(priv, 0x400110);
 		nv_error(priv, "DATA_ERROR ");
 		nouveau_enum_print(nv50_data_error_names, ecode);
@@ -784,15 +786,16 @@ nv50_graph_intr(struct nouveau_subdev *subdev)
 	nv_wr32(priv, 0x400100, stat);
 	nv_wr32(priv, 0x400500, 0x00010001);
 
-	if (show) {
-		nv_info(priv, "");
+	if (show && nv_printk_enabled(priv, ERROR)) {
+		nv_error(priv, "");
 		nouveau_bitfield_print(nv50_graph_intr_name, show);
 		printk("\n");
 		nv_error(priv, "ch %d [0x%010llx] subc %d class 0x%04x "
 			       "mthd 0x%04x data 0x%08x\n",
 			 chid, (u64)inst << 12, subc, class, mthd, data);
-		nv50_fb_trap(nouveau_fb(priv), 1);
 	}
+	if (show)
+		nv50_fb_trap(nouveau_fb(priv), 1);
 
 	if (nv_rd32(priv, 0x400824) & (1 << 31))
 		nv_wr32(priv, 0x400824, nv_rd32(priv, 0x400824) & ~(1 << 31));

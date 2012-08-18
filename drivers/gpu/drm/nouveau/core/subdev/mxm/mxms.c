@@ -146,7 +146,7 @@ mxms_foreach(struct nouveau_mxm *mxm, u8 types,
 			return false;
 		}
 
-		if (nv_subdev(mxm)->debug >= NV_DBG_DEBUG && (exec == NULL)) {
+		if ((exec == NULL) && nv_printk_enabled(mxm, DEBUG)) {
 			static const char * mxms_desc_name[] = {
 				"ODS", "SCCS", "TS", "IPS",
 				"GSD", "VSS", "BCS", "FCS",

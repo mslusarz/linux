@@ -451,12 +451,14 @@ nvc0_graph_intr(struct nouveau_subdev *subdev)
 		stat &= ~0x00000020;
 	}
 
-	if (stat & 0x00100000) {
+	if ((stat & 0x00100000) && nv_printk_enabled(priv, ERROR)) {
 		nv_error(priv, "DATA_ERROR [");
 		nouveau_enum_print(nv50_data_error_names, code);
 		printk("] ch %d [0x%010llx] subc %d class 0x%04x "
 		       "mthd 0x%04x data 0x%08x\n",
 		       chid, inst << 12, subc, class, mthd, data);
+	}
+	if (stat & 0x00100000) {
 		nv_wr32(priv, 0x400100, 0x00100000);
 		stat &= ~0x00100000;
 	}

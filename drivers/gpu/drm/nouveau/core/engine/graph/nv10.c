@@ -1192,7 +1192,7 @@ nv10_graph_intr(struct nouveau_subdev *subdev)
 	nv_wr32(priv, NV03_PGRAPH_INTR, stat);
 	nv_wr32(priv, NV04_PGRAPH_FIFO, 0x00000001);
 
-	if (show) {
+	if (show && nv_printk_enabled(priv, ERROR)) {
 		nv_error(priv, "");
 		nouveau_bitfield_print(nv10_graph_intr_name, show);
 		printk(" nsource:");

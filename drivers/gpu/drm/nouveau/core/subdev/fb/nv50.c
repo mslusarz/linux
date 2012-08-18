@@ -447,7 +447,7 @@ nv50_fb_trap(struct nouveau_fb *pfb, int display)
 	}
 	nv_wr32(priv, 0x100c90, idx | 0x80000000);
 
-	if (!display)
+	if (!display || !nv_printk_enabled(priv, ERROR))
 		return;
 
 	/* decode status bits into something more useful */

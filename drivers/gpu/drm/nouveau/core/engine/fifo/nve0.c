@@ -408,6 +408,9 @@ nve0_fifo_isr_vm_fault(struct nve0_fifo_priv *priv, int unit)
 	u32 stat = nv_rd32(priv, 0x280c + (unit * 0x10));
 	u32 client = (stat & 0x00001f00) >> 8;
 
+	if (!nv_printk_enabled(priv, ERROR))
+		return;
+
 	nv_error(priv, "PFIFO: %s fault at 0x%010llx [", (stat & 0x00000080) ?
 		       "write" : "read", (u64)vahi << 32 | valo);
 	nouveau_enum_print(nve0_fifo_fault_reason, stat & 0x0000000f);
@@ -472,7 +475,7 @@ nve0_fifo_isr_subfifo_intr(struct nve0_fifo_priv *priv, int unit)
 			show &= ~0x00800000;
 	}
 
-	if (show) {
+	if (show && nv_printk_enabled(priv, ERROR)) {
 		nv_error(priv, "SUBFIFO%d:", unit);
 		nouveau_bitfield_print(nve0_fifo_subfifo_intr, show);
 		printk("\n");
