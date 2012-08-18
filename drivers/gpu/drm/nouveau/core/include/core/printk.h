@@ -17,10 +17,16 @@ struct nouveau_object;
 
 void nv_printk_(struct nouveau_object *, const char *, int, const char *, ...);
 
+bool nv_printk_enabled_(struct nouveau_object *object, int level);
+
 #define nv_printk(o,l,f,a...) do {                                             \
 	if (NV_DBG_##l <= CONFIG_NOUVEAU_DEBUG)                                \
 		nv_printk_(nv_object(o), NV_PRINTK_##l, NV_DBG_##l, f, ##a);   \
 } while(0)
+
+#define nv_printk_enabled(o, l) \
+	((NV_DBG_##l <= CONFIG_NOUVEAU_DEBUG) && \
+			nv_printk_enabled_(nv_object(o), NV_DBG_##l))
 
 #define nv_fatal(o,f,a...) nv_printk((o), FATAL, f, ##a)
 #define nv_error(o,f,a...) nv_printk((o), ERROR, f, ##a)

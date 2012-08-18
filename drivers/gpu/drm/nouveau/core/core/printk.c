@@ -27,6 +27,21 @@
 #include <core/subdev.h>
 #include <core/printk.h>
 
+bool nv_printk_enabled_(struct nouveau_object *object, int level)
+{
+	if (object && !nv_iclass(object, NV_CLIENT_CLASS)) {
+		struct nouveau_object *subdev = object;
+
+		if (object->engine)
+			subdev = object->engine;
+
+		return level <= nv_subdev(subdev)->debug;
+	} else if (object && nv_iclass(object, NV_CLIENT_CLASS))
+		return level <= nv_client(object)->debug;
+	else
+		return true;
+}
+
 void
 nv_printk_(struct nouveau_object *object, const char *pfx, int level,
 	   const char *fmt, ...)
