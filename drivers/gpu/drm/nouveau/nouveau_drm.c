@@ -25,6 +25,7 @@
 #include <linux/console.h>
 #include <linux/module.h>
 #include <linux/pci.h>
+#include <linux/vt_kern.h>
 
 #include <core/device.h>
 #include <core/client.h>
@@ -50,6 +51,8 @@
 #include "nouveau_fence.h"
 
 #include "nouveau_ttm.h"
+
+#define NV_PCI_VGAMEM_ENABLE 0x54
 
 MODULE_PARM_DESC(config, "option string to pass to driver core");
 static char *nouveau_config;
@@ -247,9 +250,20 @@ nouveau_drm_load(struct drm_device *dev, unsigned long flags)
 	struct nouveau_drm *drm;
 	int ret;
 
+	/* Blank initial console to prevent VRAM corruption while we initialize
+	 * the HW. For vgacon it will move console memory from VGA VRAM to RAM.
+	 */
+	console_lock();
+	do_blank_screen(1);
+	console_unlock();
+
+	/* Completely disable access to VGA IO/memory, just to be sure no one
+	 * will change it. */
+	pci_write_config_byte(pdev, NV_PCI_VGAMEM_ENABLE, 0);
+
 	ret = nouveau_cli_create(pdev, "DRM", sizeof(*drm), (void**)&drm);
 	if (ret)
-		return ret;
+		goto fail_cli;
 
 	dev->dev_private = drm;
 	drm->dev = dev;
@@ -336,6 +350,11 @@ nouveau_drm_load(struct drm_device *dev, unsigned long flags)
 
 	nouveau_accel_init(drm);
 	nouveau_fbcon_init(dev);
+
+	console_lock();
+	do_unblank_screen(1);
+	console_unlock();
+
 	return 0;
 
 fail_dispinit:
@@ -351,12 +370,20 @@ fail_ttm:
 	nouveau_vga_fini(drm);
 fail_device:
 	nouveau_cli_destroy(&drm->client);
+fail_cli:
+	pci_write_config_byte(pdev, NV_PCI_VGAMEM_ENABLE, 1);
+
+	console_lock();
+	do_unblank_screen(1);
+	console_unlock();
+
 	return ret;
 }
 
 static int
 nouveau_drm_unload(struct drm_device *dev)
 {
+	struct pci_dev *pdev = dev->pdev;
 	struct nouveau_drm *drm = nouveau_drm(dev);
 
 	nouveau_fbcon_fini(dev);
@@ -375,6 +402,8 @@ nouveau_drm_unload(struct drm_device *dev)
 	nouveau_vga_fini(drm);
 
 	nouveau_cli_destroy(&drm->client);
+
+	pci_write_config_byte(pdev, NV_PCI_VGAMEM_ENABLE, 1);
 	return 0;
 }
 
