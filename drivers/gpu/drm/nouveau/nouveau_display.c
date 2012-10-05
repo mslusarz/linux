@@ -530,9 +530,11 @@ nouveau_page_flip_reserve(struct nouveau_bo *old_bo,
 	if (ret)
 		goto fail;
 
-	ret = ttm_bo_reserve(&old_bo->bo, false, false, false, 0);
-	if (ret)
-		goto fail_unreserve;
+	if (likely(old_bo != new_bo)) {
+		ret = ttm_bo_reserve(&old_bo->bo, false, false, false, 0);
+		if (ret)
+			goto fail_unreserve;
+	}
 
 	return 0;
 
@@ -551,8 +553,10 @@ nouveau_page_flip_unreserve(struct nouveau_bo *old_bo,
 	nouveau_bo_fence(new_bo, fence);
 	ttm_bo_unreserve(&new_bo->bo);
 
-	nouveau_bo_fence(old_bo, fence);
-	ttm_bo_unreserve(&old_bo->bo);
+	if (likely(old_bo != new_bo)) {
+		nouveau_bo_fence(old_bo, fence);
+		ttm_bo_unreserve(&old_bo->bo);
+	}
 
 	nouveau_bo_unpin(old_bo);
 }
@@ -623,6 +627,12 @@ nouveau_crtc_page_flip(struct drm_crtc *crtc, struct drm_framebuffer *fb,
 
 	if (!drm->channel)
 		return -ENODEV;
+
+	if (unlikely(old_bo == new_bo)) {
+		char name[sizeof(current->comm)];
+		pr_debug_ratelimited("'%s': useless page flip invoked\n",
+				get_task_comm(name, current));
+	}
 
 	s = kzalloc(sizeof(*s), GFP_KERNEL);
 	if (!s)
