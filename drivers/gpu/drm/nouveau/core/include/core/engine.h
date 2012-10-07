@@ -9,7 +9,11 @@
 
 struct nouveau_engine {
 	struct nouveau_subdev base;
+
+	/* context class */
 	struct nouveau_oclass *cclass;
+
+	/* array of possible subclasses */
 	struct nouveau_oclass *sclass;
 
 	struct list_head contexts;

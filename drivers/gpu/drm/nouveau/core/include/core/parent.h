@@ -13,6 +13,7 @@ struct nouveau_sclass {
 struct nouveau_parent {
 	struct nouveau_object base;
 
+	/* subclass */
 	struct nouveau_sclass *sclass;
 	u32 engine;
 
