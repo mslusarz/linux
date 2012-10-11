@@ -16,7 +16,10 @@ struct nouveau_vm;
 struct nouveau_gpuobj {
 	struct nouveau_object base;
 	struct nouveau_object *parent;
+
+	struct nouveau_mm *node_heap;
 	struct nouveau_mm_node *node;
+
 	struct nouveau_mm heap;
 
 	u32 flags;

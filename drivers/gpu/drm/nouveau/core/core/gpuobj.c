@@ -39,8 +39,11 @@ nouveau_gpuobj_destroy(struct nouveau_gpuobj *gpuobj)
 			nv_wo32(gpuobj, i, 0x00000000);
 	}
 
+	if (gpuobj->node)
+		nouveau_mm_free(gpuobj->node_heap, &gpuobj->node);
+
 	if (gpuobj->heap.block_size)
-		nouveau_mm_fini(&gpuobj->heap);
+		WARN_ON(nouveau_mm_fini(&gpuobj->heap));
 
 	nouveau_object_destroy(&gpuobj->base);
 }
@@ -114,6 +117,7 @@ nouveau_gpuobj_create_(struct nouveau_object *parent,
 				      max(align, (u32)1), &gpuobj->node);
 		if (ret)
 			return ret;
+		gpuobj->node_heap = heap;
 
 		gpuobj->addr += gpuobj->node->offset;
 	}
