@@ -110,7 +110,8 @@ nouveau_bios_shadow_pramin(struct nouveau_bios *bios)
 	bios->data = kmalloc(bios->size, GFP_KERNEL);
 	if (bios->data) {
 		for (i = 0; i < bios->size; i++)
-			nv_wo08(bios, i, nv_bios_rd08(bios, 0x700000 + i));
+			nv_bios_wo08(bios, i,
+				     nv_bios_rd08(bios, 0x700000 + i));
 	}
 
 out:
@@ -164,7 +165,8 @@ nouveau_bios_shadow_prom(struct nouveau_bios *bios)
 	bios->data = kmalloc(bios->size, GFP_KERNEL);
 	if (bios->data) {
 		for (i = 0; i < bios->size; i++)
-			nv_wo08(bios, i, nv_bios_rd08(bios, 0x300000 + i));
+			nv_bios_wo08(bios, i,
+				     nv_bios_rd08(bios, 0x300000 + i));
 	}
 
 out:
@@ -443,16 +445,20 @@ nouveau_bios_ctor(struct nouveau_object *parent,
 
 	/* determine the vbios version number */
 	if (!bit_entry(bios, 'i', &bit_i) && bit_i.length >= 4) {
-		bios->version.major = nv_ro08(bios, bit_i.offset + 3);
-		bios->version.chip  = nv_ro08(bios, bit_i.offset + 2);
-		bios->version.minor = nv_ro08(bios, bit_i.offset + 1);
-		bios->version.micro = nv_ro08(bios, bit_i.offset + 0);
+		bios->version.major = nv_bios_ro08(bios, bit_i.offset + 3);
+		bios->version.chip  = nv_bios_ro08(bios, bit_i.offset + 2);
+		bios->version.minor = nv_bios_ro08(bios, bit_i.offset + 1);
+		bios->version.micro = nv_bios_ro08(bios, bit_i.offset + 0);
 	} else
 	if (bmp_version(bios)) {
-		bios->version.major = nv_ro08(bios, bios->bmp_offset + 13);
-		bios->version.chip  = nv_ro08(bios, bios->bmp_offset + 12);
-		bios->version.minor = nv_ro08(bios, bios->bmp_offset + 11);
-		bios->version.micro = nv_ro08(bios, bios->bmp_offset + 10);
+		bios->version.major = nv_bios_ro08(bios,
+						   bios->bmp_offset + 13);
+		bios->version.chip  = nv_bios_ro08(bios,
+						   bios->bmp_offset + 12);
+		bios->version.minor = nv_bios_ro08(bios,
+						   bios->bmp_offset + 11);
+		bios->version.micro = nv_bios_ro08(bios,
+						   bios->bmp_offset + 10);
 	}
 
 	nv_info(bios, "version %02x.%02x.%02x.%02x\n",

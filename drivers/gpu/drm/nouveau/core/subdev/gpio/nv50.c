@@ -40,7 +40,7 @@ nv50_gpio_reset(struct nouveau_gpio *gpio)
 
 	while ((entry = dcb_gpio_entry(bios, 0, ++ent, &ver))) {
 		static const u32 regs[] = { 0xe100, 0xe28c };
-		u32 data = nv_ro32(bios, entry);
+		u32 data = nv_bios_ro32(bios, entry);
 		u8  line =   (data & 0x0000001f);
 		u8  func =   (data & 0x0000ff00) >> 8;
 		u8  defs = !!(data & 0x01000000);

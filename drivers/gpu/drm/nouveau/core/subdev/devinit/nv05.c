@@ -67,8 +67,8 @@ nv05_devinit_meminit(struct nouveau_devinit *devinit)
 
 	strap = (nv05_devinit_rd32(priv, 0x101000) & 0x0000003c) >> 2;
 	if ((data = bmp_mem_init_table(bios))) {
-		ramcfg[0] = nv_ro08(bios, data + 2 * strap + 0);
-		ramcfg[1] = nv_ro08(bios, data + 2 * strap + 1);
+		ramcfg[0] = nv_bios_ro08(bios, data + 2 * strap + 0);
+		ramcfg[1] = nv_bios_ro08(bios, data + 2 * strap + 1);
 	} else {
 		ramcfg[0] = default_config_tab[strap][0];
 		ramcfg[1] = default_config_tab[strap][1];
@@ -86,7 +86,7 @@ nv05_devinit_meminit(struct nouveau_devinit *devinit)
 	/* If present load the hardcoded scrambling table */
 	if (data) {
 		for (i = 0, data += 0x10; i < 8; i++, data += 4) {
-			u32 scramble = nv_ro32(bios, data);
+			u32 scramble = nv_bios_ro32(bios, data);
 			nv05_devinit_wr32(priv, NV04_PFB_SCRAMBLE(i),
 					  scramble);
 		}

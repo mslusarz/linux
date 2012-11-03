@@ -34,16 +34,16 @@ dcb_i2c_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 	u16 dcb = dcb_table(bios, ver, hdr, cnt, len);
 	if (dcb) {
 		if (*ver >= 0x15)
-			i2c = nv_ro16(bios, dcb + 2);
+			i2c = nv_bios_ro16(bios, dcb + 2);
 		if (*ver >= 0x30)
-			i2c = nv_ro16(bios, dcb + 4);
+			i2c = nv_bios_ro16(bios, dcb + 4);
 	}
 
 	if (i2c && *ver >= 0x30) {
-		*ver = nv_ro08(bios, i2c + 0);
-		*hdr = nv_ro08(bios, i2c + 1);
-		*cnt = nv_ro08(bios, i2c + 2);
-		*len = nv_ro08(bios, i2c + 3);
+		*ver = nv_bios_ro08(bios, i2c + 0);
+		*hdr = nv_bios_ro08(bios, i2c + 1);
+		*cnt = nv_bios_ro08(bios, i2c + 2);
+		*len = nv_bios_ro08(bios, i2c + 3);
 	} else {
 		*ver = *ver; /* use DCB version */
 		*hdr = 0;
@@ -70,8 +70,8 @@ dcb_i2c_parse(struct nouveau_bios *bios, u8 idx, struct dcb_i2c_entry *info)
 	u8  ver, len;
 	u16 ent = dcb_i2c_entry(bios, idx, &ver, &len);
 	if (ent) {
-		info->data = nv_ro32(bios, ent + 0);
-		info->type = nv_ro08(bios, ent + 3);
+		info->data = nv_bios_ro32(bios, ent + 0);
+		info->type = nv_bios_ro08(bios, ent + 3);
 		if (ver < 0x30) {
 			info->type &= 0x07;
 			if (info->type == 0x07)
@@ -80,15 +80,15 @@ dcb_i2c_parse(struct nouveau_bios *bios, u8 idx, struct dcb_i2c_entry *info)
 
 		switch (info->type) {
 		case DCB_I2C_NV04_BIT:
-			info->drive = nv_ro08(bios, ent + 0);
-			info->sense = nv_ro08(bios, ent + 1);
+			info->drive = nv_bios_ro08(bios, ent + 0);
+			info->sense = nv_bios_ro08(bios, ent + 1);
 			return 0;
 		case DCB_I2C_NV4E_BIT:
-			info->drive = nv_ro08(bios, ent + 1);
+			info->drive = nv_bios_ro08(bios, ent + 1);
 			return 0;
 		case DCB_I2C_NVIO_BIT:
 		case DCB_I2C_NVIO_AUX:
-			info->drive = nv_ro08(bios, ent + 0);
+			info->drive = nv_bios_ro08(bios, ent + 0);
 			return 0;
 		case DCB_I2C_UNUSED:
 			return 0;
@@ -103,21 +103,21 @@ dcb_i2c_parse(struct nouveau_bios *bios, u8 idx, struct dcb_i2c_entry *info)
 		/* BMP (from v4.0 has i2c info in the structure, it's in a
 		 * fixed location on earlier VBIOS
 		 */
-		if (nv_ro08(bios, bios->bmp_offset + 5) < 4)
+		if (nv_bios_ro08(bios, bios->bmp_offset + 5) < 4)
 			ent = 0x0048;
 		else
 			ent = 0x0036 + bios->bmp_offset;
 
 		if (idx == 0) {
-			info->drive = nv_ro08(bios, ent + 4);
+			info->drive = nv_bios_ro08(bios, ent + 4);
 			if (!info->drive) info->drive = 0x3f;
-			info->sense = nv_ro08(bios, ent + 5);
+			info->sense = nv_bios_ro08(bios, ent + 5);
 			if (!info->sense) info->sense = 0x3e;
 		} else
 		if (idx == 1) {
-			info->drive = nv_ro08(bios, ent + 6);
+			info->drive = nv_bios_ro08(bios, ent + 6);
 			if (!info->drive) info->drive = 0x37;
-			info->sense = nv_ro08(bios, ent + 7);
+			info->sense = nv_bios_ro08(bios, ent + 7);
 			if (!info->sense) info->sense = 0x36;
 		}
 

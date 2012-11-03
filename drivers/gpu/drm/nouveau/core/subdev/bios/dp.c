@@ -35,12 +35,12 @@ dp_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 
 	if (!bit_entry(bios, 'd', &bit_d)) {
 		if (bit_d.version == 1) {
-			u16 data = nv_ro16(bios, bit_d.offset);
+			u16 data = nv_bios_ro16(bios, bit_d.offset);
 			if (data) {
-				*ver = nv_ro08(bios, data + 0);
-				*hdr = nv_ro08(bios, data + 1);
-				*len = nv_ro08(bios, data + 2);
-				*cnt = nv_ro08(bios, data + 3);
+				*ver = nv_bios_ro08(bios, data + 0);
+				*hdr = nv_bios_ro08(bios, data + 1);
+				*len = nv_bios_ro08(bios, data + 2);
+				*cnt = nv_bios_ro08(bios, data + 3);
 				return data;
 			}
 		}
@@ -67,7 +67,7 @@ dp_outp_match(struct nouveau_bios *bios, struct dcb_output *outp,
 	u16 data;
 	while ((data = dp_outp(bios, idx++, ver, len)) != 0xffff) {
 		if (data) {
-			u32 hash = nv_ro32(bios, data);
+			u32 hash = nv_bios_ro32(bios, data);
 			if (dcb_hash_match(outp, hash))
 				return data;
 		}

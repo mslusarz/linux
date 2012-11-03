@@ -36,14 +36,14 @@ extdev_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *len, u8 *cnt)
 	if (!dcb || (dcb_ver != 0x30 && dcb_ver != 0x40))
 		return 0x0000;
 
-	extdev = nv_ro16(bios, dcb + 18);
+	extdev = nv_bios_ro16(bios, dcb + 18);
 	if (!extdev)
 		return 0x0000;
 
-	*ver = nv_ro08(bios, extdev + 0);
-	*hdr = nv_ro08(bios, extdev + 1);
-	*cnt = nv_ro08(bios, extdev + 2);
-	*len = nv_ro08(bios, extdev + 3);
+	*ver = nv_bios_ro08(bios, extdev + 0);
+	*hdr = nv_bios_ro08(bios, extdev + 1);
+	*cnt = nv_bios_ro08(bios, extdev + 2);
+	*len = nv_bios_ro08(bios, extdev + 3);
 
 	return extdev + *hdr;
 }
@@ -62,9 +62,9 @@ static void
 extdev_parse_entry(struct nouveau_bios *bios, u16 offset,
 			  struct nvbios_extdev_func *entry)
 {
-	entry->type = nv_ro08(bios, offset + 0);
-	entry->addr = nv_ro08(bios, offset + 1);
-	entry->bus = (nv_ro08(bios, offset + 2) >> 4) & 1;
+	entry->type = nv_bios_ro08(bios, offset + 0);
+	entry->addr = nv_bios_ro08(bios, offset + 1);
+	entry->bus = (nv_bios_ro08(bios, offset + 2) >> 4) & 1;
 }
 
 int

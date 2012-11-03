@@ -34,10 +34,10 @@ perf_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 
 	if (!bit_entry(bios, 'P', &bit_P)) {
 		if (bit_P.version <= 2) {
-			perf = nv_ro16(bios, bit_P.offset + 0);
+			perf = nv_bios_ro16(bios, bit_P.offset + 0);
 			if (perf) {
-				*ver = nv_ro08(bios, perf + 0);
-				*hdr = nv_ro08(bios, perf + 1);
+				*ver = nv_bios_ro08(bios, perf + 0);
+				*hdr = nv_bios_ro08(bios, perf + 1);
 			}
 		} else
 			nv_error(bios, "unknown offset for perf in BIT P %d\n",
@@ -45,11 +45,11 @@ perf_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 	}
 
 	if (bios->bmp_offset) {
-		if (nv_ro08(bios, bios->bmp_offset + 6) >= 0x25) {
-			perf = nv_ro16(bios, bios->bmp_offset + 0x94);
+		if (nv_bios_ro08(bios, bios->bmp_offset + 6) >= 0x25) {
+			perf = nv_bios_ro16(bios, bios->bmp_offset + 0x94);
 			if (perf) {
-				*hdr = nv_ro08(bios, perf + 0);
-				*ver = nv_ro08(bios, perf + 1);
+				*hdr = nv_bios_ro08(bios, perf + 0);
+				*ver = nv_bios_ro08(bios, perf + 1);
 			}
 		}
 	}
@@ -67,7 +67,7 @@ nvbios_perf_fan_parse(struct nouveau_bios *bios,
 		return -ENODEV;
 
 	if (ver >= 0x20 && ver < 0x40 && hdr > 6)
-		fan->pwm_divisor = nv_ro16(bios, perf + 6);
+		fan->pwm_divisor = nv_bios_ro16(bios, perf + 6);
 	else
 		fan->pwm_divisor = 0;
 

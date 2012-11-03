@@ -34,14 +34,14 @@ nouveau_fb_bios_memtype(struct nouveau_bios *bios)
 
 	ramcfg = (nv_bios_rd32(bios, 0x101000) & 0x0000003c) >> 2;
 	if (!bit_entry(bios, 'M', &M) && M.version == 2 && M.length >= 5) {
-		u16 table   = nv_ro16(bios, M.offset + 3);
-		u8  version = nv_ro08(bios, table + 0);
-		u8  header  = nv_ro08(bios, table + 1);
-		u8  record  = nv_ro08(bios, table + 2);
-		u8  entries = nv_ro08(bios, table + 3);
+		u16 table   = nv_bios_ro16(bios, M.offset + 3);
+		u8  version = nv_bios_ro08(bios, table + 0);
+		u8  header  = nv_bios_ro08(bios, table + 1);
+		u8  record  = nv_bios_ro08(bios, table + 2);
+		u8  entries = nv_bios_ro08(bios, table + 3);
 		if (table && version == 0x10 && ramcfg < entries) {
 			u16 entry = table + header + (ramcfg * record);
-			switch (nv_ro08(bios, entry) & 0x0f) {
+			switch (nv_bios_ro08(bios, entry) & 0x0f) {
 			case 0: return NV_MEM_TYPE_DDR2;
 			case 1: return NV_MEM_TYPE_DDR3;
 			case 2: return NV_MEM_TYPE_GDDR3;

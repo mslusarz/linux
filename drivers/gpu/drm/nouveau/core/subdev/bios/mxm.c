@@ -77,14 +77,14 @@ mxm_sor_map(struct nouveau_bios *bios, u8 conn)
 	u8  ver, hdr;
 	u16 mxm = mxm_table(bios, &ver, &hdr);
 	if (mxm && hdr >= 6) {
-		u16 map = nv_ro16(bios, mxm + 4);
+		u16 map = nv_bios_ro16(bios, mxm + 4);
 		if (map) {
-			ver = nv_ro08(bios, map);
+			ver = nv_bios_ro08(bios, map);
 			if (ver == 0x10) {
-				if (conn < nv_ro08(bios, map + 3)) {
-					map += nv_ro08(bios, map + 1);
+				if (conn < nv_bios_ro08(bios, map + 3)) {
+					map += nv_bios_ro08(bios, map + 1);
 					map += conn;
-					return nv_ro08(bios, map);
+					return nv_bios_ro08(bios, map);
 				}
 
 				return 0x00;
@@ -113,14 +113,14 @@ mxm_ddc_map(struct nouveau_bios *bios, u8 port)
 	u8  ver, hdr;
 	u16 mxm = mxm_table(bios, &ver, &hdr);
 	if (mxm && hdr >= 8) {
-		u16 map = nv_ro16(bios, mxm + 6);
+		u16 map = nv_bios_ro16(bios, mxm + 6);
 		if (map) {
-			ver = nv_ro08(bios, map);
+			ver = nv_bios_ro08(bios, map);
 			if (ver == 0x10) {
-				if (port < nv_ro08(bios, map + 3)) {
-					map += nv_ro08(bios, map + 1);
+				if (port < nv_bios_ro08(bios, map + 3)) {
+					map += nv_bios_ro08(bios, map + 1);
 					map += port;
-					return nv_ro08(bios, map);
+					return nv_bios_ro08(bios, map);
 				}
 
 				return 0x00;

@@ -259,7 +259,7 @@ nouveau_mxm_create_(struct nouveau_object *parent,
 		return ret;
 
 	data = mxm_table(bios, &ver, &len);
-	if (!data || !(ver = nv_ro08(bios, data))) {
+	if (!data || !(ver = nv_bios_ro08(bios, data))) {
 		nv_info(mxm, "no VBIOS data, nothing to do\n");
 		return 0;
 	}
