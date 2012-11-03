@@ -50,11 +50,14 @@ nvd0_disp_intr_vblank(struct nvd0_disp_priv *priv, int crtc)
 		if (chan->vblank.crtc != crtc)
 			continue;
 
-		nv_wr32(priv, 0x001718, 0x80000000 | chan->vblank.channel);
+		nvd0_disp_wr32(priv, 0x001718,
+			       0x80000000 | chan->vblank.channel);
 		bar->flush(bar);
-		nv_wr32(priv, 0x06000c, upper_32_bits(chan->vblank.offset));
-		nv_wr32(priv, 0x060010, lower_32_bits(chan->vblank.offset));
-		nv_wr32(priv, 0x060014, chan->vblank.value);
+		nvd0_disp_wr32(priv, 0x06000c,
+			       upper_32_bits(chan->vblank.offset));
+		nvd0_disp_wr32(priv, 0x060010,
+			       lower_32_bits(chan->vblank.offset));
+		nvd0_disp_wr32(priv, 0x060014, chan->vblank.value);
 
 		list_del(&chan->vblank.head);
 		if (disp->vblank.put)
@@ -70,17 +73,18 @@ static void
 nvd0_disp_intr(struct nouveau_subdev *subdev)
 {
 	struct nvd0_disp_priv *priv = (void *)subdev;
-	u32 intr = nv_rd32(priv, 0x610088);
+	u32 intr = nvd0_disp_rd32(priv, 0x610088);
 	int i;
 
 	for (i = 0; i < 4; i++) {
 		u32 mask = 0x01000000 << i;
 		if (mask & intr) {
-			u32 stat = nv_rd32(priv, 0x6100bc + (i * 0x800));
+			u32 stat = nvd0_disp_rd32(priv,
+						  0x6100bc + (i * 0x800));
 			if (stat & 0x00000001)
 				nvd0_disp_intr_vblank(priv, i);
-			nv_mask(priv, 0x6100bc + (i * 0x800), 0, 0);
-			nv_rd32(priv, 0x6100c0 + (i * 0x800));
+			nvd0_disp_mask(priv, 0x6100bc + (i * 0x800), 0, 0);
+			nvd0_disp_rd32(priv, 0x6100c0 + (i * 0x800));
 		}
 	}
 }

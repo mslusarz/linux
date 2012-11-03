@@ -47,19 +47,20 @@ nv50_disp_intr_vblank(struct nv50_disp_priv *priv, int crtc)
 		if (chan->vblank.crtc != crtc)
 			continue;
 
-		nv_wr32(priv, 0x001704, chan->vblank.channel);
-		nv_wr32(priv, 0x001710, 0x80000000 | chan->vblank.ctxdma);
+		nv50_disp_wr32(priv, 0x001704, chan->vblank.channel);
+		nv50_disp_wr32(priv, 0x001710,
+			       0x80000000 | chan->vblank.ctxdma);
 
 		if (nv_device(priv)->chipset == 0x50) {
-			nv_wr32(priv, 0x001570, chan->vblank.offset);
-			nv_wr32(priv, 0x001574, chan->vblank.value);
+			nv50_disp_wr32(priv, 0x001570, chan->vblank.offset);
+			nv50_disp_wr32(priv, 0x001574, chan->vblank.value);
 		} else {
 			if (nv_device(priv)->chipset >= 0xc0) {
-				nv_wr32(priv, 0x06000c,
-					upper_32_bits(chan->vblank.offset));
+				nv50_disp_wr32(priv, 0x06000c,
+					       upper_32_bits(chan->vblank.offset));
 			}
-			nv_wr32(priv, 0x060010, chan->vblank.offset);
-			nv_wr32(priv, 0x060014, chan->vblank.value);
+			nv50_disp_wr32(priv, 0x060010, chan->vblank.offset);
+			nv50_disp_wr32(priv, 0x060014, chan->vblank.value);
 		}
 
 		list_del(&chan->vblank.head);
@@ -76,17 +77,17 @@ static void
 nv50_disp_intr(struct nouveau_subdev *subdev)
 {
 	struct nv50_disp_priv *priv = (void *)subdev;
-	u32 stat1 = nv_rd32(priv, 0x610024);
+	u32 stat1 = nv50_disp_rd32(priv, 0x610024);
 
 	if (stat1 & 0x00000004) {
 		nv50_disp_intr_vblank(priv, 0);
-		nv_wr32(priv, 0x610024, 0x00000004);
+		nv50_disp_wr32(priv, 0x610024, 0x00000004);
 		stat1 &= ~0x00000004;
 	}
 
 	if (stat1 & 0x00000008) {
 		nv50_disp_intr_vblank(priv, 1);
-		nv_wr32(priv, 0x610024, 0x00000008);
+		nv50_disp_wr32(priv, 0x610024, 0x00000008);
 		stat1 &= ~0x00000008;
 	}
 

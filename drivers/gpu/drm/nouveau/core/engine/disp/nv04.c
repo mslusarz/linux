@@ -46,17 +46,17 @@ static void
 nv04_disp_intr(struct nouveau_subdev *subdev)
 {
 	struct nv04_disp_priv *priv = (void *)subdev;
-	u32 crtc0 = nv_rd32(priv, 0x600100);
-	u32 crtc1 = nv_rd32(priv, 0x602100);
+	u32 crtc0 = nv04_disp_rd32(priv, 0x600100);
+	u32 crtc1 = nv04_disp_rd32(priv, 0x602100);
 
 	if (crtc0 & 0x00000001) {
 		nv04_disp_intr_vblank(priv, 0);
-		nv_wr32(priv, 0x600100, 0x00000001);
+		nv04_disp_wr32(priv, 0x600100, 0x00000001);
 	}
 
 	if (crtc1 & 0x00000001) {
 		nv04_disp_intr_vblank(priv, 1);
-		nv_wr32(priv, 0x602100, 0x00000001);
+		nv04_disp_wr32(priv, 0x602100, 0x00000001);
 	}
 }
 
