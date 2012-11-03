@@ -163,28 +163,30 @@ nv40_graph_context_fini(struct nouveau_object *object, bool suspend)
 	u32 inst = 0x01000000 | nv_gpuobj(chan)->addr >> 4;
 	int ret = 0;
 
-	nv_mask(priv, 0x400720, 0x00000001, 0x00000000);
+	nv40_graph_mask(priv, 0x400720, 0x00000001, 0x00000000);
 
-	if (nv_rd32(priv, 0x40032c) == inst) {
+	if (nv40_graph_rd32(priv, 0x40032c) == inst) {
 		if (suspend) {
-			nv_wr32(priv, 0x400720, 0x00000000);
-			nv_wr32(priv, 0x400784, inst);
-			nv_mask(priv, 0x400310, 0x00000020, 0x00000020);
-			nv_mask(priv, 0x400304, 0x00000001, 0x00000001);
+			nv40_graph_wr32(priv, 0x400720, 0x00000000);
+			nv40_graph_wr32(priv, 0x400784, inst);
+			nv40_graph_mask(priv, 0x400310, 0x00000020,
+					0x00000020);
+			nv40_graph_mask(priv, 0x400304, 0x00000001,
+					0x00000001);
 			if (!nv_wait(priv, 0x400300, 0x00000001, 0x00000000)) {
-				u32 insn = nv_rd32(priv, 0x400308);
+				u32 insn = nv40_graph_rd32(priv, 0x400308);
 				nv_warn(priv, "ctxprog timeout 0x%08x\n", insn);
 				ret = -EBUSY;
 			}
 		}
 
-		nv_mask(priv, 0x40032c, 0x01000000, 0x00000000);
+		nv40_graph_mask(priv, 0x40032c, 0x01000000, 0x00000000);
 	}
 
-	if (nv_rd32(priv, 0x400330) == inst)
-		nv_mask(priv, 0x400330, 0x01000000, 0x00000000);
+	if (nv40_graph_rd32(priv, 0x400330) == inst)
+		nv40_graph_mask(priv, 0x400330, 0x01000000, 0x00000000);
 
-	nv_mask(priv, 0x400720, 0x00000001, 0x00000001);
+	nv40_graph_mask(priv, 0x400720, 0x00000001, 0x00000001);
 	return ret;
 }
 
@@ -223,23 +225,23 @@ nv40_graph_tile_prog(struct nouveau_engine *engine, int i)
 	case 0x43:
 	case 0x45:
 	case 0x4e:
-		nv_wr32(priv, NV20_PGRAPH_TSIZE(i), tile->pitch);
-		nv_wr32(priv, NV20_PGRAPH_TLIMIT(i), tile->limit);
-		nv_wr32(priv, NV20_PGRAPH_TILE(i), tile->addr);
-		nv_wr32(priv, NV40_PGRAPH_TSIZE1(i), tile->pitch);
-		nv_wr32(priv, NV40_PGRAPH_TLIMIT1(i), tile->limit);
-		nv_wr32(priv, NV40_PGRAPH_TILE1(i), tile->addr);
+		nv40_graph_wr32(priv, NV20_PGRAPH_TSIZE(i), tile->pitch);
+		nv40_graph_wr32(priv, NV20_PGRAPH_TLIMIT(i), tile->limit);
+		nv40_graph_wr32(priv, NV20_PGRAPH_TILE(i), tile->addr);
+		nv40_graph_wr32(priv, NV40_PGRAPH_TSIZE1(i), tile->pitch);
+		nv40_graph_wr32(priv, NV40_PGRAPH_TLIMIT1(i), tile->limit);
+		nv40_graph_wr32(priv, NV40_PGRAPH_TILE1(i), tile->addr);
 		switch (nv_device(priv)->chipset) {
 		case 0x40:
 		case 0x45:
-			nv_wr32(priv, NV20_PGRAPH_ZCOMP(i), tile->zcomp);
-			nv_wr32(priv, NV40_PGRAPH_ZCOMP1(i), tile->zcomp);
+			nv40_graph_wr32(priv, NV20_PGRAPH_ZCOMP(i), tile->zcomp);
+			nv40_graph_wr32(priv, NV40_PGRAPH_ZCOMP1(i), tile->zcomp);
 			break;
 		case 0x41:
 		case 0x42:
 		case 0x43:
-			nv_wr32(priv, NV41_PGRAPH_ZCOMP0(i), tile->zcomp);
-			nv_wr32(priv, NV41_PGRAPH_ZCOMP1(i), tile->zcomp);
+			nv40_graph_wr32(priv, NV41_PGRAPH_ZCOMP0(i), tile->zcomp);
+			nv40_graph_wr32(priv, NV41_PGRAPH_ZCOMP1(i), tile->zcomp);
 			break;
 		default:
 			break;
@@ -247,9 +249,9 @@ nv40_graph_tile_prog(struct nouveau_engine *engine, int i)
 		break;
 	case 0x44:
 	case 0x4a:
-		nv_wr32(priv, NV20_PGRAPH_TSIZE(i), tile->pitch);
-		nv_wr32(priv, NV20_PGRAPH_TLIMIT(i), tile->limit);
-		nv_wr32(priv, NV20_PGRAPH_TILE(i), tile->addr);
+		nv40_graph_wr32(priv, NV20_PGRAPH_TSIZE(i), tile->pitch);
+		nv40_graph_wr32(priv, NV20_PGRAPH_TLIMIT(i), tile->limit);
+		nv40_graph_wr32(priv, NV20_PGRAPH_TILE(i), tile->addr);
 		break;
 	case 0x46:
 	case 0x4c:
@@ -259,18 +261,18 @@ nv40_graph_tile_prog(struct nouveau_engine *engine, int i)
 	case 0x63:
 	case 0x67:
 	case 0x68:
-		nv_wr32(priv, NV47_PGRAPH_TSIZE(i), tile->pitch);
-		nv_wr32(priv, NV47_PGRAPH_TLIMIT(i), tile->limit);
-		nv_wr32(priv, NV47_PGRAPH_TILE(i), tile->addr);
-		nv_wr32(priv, NV40_PGRAPH_TSIZE1(i), tile->pitch);
-		nv_wr32(priv, NV40_PGRAPH_TLIMIT1(i), tile->limit);
-		nv_wr32(priv, NV40_PGRAPH_TILE1(i), tile->addr);
+		nv40_graph_wr32(priv, NV47_PGRAPH_TSIZE(i), tile->pitch);
+		nv40_graph_wr32(priv, NV47_PGRAPH_TLIMIT(i), tile->limit);
+		nv40_graph_wr32(priv, NV47_PGRAPH_TILE(i), tile->addr);
+		nv40_graph_wr32(priv, NV40_PGRAPH_TSIZE1(i), tile->pitch);
+		nv40_graph_wr32(priv, NV40_PGRAPH_TLIMIT1(i), tile->limit);
+		nv40_graph_wr32(priv, NV40_PGRAPH_TILE1(i), tile->addr);
 		switch (nv_device(priv)->chipset) {
 		case 0x47:
 		case 0x49:
 		case 0x4b:
-			nv_wr32(priv, NV47_PGRAPH_ZCOMP0(i), tile->zcomp);
-			nv_wr32(priv, NV47_PGRAPH_ZCOMP1(i), tile->zcomp);
+			nv40_graph_wr32(priv, NV47_PGRAPH_ZCOMP0(i), tile->zcomp);
+			nv40_graph_wr32(priv, NV47_PGRAPH_ZCOMP1(i), tile->zcomp);
 			break;
 		default:
 			break;
@@ -291,15 +293,15 @@ nv40_graph_intr(struct nouveau_subdev *subdev)
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle = NULL;
 	struct nv40_graph_priv *priv = (void *)subdev;
-	u32 stat = nv_rd32(priv, NV03_PGRAPH_INTR);
-	u32 nsource = nv_rd32(priv, NV03_PGRAPH_NSOURCE);
-	u32 nstatus = nv_rd32(priv, NV03_PGRAPH_NSTATUS);
-	u32 inst = nv_rd32(priv, 0x40032c) & 0x000fffff;
-	u32 addr = nv_rd32(priv, NV04_PGRAPH_TRAPPED_ADDR);
+	u32 stat = nv40_graph_rd32(priv, NV03_PGRAPH_INTR);
+	u32 nsource = nv40_graph_rd32(priv, NV03_PGRAPH_NSOURCE);
+	u32 nstatus = nv40_graph_rd32(priv, NV03_PGRAPH_NSTATUS);
+	u32 inst = nv40_graph_rd32(priv, 0x40032c) & 0x000fffff;
+	u32 addr = nv40_graph_rd32(priv, NV04_PGRAPH_TRAPPED_ADDR);
 	u32 subc = (addr & 0x00070000) >> 16;
 	u32 mthd = (addr & 0x00001ffc);
-	u32 data = nv_rd32(priv, NV04_PGRAPH_TRAPPED_DATA);
-	u32 class = nv_rd32(priv, 0x400160 + subc * 4) & 0xffff;
+	u32 data = nv40_graph_rd32(priv, NV04_PGRAPH_TRAPPED_DATA);
+	u32 class = nv40_graph_rd32(priv, 0x400160 + subc * 4) & 0xffff;
 	u32 show = stat;
 	int chid;
 
@@ -315,12 +317,12 @@ nv40_graph_intr(struct nouveau_subdev *subdev)
 		}
 
 		if (nsource & NV03_PGRAPH_NSOURCE_DMA_VTX_PROTECTION) {
-			nv_mask(priv, 0x402000, 0, 0);
+			nv40_graph_mask(priv, 0x402000, 0, 0);
 		}
 	}
 
-	nv_wr32(priv, NV03_PGRAPH_INTR, stat);
-	nv_wr32(priv, NV04_PGRAPH_FIFO, 0x00000001);
+	nv40_graph_wr32(priv, NV03_PGRAPH_INTR, stat);
+	nv40_graph_wr32(priv, NV04_PGRAPH_FIFO, 0x00000001);
 
 	if (show) {
 		nv_info(priv, "");
@@ -379,89 +381,89 @@ nv40_graph_init(struct nouveau_object *object)
 	nv40_grctx_init(nv_device(priv), &priv->size);
 
 	/* No context present currently */
-	nv_wr32(priv, NV40_PGRAPH_CTXCTL_CUR, 0x00000000);
+	nv40_graph_wr32(priv, NV40_PGRAPH_CTXCTL_CUR, 0x00000000);
 
-	nv_wr32(priv, NV03_PGRAPH_INTR   , 0xFFFFFFFF);
-	nv_wr32(priv, NV40_PGRAPH_INTR_EN, 0xFFFFFFFF);
+	nv40_graph_wr32(priv, NV03_PGRAPH_INTR, 0xFFFFFFFF);
+	nv40_graph_wr32(priv, NV40_PGRAPH_INTR_EN, 0xFFFFFFFF);
 
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_0, 0xFFFFFFFF);
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_0, 0x00000000);
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_1, 0x401287c0);
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_3, 0xe0de8055);
-	nv_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x00008000);
-	nv_wr32(priv, NV04_PGRAPH_LIMIT_VIOL_PIX, 0x00be3c5f);
+	nv40_graph_wr32(priv, NV04_PGRAPH_DEBUG_0, 0xFFFFFFFF);
+	nv40_graph_wr32(priv, NV04_PGRAPH_DEBUG_0, 0x00000000);
+	nv40_graph_wr32(priv, NV04_PGRAPH_DEBUG_1, 0x401287c0);
+	nv40_graph_wr32(priv, NV04_PGRAPH_DEBUG_3, 0xe0de8055);
+	nv40_graph_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x00008000);
+	nv40_graph_wr32(priv, NV04_PGRAPH_LIMIT_VIOL_PIX, 0x00be3c5f);
 
-	nv_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10010100);
-	nv_wr32(priv, NV10_PGRAPH_STATE      , 0xFFFFFFFF);
+	nv40_graph_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10010100);
+	nv40_graph_wr32(priv, NV10_PGRAPH_STATE, 0xFFFFFFFF);
 
-	j = nv_rd32(priv, 0x1540) & 0xff;
+	j = nv40_graph_rd32(priv, 0x1540) & 0xff;
 	if (j) {
 		for (i = 0; !(j & 1); j >>= 1, i++)
 			;
-		nv_wr32(priv, 0x405000, i);
+		nv40_graph_wr32(priv, 0x405000, i);
 	}
 
 	if (nv_device(priv)->chipset == 0x40) {
-		nv_wr32(priv, 0x4009b0, 0x83280fff);
-		nv_wr32(priv, 0x4009b4, 0x000000a0);
+		nv40_graph_wr32(priv, 0x4009b0, 0x83280fff);
+		nv40_graph_wr32(priv, 0x4009b4, 0x000000a0);
 	} else {
-		nv_wr32(priv, 0x400820, 0x83280eff);
-		nv_wr32(priv, 0x400824, 0x000000a0);
+		nv40_graph_wr32(priv, 0x400820, 0x83280eff);
+		nv40_graph_wr32(priv, 0x400824, 0x000000a0);
 	}
 
 	switch (nv_device(priv)->chipset) {
 	case 0x40:
 	case 0x45:
-		nv_wr32(priv, 0x4009b8, 0x0078e366);
-		nv_wr32(priv, 0x4009bc, 0x0000014c);
+		nv40_graph_wr32(priv, 0x4009b8, 0x0078e366);
+		nv40_graph_wr32(priv, 0x4009bc, 0x0000014c);
 		break;
 	case 0x41:
 	case 0x42: /* pciid also 0x00Cx */
 	/* case 0x0120: XXX (pciid) */
-		nv_wr32(priv, 0x400828, 0x007596ff);
-		nv_wr32(priv, 0x40082c, 0x00000108);
+		nv40_graph_wr32(priv, 0x400828, 0x007596ff);
+		nv40_graph_wr32(priv, 0x40082c, 0x00000108);
 		break;
 	case 0x43:
-		nv_wr32(priv, 0x400828, 0x0072cb77);
-		nv_wr32(priv, 0x40082c, 0x00000108);
+		nv40_graph_wr32(priv, 0x400828, 0x0072cb77);
+		nv40_graph_wr32(priv, 0x40082c, 0x00000108);
 		break;
 	case 0x44:
 	case 0x46: /* G72 */
 	case 0x4a:
 	case 0x4c: /* G7x-based C51 */
 	case 0x4e:
-		nv_wr32(priv, 0x400860, 0);
-		nv_wr32(priv, 0x400864, 0);
+		nv40_graph_wr32(priv, 0x400860, 0);
+		nv40_graph_wr32(priv, 0x400864, 0);
 		break;
 	case 0x47: /* G70 */
 	case 0x49: /* G71 */
 	case 0x4b: /* G73 */
-		nv_wr32(priv, 0x400828, 0x07830610);
-		nv_wr32(priv, 0x40082c, 0x0000016A);
+		nv40_graph_wr32(priv, 0x400828, 0x07830610);
+		nv40_graph_wr32(priv, 0x40082c, 0x0000016A);
 		break;
 	default:
 		break;
 	}
 
-	nv_wr32(priv, 0x400b38, 0x2ffff800);
-	nv_wr32(priv, 0x400b3c, 0x00006000);
+	nv40_graph_wr32(priv, 0x400b38, 0x2ffff800);
+	nv40_graph_wr32(priv, 0x400b3c, 0x00006000);
 
 	/* Tiling related stuff. */
 	switch (nv_device(priv)->chipset) {
 	case 0x44:
 	case 0x4a:
-		nv_wr32(priv, 0x400bc4, 0x1003d888);
-		nv_wr32(priv, 0x400bbc, 0xb7a7b500);
+		nv40_graph_wr32(priv, 0x400bc4, 0x1003d888);
+		nv40_graph_wr32(priv, 0x400bbc, 0xb7a7b500);
 		break;
 	case 0x46:
-		nv_wr32(priv, 0x400bc4, 0x0000e024);
-		nv_wr32(priv, 0x400bbc, 0xb7a7b520);
+		nv40_graph_wr32(priv, 0x400bc4, 0x0000e024);
+		nv40_graph_wr32(priv, 0x400bbc, 0xb7a7b520);
 		break;
 	case 0x4c:
 	case 0x4e:
 	case 0x67:
-		nv_wr32(priv, 0x400bc4, 0x1003d888);
-		nv_wr32(priv, 0x400bbc, 0xb7a7b540);
+		nv40_graph_wr32(priv, 0x400bc4, 0x1003d888);
+		nv40_graph_wr32(priv, 0x400bbc, 0xb7a7b540);
 		break;
 	default:
 		break;
@@ -475,14 +477,14 @@ nv40_graph_init(struct nouveau_object *object)
 	vramsz = pci_resource_len(nv_device(priv)->pdev, 0) - 1;
 	switch (nv_device(priv)->chipset) {
 	case 0x40:
-		nv_wr32(priv, 0x4009A4, nv_rd32(priv, 0x100200));
-		nv_wr32(priv, 0x4009A8, nv_rd32(priv, 0x100204));
-		nv_wr32(priv, 0x4069A4, nv_rd32(priv, 0x100200));
-		nv_wr32(priv, 0x4069A8, nv_rd32(priv, 0x100204));
-		nv_wr32(priv, 0x400820, 0);
-		nv_wr32(priv, 0x400824, 0);
-		nv_wr32(priv, 0x400864, vramsz);
-		nv_wr32(priv, 0x400868, vramsz);
+		nv_wr32(priv, 0x4009A4, nv40_graph_rd32(priv, 0x100200));
+		nv_wr32(priv, 0x4009A8, nv40_graph_rd32(priv, 0x100204));
+		nv_wr32(priv, 0x4069A4, nv40_graph_rd32(priv, 0x100200));
+		nv_wr32(priv, 0x4069A8, nv40_graph_rd32(priv, 0x100204));
+		nv40_graph_wr32(priv, 0x400820, 0);
+		nv40_graph_wr32(priv, 0x400824, 0);
+		nv40_graph_wr32(priv, 0x400864, vramsz);
+		nv40_graph_wr32(priv, 0x400868, vramsz);
 		break;
 	default:
 		switch (nv_device(priv)->chipset) {
@@ -493,20 +495,24 @@ nv40_graph_init(struct nouveau_object *object)
 		case 0x4e:
 		case 0x44:
 		case 0x4a:
-			nv_wr32(priv, 0x4009F0, nv_rd32(priv, 0x100200));
-			nv_wr32(priv, 0x4009F4, nv_rd32(priv, 0x100204));
+			nv_wr32(priv, 0x4009F0, nv40_graph_rd32(priv,
+								0x100200));
+			nv_wr32(priv, 0x4009F4, nv40_graph_rd32(priv,
+								0x100204));
 			break;
 		default:
-			nv_wr32(priv, 0x400DF0, nv_rd32(priv, 0x100200));
-			nv_wr32(priv, 0x400DF4, nv_rd32(priv, 0x100204));
+			nv_wr32(priv, 0x400DF0, nv40_graph_rd32(priv,
+								0x100200));
+			nv_wr32(priv, 0x400DF4, nv40_graph_rd32(priv,
+								0x100204));
 			break;
 		}
-		nv_wr32(priv, 0x4069F0, nv_rd32(priv, 0x100200));
-		nv_wr32(priv, 0x4069F4, nv_rd32(priv, 0x100204));
-		nv_wr32(priv, 0x400840, 0);
-		nv_wr32(priv, 0x400844, 0);
-		nv_wr32(priv, 0x4008A0, vramsz);
-		nv_wr32(priv, 0x4008A4, vramsz);
+		nv_wr32(priv, 0x4069F0, nv40_graph_rd32(priv, 0x100200));
+		nv_wr32(priv, 0x4069F4, nv40_graph_rd32(priv, 0x100204));
+		nv40_graph_wr32(priv, 0x400840, 0);
+		nv40_graph_wr32(priv, 0x400844, 0);
+		nv40_graph_wr32(priv, 0x4008A0, vramsz);
+		nv40_graph_wr32(priv, 0x4008A4, vramsz);
 		break;
 	}
 

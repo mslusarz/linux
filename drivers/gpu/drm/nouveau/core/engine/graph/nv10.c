@@ -504,8 +504,8 @@ nv17_graph_mthd_lma_window(struct nouveau_object *object, u32 mthd,
 
 	nv04_graph_idle(priv);
 
-	xfmode0 = nv_rd32(priv, NV10_PGRAPH_XFMODE0);
-	xfmode1 = nv_rd32(priv, NV10_PGRAPH_XFMODE1);
+	xfmode0 = nv10_graph_rd32(priv, NV10_PGRAPH_XFMODE0);
+	xfmode1 = nv10_graph_rd32(priv, NV10_PGRAPH_XFMODE1);
 
 	PIPE_SAVE(priv, pipe->pipe_0x4400, 0x4400);
 	PIPE_SAVE(priv, pipe_0x64c0, 0x64c0);
@@ -514,24 +514,24 @@ nv17_graph_mthd_lma_window(struct nouveau_object *object, u32 mthd,
 
 	nv04_graph_idle(priv);
 
-	nv_wr32(priv, NV10_PGRAPH_XFMODE0, 0x10000000);
-	nv_wr32(priv, NV10_PGRAPH_XFMODE1, 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x000064c0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE0, 0x10000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE1, 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x000064c0);
 	for (i = 0; i < 4; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
 	for (i = 0; i < 4; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006ab0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006ab0);
 	for (i = 0; i < 3; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006a80);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006a80);
 	for (i = 0; i < 3; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00000040);
-	nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000008);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00000040);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000008);
 
 	PIPE_RESTORE(priv, pipe->pipe_0x0200, 0x0200);
 
@@ -539,16 +539,16 @@ nv17_graph_mthd_lma_window(struct nouveau_object *object, u32 mthd,
 
 	PIPE_RESTORE(priv, pipe_0x0040, 0x0040);
 
-	nv_wr32(priv, NV10_PGRAPH_XFMODE0, xfmode0);
-	nv_wr32(priv, NV10_PGRAPH_XFMODE1, xfmode1);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE0, xfmode0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE1, xfmode1);
 
 	PIPE_RESTORE(priv, pipe_0x64c0, 0x64c0);
 	PIPE_RESTORE(priv, pipe_0x6ab0, 0x6ab0);
 	PIPE_RESTORE(priv, pipe_0x6a80, 0x6a80);
 	PIPE_RESTORE(priv, pipe->pipe_0x4400, 0x4400);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x000000c0);
-	nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x000000c0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
 
 	nv04_graph_idle(priv);
 
@@ -564,8 +564,8 @@ nv17_graph_mthd_lma_enable(struct nouveau_object *object, u32 mthd,
 
 	nv04_graph_idle(priv);
 
-	nv_mask(priv, NV10_PGRAPH_DEBUG_4, 0x00000100, 0x00000100);
-	nv_mask(priv, 0x4006b0, 0x08000000, 0x08000000);
+	nv10_graph_mask(priv, NV10_PGRAPH_DEBUG_4, 0x00000100, 0x00000100);
+	nv10_graph_mask(priv, 0x4006b0, 0x08000000, 0x08000000);
 	return 0;
 }
 
@@ -610,8 +610,8 @@ static struct nv10_graph_chan *
 nv10_graph_channel(struct nv10_graph_priv *priv)
 {
 	struct nv10_graph_chan *chan = NULL;
-	if (nv_rd32(priv, 0x400144) & 0x00010000) {
-		int chid = nv_rd32(priv, 0x400148) >> 24;
+	if (nv10_graph_rd32(priv, 0x400144) & 0x00010000) {
+		int chid = nv10_graph_rd32(priv, 0x400148) >> 24;
 		if (chid < ARRAY_SIZE(priv->chan))
 			chan = priv->chan[chid];
 	}
@@ -646,34 +646,34 @@ nv10_graph_load_pipe(struct nv10_graph_chan *chan)
 
 	nv04_graph_idle(priv);
 	/* XXX check haiku comments */
-	xfmode0 = nv_rd32(priv, NV10_PGRAPH_XFMODE0);
-	xfmode1 = nv_rd32(priv, NV10_PGRAPH_XFMODE1);
-	nv_wr32(priv, NV10_PGRAPH_XFMODE0, 0x10000000);
-	nv_wr32(priv, NV10_PGRAPH_XFMODE1, 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x000064c0);
+	xfmode0 = nv10_graph_rd32(priv, NV10_PGRAPH_XFMODE0);
+	xfmode1 = nv10_graph_rd32(priv, NV10_PGRAPH_XFMODE1);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE0, 0x10000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE1, 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x000064c0);
 	for (i = 0; i < 4; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
 	for (i = 0; i < 4; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006ab0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006ab0);
 	for (i = 0; i < 3; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x3f800000);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006a80);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00006a80);
 	for (i = 0; i < 3; i++)
-		nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000000);
 
-	nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00000040);
-	nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000008);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, 0x00000040);
+	nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, 0x00000008);
 
 
 	PIPE_RESTORE(priv, pipe->pipe_0x0200, 0x0200);
 	nv04_graph_idle(priv);
 
 	/* restore XFMODE */
-	nv_wr32(priv, NV10_PGRAPH_XFMODE0, xfmode0);
-	nv_wr32(priv, NV10_PGRAPH_XFMODE1, xfmode1);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE0, xfmode0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_XFMODE1, xfmode1);
 	PIPE_RESTORE(priv, pipe->pipe_0x6400, 0x6400);
 	PIPE_RESTORE(priv, pipe->pipe_0x6800, 0x6800);
 	PIPE_RESTORE(priv, pipe->pipe_0x6c00, 0x6c00);
@@ -880,7 +880,7 @@ nv10_graph_load_dma_vtxbuf(struct nv10_graph_chan *chan, int chid, u32 inst)
 
 	/* Look for a celsius object */
 	for (i = 0; i < 8; i++) {
-		int class = nv_rd32(priv, NV10_PGRAPH_CTX_CACHE(i, 0)) & 0xfff;
+		int class = nv10_graph_rd32(priv, NV10_PGRAPH_CTX_CACHE(i, 0)) & 0xfff;
 
 		if (class == 0x56 || class == 0x96 || class == 0x99) {
 			subchan = i;
@@ -892,47 +892,50 @@ nv10_graph_load_dma_vtxbuf(struct nv10_graph_chan *chan, int chid, u32 inst)
 		return;
 
 	/* Save the current ctx object */
-	ctx_user = nv_rd32(priv, NV10_PGRAPH_CTX_USER);
+	ctx_user = nv10_graph_rd32(priv, NV10_PGRAPH_CTX_USER);
 	for (i = 0; i < 5; i++)
-		ctx_switch[i] = nv_rd32(priv, NV10_PGRAPH_CTX_SWITCH(i));
+		ctx_switch[i] = nv10_graph_rd32(priv,
+						NV10_PGRAPH_CTX_SWITCH(i));
 
 	/* Save the FIFO state */
-	st2 = nv_rd32(priv, NV10_PGRAPH_FFINTFC_ST2);
-	st2_dl = nv_rd32(priv, NV10_PGRAPH_FFINTFC_ST2_DL);
-	st2_dh = nv_rd32(priv, NV10_PGRAPH_FFINTFC_ST2_DH);
-	fifo_ptr = nv_rd32(priv, NV10_PGRAPH_FFINTFC_FIFO_PTR);
+	st2 = nv10_graph_rd32(priv, NV10_PGRAPH_FFINTFC_ST2);
+	st2_dl = nv10_graph_rd32(priv, NV10_PGRAPH_FFINTFC_ST2_DL);
+	st2_dh = nv10_graph_rd32(priv, NV10_PGRAPH_FFINTFC_ST2_DH);
+	fifo_ptr = nv10_graph_rd32(priv, NV10_PGRAPH_FFINTFC_FIFO_PTR);
 
 	for (i = 0; i < ARRAY_SIZE(fifo); i++)
-		fifo[i] = nv_rd32(priv, 0x4007a0 + 4 * i);
+		fifo[i] = nv10_graph_rd32(priv, 0x4007a0 + 4 * i);
 
 	/* Switch to the celsius subchannel */
 	for (i = 0; i < 5; i++)
 		nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(i),
-			nv_rd32(priv, NV10_PGRAPH_CTX_CACHE(subchan, i)));
-	nv_mask(priv, NV10_PGRAPH_CTX_USER, 0xe000, subchan << 13);
+			nv10_graph_rd32(priv,
+					NV10_PGRAPH_CTX_CACHE(subchan, i)));
+	nv10_graph_mask(priv, NV10_PGRAPH_CTX_USER, 0xe000, subchan << 13);
 
 	/* Inject NV10TCL_DMA_VTXBUF */
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_FIFO_PTR, 0);
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_ST2,
-		0x2c000000 | chid << 20 | subchan << 16 | 0x18c);
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_ST2_DL, inst);
-	nv_mask(priv, NV10_PGRAPH_CTX_CONTROL, 0, 0x10000);
-	nv_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000001);
-	nv_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_FIFO_PTR, 0);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_ST2,
+			0x2c000000 | chid << 20 | subchan << 16 | 0x18c);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_ST2_DL, inst);
+	nv10_graph_mask(priv, NV10_PGRAPH_CTX_CONTROL, 0, 0x10000);
+	nv10_graph_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000001);
+	nv10_graph_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000000);
 
 	/* Restore the FIFO state */
 	for (i = 0; i < ARRAY_SIZE(fifo); i++)
-		nv_wr32(priv, 0x4007a0 + 4 * i, fifo[i]);
+		nv10_graph_wr32(priv, 0x4007a0 + 4 * i, fifo[i]);
 
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_FIFO_PTR, fifo_ptr);
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_ST2, st2);
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_ST2_DL, st2_dl);
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_ST2_DH, st2_dh);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_FIFO_PTR, fifo_ptr);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_ST2, st2);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_ST2_DL, st2_dl);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_ST2_DH, st2_dh);
 
 	/* Restore the current ctx object */
 	for (i = 0; i < 5; i++)
-		nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(i), ctx_switch[i]);
-	nv_wr32(priv, NV10_PGRAPH_CTX_USER, ctx_user);
+		nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(i),
+				ctx_switch[i]);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_USER, ctx_user);
 }
 
 static int
@@ -943,21 +946,22 @@ nv10_graph_load_context(struct nv10_graph_chan *chan, int chid)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(nv10_graph_ctx_regs); i++)
-		nv_wr32(priv, nv10_graph_ctx_regs[i], chan->nv10[i]);
+		nv10_graph_wr32(priv, nv10_graph_ctx_regs[i], chan->nv10[i]);
 
 	if (nv_device(priv)->chipset >= 0x17) {
 		for (i = 0; i < ARRAY_SIZE(nv17_graph_ctx_regs); i++)
-			nv_wr32(priv, nv17_graph_ctx_regs[i], chan->nv17[i]);
+			nv10_graph_wr32(priv, nv17_graph_ctx_regs[i],
+					chan->nv17[i]);
 	}
 
 	nv10_graph_load_pipe(chan);
 
-	inst = nv_rd32(priv, NV10_PGRAPH_GLOBALSTATE1) & 0xffff;
+	inst = nv10_graph_rd32(priv, NV10_PGRAPH_GLOBALSTATE1) & 0xffff;
 	nv10_graph_load_dma_vtxbuf(chan, chid, inst);
 
-	nv_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10010100);
-	nv_mask(priv, NV10_PGRAPH_CTX_USER, 0xff000000, chid << 24);
-	nv_mask(priv, NV10_PGRAPH_FFINTFC_ST2, 0x30000000, 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10010100);
+	nv10_graph_mask(priv, NV10_PGRAPH_CTX_USER, 0xff000000, chid << 24);
+	nv10_graph_mask(priv, NV10_PGRAPH_FFINTFC_ST2, 0x30000000, 0x00000000);
 	return 0;
 }
 
@@ -968,17 +972,18 @@ nv10_graph_unload_context(struct nv10_graph_chan *chan)
 	int i;
 
 	for (i = 0; i < ARRAY_SIZE(nv10_graph_ctx_regs); i++)
-		chan->nv10[i] = nv_rd32(priv, nv10_graph_ctx_regs[i]);
+		chan->nv10[i] = nv10_graph_rd32(priv, nv10_graph_ctx_regs[i]);
 
 	if (nv_device(priv)->chipset >= 0x17) {
 		for (i = 0; i < ARRAY_SIZE(nv17_graph_ctx_regs); i++)
-			chan->nv17[i] = nv_rd32(priv, nv17_graph_ctx_regs[i]);
+			chan->nv17[i] = nv10_graph_rd32(priv,
+							nv17_graph_ctx_regs[i]);
 	}
 
 	nv10_graph_save_pipe(chan);
 
-	nv_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10000000);
-	nv_mask(priv, NV10_PGRAPH_CTX_USER, 0xff000000, 0x1f000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10000000);
+	nv10_graph_mask(priv, NV10_PGRAPH_CTX_USER, 0xff000000, 0x1f000000);
 	return 0;
 }
 
@@ -999,7 +1004,7 @@ nv10_graph_context_switch(struct nv10_graph_priv *priv)
 		nv10_graph_unload_context(prev);
 
 	/* load context for next channel */
-	chid = (nv_rd32(priv, NV04_PGRAPH_TRAPPED_ADDR) >> 20) & 0x1f;
+	chid = (nv10_graph_rd32(priv, NV04_PGRAPH_TRAPPED_ADDR) >> 20) & 0x1f;
 	next = priv->chan[chid];
 	if (next)
 		nv10_graph_load_context(next, chid);
@@ -1055,8 +1060,9 @@ nv10_graph_context_ctor(struct nouveau_object *parent,
 	if (nv_device(priv)->chipset >= 0x17) {
 		/* is it really needed ??? */
 		NV17_WRITE_CTX(NV10_PGRAPH_DEBUG_4,
-					nv_rd32(priv, NV10_PGRAPH_DEBUG_4));
-		NV17_WRITE_CTX(0x004006b0, nv_rd32(priv, 0x004006b0));
+					nv10_graph_rd32(priv,
+							NV10_PGRAPH_DEBUG_4));
+		NV17_WRITE_CTX(0x004006b0, nv10_graph_rd32(priv, 0x004006b0));
 		NV17_WRITE_CTX(0x00400eac, 0x0fff0000);
 		NV17_WRITE_CTX(0x00400eb0, 0x0fff0000);
 		NV17_WRITE_CTX(0x00400ec0, 0x00000080);
@@ -1094,10 +1100,10 @@ nv10_graph_context_fini(struct nouveau_object *object, bool suspend)
 	unsigned long flags;
 
 	spin_lock_irqsave(&priv->lock, flags);
-	nv_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000000);
+	nv10_graph_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000000);
 	if (nv10_graph_channel(priv) == chan)
 		nv10_graph_unload_context(chan);
-	nv_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000001);
+	nv10_graph_mask(priv, NV04_PGRAPH_FIFO, 0x00000001, 0x00000001);
 	spin_unlock_irqrestore(&priv->lock, flags);
 
 	return nouveau_object_fini(&chan->base, suspend);
@@ -1129,9 +1135,9 @@ nv10_graph_tile_prog(struct nouveau_engine *engine, int i)
 	pfifo->pause(pfifo, &flags);
 	nv04_graph_idle(priv);
 
-	nv_wr32(priv, NV10_PGRAPH_TLIMIT(i), tile->limit);
-	nv_wr32(priv, NV10_PGRAPH_TSIZE(i), tile->pitch);
-	nv_wr32(priv, NV10_PGRAPH_TILE(i), tile->addr);
+	nv10_graph_wr32(priv, NV10_PGRAPH_TLIMIT(i), tile->limit);
+	nv10_graph_wr32(priv, NV10_PGRAPH_TSIZE(i), tile->pitch);
+	nv10_graph_wr32(priv, NV10_PGRAPH_TILE(i), tile->addr);
 
 	pfifo->start(pfifo, &flags);
 }
@@ -1157,15 +1163,15 @@ nv10_graph_intr(struct nouveau_subdev *subdev)
 	struct nv10_graph_chan *chan = NULL;
 	struct nouveau_namedb *namedb = NULL;
 	struct nouveau_handle *handle = NULL;
-	u32 stat = nv_rd32(priv, NV03_PGRAPH_INTR);
-	u32 nsource = nv_rd32(priv, NV03_PGRAPH_NSOURCE);
-	u32 nstatus = nv_rd32(priv, NV03_PGRAPH_NSTATUS);
-	u32 addr = nv_rd32(priv, NV04_PGRAPH_TRAPPED_ADDR);
+	u32 stat = nv10_graph_rd32(priv, NV03_PGRAPH_INTR);
+	u32 nsource = nv10_graph_rd32(priv, NV03_PGRAPH_NSOURCE);
+	u32 nstatus = nv10_graph_rd32(priv, NV03_PGRAPH_NSTATUS);
+	u32 addr = nv10_graph_rd32(priv, NV04_PGRAPH_TRAPPED_ADDR);
 	u32 chid = (addr & 0x01f00000) >> 20;
 	u32 subc = (addr & 0x00070000) >> 16;
 	u32 mthd = (addr & 0x00001ffc);
-	u32 data = nv_rd32(priv, NV04_PGRAPH_TRAPPED_DATA);
-	u32 class = nv_rd32(priv, 0x400160 + subc * 4) & 0xfff;
+	u32 data = nv10_graph_rd32(priv, NV04_PGRAPH_TRAPPED_DATA);
+	u32 class = nv10_graph_rd32(priv, 0x400160 + subc * 4) & 0xfff;
 	u32 show = stat;
 	unsigned long flags;
 
@@ -1184,14 +1190,15 @@ nv10_graph_intr(struct nouveau_subdev *subdev)
 	}
 
 	if (stat & NV_PGRAPH_INTR_CONTEXT_SWITCH) {
-		nv_wr32(priv, NV03_PGRAPH_INTR, NV_PGRAPH_INTR_CONTEXT_SWITCH);
+		nv10_graph_wr32(priv, NV03_PGRAPH_INTR,
+				NV_PGRAPH_INTR_CONTEXT_SWITCH);
 		stat &= ~NV_PGRAPH_INTR_CONTEXT_SWITCH;
 		show &= ~NV_PGRAPH_INTR_CONTEXT_SWITCH;
 		nv10_graph_context_switch(priv);
 	}
 
-	nv_wr32(priv, NV03_PGRAPH_INTR, stat);
-	nv_wr32(priv, NV04_PGRAPH_FIFO, 0x00000001);
+	nv10_graph_wr32(priv, NV03_PGRAPH_INTR, stat);
+	nv10_graph_wr32(priv, NV04_PGRAPH_FIFO, 0x00000001);
 
 	if (show) {
 		nv_error(priv, "");
@@ -1259,40 +1266,41 @@ nv10_graph_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, NV03_PGRAPH_INTR   , 0xFFFFFFFF);
-	nv_wr32(priv, NV03_PGRAPH_INTR_EN, 0xFFFFFFFF);
+	nv10_graph_wr32(priv, NV03_PGRAPH_INTR, 0xFFFFFFFF);
+	nv10_graph_wr32(priv, NV03_PGRAPH_INTR_EN, 0xFFFFFFFF);
 
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_0, 0xFFFFFFFF);
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_0, 0x00000000);
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_1, 0x00118700);
+	nv10_graph_wr32(priv, NV04_PGRAPH_DEBUG_0, 0xFFFFFFFF);
+	nv10_graph_wr32(priv, NV04_PGRAPH_DEBUG_0, 0x00000000);
+	nv10_graph_wr32(priv, NV04_PGRAPH_DEBUG_1, 0x00118700);
 	/* nv_wr32(priv, NV04_PGRAPH_DEBUG_2, 0x24E00810); */ /* 0x25f92ad9 */
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_2, 0x25f92ad9);
-	nv_wr32(priv, NV04_PGRAPH_DEBUG_3, 0x55DE0830 | (1 << 29) | (1 << 31));
+	nv10_graph_wr32(priv, NV04_PGRAPH_DEBUG_2, 0x25f92ad9);
+	nv10_graph_wr32(priv, NV04_PGRAPH_DEBUG_3,
+			0x55DE0830 | (1 << 29) | (1 << 31));
 
 	if (nv_device(priv)->chipset >= 0x17) {
-		nv_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x1f000000);
-		nv_wr32(priv, 0x400a10, 0x03ff3fb6);
-		nv_wr32(priv, 0x400838, 0x002f8684);
-		nv_wr32(priv, 0x40083c, 0x00115f3f);
-		nv_wr32(priv, 0x4006b0, 0x40000020);
+		nv10_graph_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x1f000000);
+		nv10_graph_wr32(priv, 0x400a10, 0x03ff3fb6);
+		nv10_graph_wr32(priv, 0x400838, 0x002f8684);
+		nv10_graph_wr32(priv, 0x40083c, 0x00115f3f);
+		nv10_graph_wr32(priv, 0x4006b0, 0x40000020);
 	} else {
-		nv_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x00000000);
+		nv10_graph_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x00000000);
 	}
 
 	/* Turn all the tiling regions off. */
 	for (i = 0; i < pfb->tile.regions; i++)
 		engine->tile_prog(engine, i);
 
-	nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(0), 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(1), 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(2), 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(3), 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(4), 0x00000000);
-	nv_wr32(priv, NV10_PGRAPH_STATE, 0xFFFFFFFF);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(0), 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(1), 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(2), 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(3), 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(4), 0x00000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_STATE, 0xFFFFFFFF);
 
-	nv_mask(priv, NV10_PGRAPH_CTX_USER, 0xff000000, 0x1f000000);
-	nv_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10000100);
-	nv_wr32(priv, NV10_PGRAPH_FFINTFC_ST2, 0x08000000);
+	nv10_graph_mask(priv, NV10_PGRAPH_CTX_USER, 0xff000000, 0x1f000000);
+	nv10_graph_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10000100);
+	nv10_graph_wr32(priv, NV10_PGRAPH_FFINTFC_ST2, 0x08000000);
 	return 0;
 }
 

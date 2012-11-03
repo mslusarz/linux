@@ -27,7 +27,7 @@
 static void
 nve0_grctx_generate_icmd(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x400208, 0x80000000);
+	nvc0_graph_wr32(priv, 0x400208, 0x80000000);
 	nv_icmd(priv, 0x001000, 0x00000004);
 	nv_icmd(priv, 0x000039, 0x00000000);
 	nv_icmd(priv, 0x00003a, 0x00000000);
@@ -909,7 +909,7 @@ nve0_grctx_generate_icmd(struct nvc0_graph_priv *priv)
 	nv_icmd(priv, 0x000b09, 0x00000100);
 	nv_icmd(priv, 0x000b0a, 0x00000001);
 	nv_icmd(priv, 0x01e100, 0x00000001);
-	nv_wr32(priv, 0x400208, 0x00000000);
+	nvc0_graph_wr32(priv, 0x400208, 0x00000000);
 }
 
 static void
@@ -2168,436 +2168,436 @@ nve0_grctx_generate_902d(struct nvc0_graph_priv *priv)
 static void
 nve0_graph_generate_unk40xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x404010, 0x0);
-	nv_wr32(priv, 0x404014, 0x0);
-	nv_wr32(priv, 0x404018, 0x0);
-	nv_wr32(priv, 0x40401c, 0x0);
-	nv_wr32(priv, 0x404020, 0x0);
-	nv_wr32(priv, 0x404024, 0xe000);
-	nv_wr32(priv, 0x404028, 0x0);
-	nv_wr32(priv, 0x4040a8, 0x0);
-	nv_wr32(priv, 0x4040ac, 0x0);
-	nv_wr32(priv, 0x4040b0, 0x0);
-	nv_wr32(priv, 0x4040b4, 0x0);
-	nv_wr32(priv, 0x4040b8, 0x0);
-	nv_wr32(priv, 0x4040bc, 0x0);
-	nv_wr32(priv, 0x4040c0, 0x0);
-	nv_wr32(priv, 0x4040c4, 0x0);
-	nv_wr32(priv, 0x4040c8, 0xf800008f);
-	nv_wr32(priv, 0x4040d0, 0x0);
-	nv_wr32(priv, 0x4040d4, 0x0);
-	nv_wr32(priv, 0x4040d8, 0x0);
-	nv_wr32(priv, 0x4040dc, 0x0);
-	nv_wr32(priv, 0x4040e0, 0x0);
-	nv_wr32(priv, 0x4040e4, 0x0);
-	nv_wr32(priv, 0x4040e8, 0x1000);
-	nv_wr32(priv, 0x4040f8, 0x0);
-	nv_wr32(priv, 0x404130, 0x0);
-	nv_wr32(priv, 0x404134, 0x0);
-	nv_wr32(priv, 0x404138, 0x20000040);
-	nv_wr32(priv, 0x404150, 0x2e);
-	nv_wr32(priv, 0x404154, 0x400);
-	nv_wr32(priv, 0x404158, 0x200);
-	nv_wr32(priv, 0x404164, 0x55);
-	nv_wr32(priv, 0x4041a0, 0x0);
-	nv_wr32(priv, 0x4041a4, 0x0);
-	nv_wr32(priv, 0x4041a8, 0x0);
-	nv_wr32(priv, 0x4041ac, 0x0);
-	nv_wr32(priv, 0x404200, 0x0);
-	nv_wr32(priv, 0x404204, 0x0);
-	nv_wr32(priv, 0x404208, 0x0);
-	nv_wr32(priv, 0x40420c, 0x0);
+	nvc0_graph_wr32(priv, 0x404010, 0x0);
+	nvc0_graph_wr32(priv, 0x404014, 0x0);
+	nvc0_graph_wr32(priv, 0x404018, 0x0);
+	nvc0_graph_wr32(priv, 0x40401c, 0x0);
+	nvc0_graph_wr32(priv, 0x404020, 0x0);
+	nvc0_graph_wr32(priv, 0x404024, 0xe000);
+	nvc0_graph_wr32(priv, 0x404028, 0x0);
+	nvc0_graph_wr32(priv, 0x4040a8, 0x0);
+	nvc0_graph_wr32(priv, 0x4040ac, 0x0);
+	nvc0_graph_wr32(priv, 0x4040b0, 0x0);
+	nvc0_graph_wr32(priv, 0x4040b4, 0x0);
+	nvc0_graph_wr32(priv, 0x4040b8, 0x0);
+	nvc0_graph_wr32(priv, 0x4040bc, 0x0);
+	nvc0_graph_wr32(priv, 0x4040c0, 0x0);
+	nvc0_graph_wr32(priv, 0x4040c4, 0x0);
+	nvc0_graph_wr32(priv, 0x4040c8, 0xf800008f);
+	nvc0_graph_wr32(priv, 0x4040d0, 0x0);
+	nvc0_graph_wr32(priv, 0x4040d4, 0x0);
+	nvc0_graph_wr32(priv, 0x4040d8, 0x0);
+	nvc0_graph_wr32(priv, 0x4040dc, 0x0);
+	nvc0_graph_wr32(priv, 0x4040e0, 0x0);
+	nvc0_graph_wr32(priv, 0x4040e4, 0x0);
+	nvc0_graph_wr32(priv, 0x4040e8, 0x1000);
+	nvc0_graph_wr32(priv, 0x4040f8, 0x0);
+	nvc0_graph_wr32(priv, 0x404130, 0x0);
+	nvc0_graph_wr32(priv, 0x404134, 0x0);
+	nvc0_graph_wr32(priv, 0x404138, 0x20000040);
+	nvc0_graph_wr32(priv, 0x404150, 0x2e);
+	nvc0_graph_wr32(priv, 0x404154, 0x400);
+	nvc0_graph_wr32(priv, 0x404158, 0x200);
+	nvc0_graph_wr32(priv, 0x404164, 0x55);
+	nvc0_graph_wr32(priv, 0x4041a0, 0x0);
+	nvc0_graph_wr32(priv, 0x4041a4, 0x0);
+	nvc0_graph_wr32(priv, 0x4041a8, 0x0);
+	nvc0_graph_wr32(priv, 0x4041ac, 0x0);
+	nvc0_graph_wr32(priv, 0x404200, 0x0);
+	nvc0_graph_wr32(priv, 0x404204, 0x0);
+	nvc0_graph_wr32(priv, 0x404208, 0x0);
+	nvc0_graph_wr32(priv, 0x40420c, 0x0);
 }
 
 static void
 nve0_graph_generate_unk44xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x404404, 0x0);
-	nv_wr32(priv, 0x404408, 0x0);
-	nv_wr32(priv, 0x40440c, 0x0);
-	nv_wr32(priv, 0x404410, 0x0);
-	nv_wr32(priv, 0x404414, 0x0);
-	nv_wr32(priv, 0x404418, 0x0);
-	nv_wr32(priv, 0x40441c, 0x0);
-	nv_wr32(priv, 0x404420, 0x0);
-	nv_wr32(priv, 0x404424, 0x0);
-	nv_wr32(priv, 0x404428, 0x0);
-	nv_wr32(priv, 0x40442c, 0x0);
-	nv_wr32(priv, 0x404430, 0x0);
-	nv_wr32(priv, 0x404434, 0x0);
-	nv_wr32(priv, 0x404438, 0x0);
-	nv_wr32(priv, 0x404460, 0x0);
-	nv_wr32(priv, 0x404464, 0x0);
-	nv_wr32(priv, 0x404468, 0xffffff);
-	nv_wr32(priv, 0x40446c, 0x0);
-	nv_wr32(priv, 0x404480, 0x1);
-	nv_wr32(priv, 0x404498, 0x1);
+	nvc0_graph_wr32(priv, 0x404404, 0x0);
+	nvc0_graph_wr32(priv, 0x404408, 0x0);
+	nvc0_graph_wr32(priv, 0x40440c, 0x0);
+	nvc0_graph_wr32(priv, 0x404410, 0x0);
+	nvc0_graph_wr32(priv, 0x404414, 0x0);
+	nvc0_graph_wr32(priv, 0x404418, 0x0);
+	nvc0_graph_wr32(priv, 0x40441c, 0x0);
+	nvc0_graph_wr32(priv, 0x404420, 0x0);
+	nvc0_graph_wr32(priv, 0x404424, 0x0);
+	nvc0_graph_wr32(priv, 0x404428, 0x0);
+	nvc0_graph_wr32(priv, 0x40442c, 0x0);
+	nvc0_graph_wr32(priv, 0x404430, 0x0);
+	nvc0_graph_wr32(priv, 0x404434, 0x0);
+	nvc0_graph_wr32(priv, 0x404438, 0x0);
+	nvc0_graph_wr32(priv, 0x404460, 0x0);
+	nvc0_graph_wr32(priv, 0x404464, 0x0);
+	nvc0_graph_wr32(priv, 0x404468, 0xffffff);
+	nvc0_graph_wr32(priv, 0x40446c, 0x0);
+	nvc0_graph_wr32(priv, 0x404480, 0x1);
+	nvc0_graph_wr32(priv, 0x404498, 0x1);
 }
 
 static void
 nve0_graph_generate_unk46xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x404604, 0x14);
-	nv_wr32(priv, 0x404608, 0x0);
-	nv_wr32(priv, 0x40460c, 0x3fff);
-	nv_wr32(priv, 0x404610, 0x100);
-	nv_wr32(priv, 0x404618, 0x0);
-	nv_wr32(priv, 0x40461c, 0x0);
-	nv_wr32(priv, 0x404620, 0x0);
-	nv_wr32(priv, 0x404624, 0x0);
-	nv_wr32(priv, 0x40462c, 0x0);
-	nv_wr32(priv, 0x404630, 0x0);
-	nv_wr32(priv, 0x404640, 0x0);
-	nv_wr32(priv, 0x404654, 0x0);
-	nv_wr32(priv, 0x404660, 0x0);
-	nv_wr32(priv, 0x404678, 0x0);
-	nv_wr32(priv, 0x40467c, 0x2);
-	nv_wr32(priv, 0x404680, 0x0);
-	nv_wr32(priv, 0x404684, 0x0);
-	nv_wr32(priv, 0x404688, 0x0);
-	nv_wr32(priv, 0x40468c, 0x0);
-	nv_wr32(priv, 0x404690, 0x0);
-	nv_wr32(priv, 0x404694, 0x0);
-	nv_wr32(priv, 0x404698, 0x0);
-	nv_wr32(priv, 0x40469c, 0x0);
-	nv_wr32(priv, 0x4046a0, 0x7f0080);
-	nv_wr32(priv, 0x4046a4, 0x0);
-	nv_wr32(priv, 0x4046a8, 0x0);
-	nv_wr32(priv, 0x4046ac, 0x0);
-	nv_wr32(priv, 0x4046b0, 0x0);
-	nv_wr32(priv, 0x4046b4, 0x0);
-	nv_wr32(priv, 0x4046b8, 0x0);
-	nv_wr32(priv, 0x4046bc, 0x0);
-	nv_wr32(priv, 0x4046c0, 0x0);
-	nv_wr32(priv, 0x4046c8, 0x0);
-	nv_wr32(priv, 0x4046cc, 0x0);
-	nv_wr32(priv, 0x4046d0, 0x0);
+	nvc0_graph_wr32(priv, 0x404604, 0x14);
+	nvc0_graph_wr32(priv, 0x404608, 0x0);
+	nvc0_graph_wr32(priv, 0x40460c, 0x3fff);
+	nvc0_graph_wr32(priv, 0x404610, 0x100);
+	nvc0_graph_wr32(priv, 0x404618, 0x0);
+	nvc0_graph_wr32(priv, 0x40461c, 0x0);
+	nvc0_graph_wr32(priv, 0x404620, 0x0);
+	nvc0_graph_wr32(priv, 0x404624, 0x0);
+	nvc0_graph_wr32(priv, 0x40462c, 0x0);
+	nvc0_graph_wr32(priv, 0x404630, 0x0);
+	nvc0_graph_wr32(priv, 0x404640, 0x0);
+	nvc0_graph_wr32(priv, 0x404654, 0x0);
+	nvc0_graph_wr32(priv, 0x404660, 0x0);
+	nvc0_graph_wr32(priv, 0x404678, 0x0);
+	nvc0_graph_wr32(priv, 0x40467c, 0x2);
+	nvc0_graph_wr32(priv, 0x404680, 0x0);
+	nvc0_graph_wr32(priv, 0x404684, 0x0);
+	nvc0_graph_wr32(priv, 0x404688, 0x0);
+	nvc0_graph_wr32(priv, 0x40468c, 0x0);
+	nvc0_graph_wr32(priv, 0x404690, 0x0);
+	nvc0_graph_wr32(priv, 0x404694, 0x0);
+	nvc0_graph_wr32(priv, 0x404698, 0x0);
+	nvc0_graph_wr32(priv, 0x40469c, 0x0);
+	nvc0_graph_wr32(priv, 0x4046a0, 0x7f0080);
+	nvc0_graph_wr32(priv, 0x4046a4, 0x0);
+	nvc0_graph_wr32(priv, 0x4046a8, 0x0);
+	nvc0_graph_wr32(priv, 0x4046ac, 0x0);
+	nvc0_graph_wr32(priv, 0x4046b0, 0x0);
+	nvc0_graph_wr32(priv, 0x4046b4, 0x0);
+	nvc0_graph_wr32(priv, 0x4046b8, 0x0);
+	nvc0_graph_wr32(priv, 0x4046bc, 0x0);
+	nvc0_graph_wr32(priv, 0x4046c0, 0x0);
+	nvc0_graph_wr32(priv, 0x4046c8, 0x0);
+	nvc0_graph_wr32(priv, 0x4046cc, 0x0);
+	nvc0_graph_wr32(priv, 0x4046d0, 0x0);
 }
 
 static void
 nve0_graph_generate_unk47xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x404700, 0x0);
-	nv_wr32(priv, 0x404704, 0x0);
-	nv_wr32(priv, 0x404708, 0x0);
-	nv_wr32(priv, 0x404718, 0x0);
-	nv_wr32(priv, 0x40471c, 0x0);
-	nv_wr32(priv, 0x404720, 0x0);
-	nv_wr32(priv, 0x404724, 0x0);
-	nv_wr32(priv, 0x404728, 0x0);
-	nv_wr32(priv, 0x40472c, 0x0);
-	nv_wr32(priv, 0x404730, 0x0);
-	nv_wr32(priv, 0x404734, 0x100);
-	nv_wr32(priv, 0x404738, 0x0);
-	nv_wr32(priv, 0x40473c, 0x0);
-	nv_wr32(priv, 0x404744, 0x0);
-	nv_wr32(priv, 0x404748, 0x0);
-	nv_wr32(priv, 0x404754, 0x0);
+	nvc0_graph_wr32(priv, 0x404700, 0x0);
+	nvc0_graph_wr32(priv, 0x404704, 0x0);
+	nvc0_graph_wr32(priv, 0x404708, 0x0);
+	nvc0_graph_wr32(priv, 0x404718, 0x0);
+	nvc0_graph_wr32(priv, 0x40471c, 0x0);
+	nvc0_graph_wr32(priv, 0x404720, 0x0);
+	nvc0_graph_wr32(priv, 0x404724, 0x0);
+	nvc0_graph_wr32(priv, 0x404728, 0x0);
+	nvc0_graph_wr32(priv, 0x40472c, 0x0);
+	nvc0_graph_wr32(priv, 0x404730, 0x0);
+	nvc0_graph_wr32(priv, 0x404734, 0x100);
+	nvc0_graph_wr32(priv, 0x404738, 0x0);
+	nvc0_graph_wr32(priv, 0x40473c, 0x0);
+	nvc0_graph_wr32(priv, 0x404744, 0x0);
+	nvc0_graph_wr32(priv, 0x404748, 0x0);
+	nvc0_graph_wr32(priv, 0x404754, 0x0);
 }
 
 static void
 nve0_graph_generate_unk58xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x405800, 0xf8000bf);
-	nv_wr32(priv, 0x405830, 0x2180648);
-	nv_wr32(priv, 0x405834, 0x8000000);
-	nv_wr32(priv, 0x405838, 0x0);
-	nv_wr32(priv, 0x405854, 0x0);
-	nv_wr32(priv, 0x405870, 0x1);
-	nv_wr32(priv, 0x405874, 0x1);
-	nv_wr32(priv, 0x405878, 0x1);
-	nv_wr32(priv, 0x40587c, 0x1);
-	nv_wr32(priv, 0x405a00, 0x0);
-	nv_wr32(priv, 0x405a04, 0x0);
-	nv_wr32(priv, 0x405a18, 0x0);
-	nv_wr32(priv, 0x405b00, 0x0);
-	nv_wr32(priv, 0x405b10, 0x1000);
+	nvc0_graph_wr32(priv, 0x405800, 0xf8000bf);
+	nvc0_graph_wr32(priv, 0x405830, 0x2180648);
+	nvc0_graph_wr32(priv, 0x405834, 0x8000000);
+	nvc0_graph_wr32(priv, 0x405838, 0x0);
+	nvc0_graph_wr32(priv, 0x405854, 0x0);
+	nvc0_graph_wr32(priv, 0x405870, 0x1);
+	nvc0_graph_wr32(priv, 0x405874, 0x1);
+	nvc0_graph_wr32(priv, 0x405878, 0x1);
+	nvc0_graph_wr32(priv, 0x40587c, 0x1);
+	nvc0_graph_wr32(priv, 0x405a00, 0x0);
+	nvc0_graph_wr32(priv, 0x405a04, 0x0);
+	nvc0_graph_wr32(priv, 0x405a18, 0x0);
+	nvc0_graph_wr32(priv, 0x405b00, 0x0);
+	nvc0_graph_wr32(priv, 0x405b10, 0x1000);
 }
 
 static void
 nve0_graph_generate_unk60xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x406020, 0x4103c1);
-	nv_wr32(priv, 0x406028, 0x1);
-	nv_wr32(priv, 0x40602c, 0x1);
-	nv_wr32(priv, 0x406030, 0x1);
-	nv_wr32(priv, 0x406034, 0x1);
+	nvc0_graph_wr32(priv, 0x406020, 0x4103c1);
+	nvc0_graph_wr32(priv, 0x406028, 0x1);
+	nvc0_graph_wr32(priv, 0x40602c, 0x1);
+	nvc0_graph_wr32(priv, 0x406030, 0x1);
+	nvc0_graph_wr32(priv, 0x406034, 0x1);
 }
 
 static void
 nve0_graph_generate_unk64xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x4064a8, 0x0);
-	nv_wr32(priv, 0x4064ac, 0x3fff);
-	nv_wr32(priv, 0x4064b4, 0x0);
-	nv_wr32(priv, 0x4064b8, 0x0);
-	nv_wr32(priv, 0x4064c0, 0x801a00f0);
-	nv_wr32(priv, 0x4064c4, 0x192ffff);
-	nv_wr32(priv, 0x4064c8, 0x1800600);
-	nv_wr32(priv, 0x4064cc, 0x0);
-	nv_wr32(priv, 0x4064d0, 0x0);
-	nv_wr32(priv, 0x4064d4, 0x0);
-	nv_wr32(priv, 0x4064d8, 0x0);
-	nv_wr32(priv, 0x4064dc, 0x0);
-	nv_wr32(priv, 0x4064e0, 0x0);
-	nv_wr32(priv, 0x4064e4, 0x0);
-	nv_wr32(priv, 0x4064e8, 0x0);
-	nv_wr32(priv, 0x4064ec, 0x0);
-	nv_wr32(priv, 0x4064fc, 0x22a);
+	nvc0_graph_wr32(priv, 0x4064a8, 0x0);
+	nvc0_graph_wr32(priv, 0x4064ac, 0x3fff);
+	nvc0_graph_wr32(priv, 0x4064b4, 0x0);
+	nvc0_graph_wr32(priv, 0x4064b8, 0x0);
+	nvc0_graph_wr32(priv, 0x4064c0, 0x801a00f0);
+	nvc0_graph_wr32(priv, 0x4064c4, 0x192ffff);
+	nvc0_graph_wr32(priv, 0x4064c8, 0x1800600);
+	nvc0_graph_wr32(priv, 0x4064cc, 0x0);
+	nvc0_graph_wr32(priv, 0x4064d0, 0x0);
+	nvc0_graph_wr32(priv, 0x4064d4, 0x0);
+	nvc0_graph_wr32(priv, 0x4064d8, 0x0);
+	nvc0_graph_wr32(priv, 0x4064dc, 0x0);
+	nvc0_graph_wr32(priv, 0x4064e0, 0x0);
+	nvc0_graph_wr32(priv, 0x4064e4, 0x0);
+	nvc0_graph_wr32(priv, 0x4064e8, 0x0);
+	nvc0_graph_wr32(priv, 0x4064ec, 0x0);
+	nvc0_graph_wr32(priv, 0x4064fc, 0x22a);
 }
 
 static void
 nve0_graph_generate_unk70xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x407040, 0x0);
+	nvc0_graph_wr32(priv, 0x407040, 0x0);
 }
 
 static void
 nve0_graph_generate_unk78xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x407804, 0x23);
-	nv_wr32(priv, 0x40780c, 0xa418820);
-	nv_wr32(priv, 0x407810, 0x62080e6);
-	nv_wr32(priv, 0x407814, 0x20398a4);
-	nv_wr32(priv, 0x407818, 0xe629062);
-	nv_wr32(priv, 0x40781c, 0xa418820);
-	nv_wr32(priv, 0x407820, 0xe6);
-	nv_wr32(priv, 0x4078bc, 0x103);
+	nvc0_graph_wr32(priv, 0x407804, 0x23);
+	nvc0_graph_wr32(priv, 0x40780c, 0xa418820);
+	nvc0_graph_wr32(priv, 0x407810, 0x62080e6);
+	nvc0_graph_wr32(priv, 0x407814, 0x20398a4);
+	nvc0_graph_wr32(priv, 0x407818, 0xe629062);
+	nvc0_graph_wr32(priv, 0x40781c, 0xa418820);
+	nvc0_graph_wr32(priv, 0x407820, 0xe6);
+	nvc0_graph_wr32(priv, 0x4078bc, 0x103);
 }
 
 static void
 nve0_graph_generate_unk80xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x408000, 0x0);
-	nv_wr32(priv, 0x408004, 0x0);
-	nv_wr32(priv, 0x408008, 0x30);
-	nv_wr32(priv, 0x40800c, 0x0);
-	nv_wr32(priv, 0x408010, 0x0);
-	nv_wr32(priv, 0x408014, 0x69);
-	nv_wr32(priv, 0x408018, 0xe100e100);
-	nv_wr32(priv, 0x408064, 0x0);
+	nvc0_graph_wr32(priv, 0x408000, 0x0);
+	nvc0_graph_wr32(priv, 0x408004, 0x0);
+	nvc0_graph_wr32(priv, 0x408008, 0x30);
+	nvc0_graph_wr32(priv, 0x40800c, 0x0);
+	nvc0_graph_wr32(priv, 0x408010, 0x0);
+	nvc0_graph_wr32(priv, 0x408014, 0x69);
+	nvc0_graph_wr32(priv, 0x408018, 0xe100e100);
+	nvc0_graph_wr32(priv, 0x408064, 0x0);
 }
 
 static void
 nve0_graph_generate_unk88xx(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x408800, 0x2802a3c);
-	nv_wr32(priv, 0x408804, 0x40);
-	nv_wr32(priv, 0x408808, 0x1043e005);
-	nv_wr32(priv, 0x408840, 0xb);
-	nv_wr32(priv, 0x408900, 0x3080b801);
-	nv_wr32(priv, 0x408904, 0x62000001);
-	nv_wr32(priv, 0x408908, 0xc8102f);
-	nv_wr32(priv, 0x408980, 0x11d);
+	nvc0_graph_wr32(priv, 0x408800, 0x2802a3c);
+	nvc0_graph_wr32(priv, 0x408804, 0x40);
+	nvc0_graph_wr32(priv, 0x408808, 0x1043e005);
+	nvc0_graph_wr32(priv, 0x408840, 0xb);
+	nvc0_graph_wr32(priv, 0x408900, 0x3080b801);
+	nvc0_graph_wr32(priv, 0x408904, 0x62000001);
+	nvc0_graph_wr32(priv, 0x408908, 0xc8102f);
+	nvc0_graph_wr32(priv, 0x408980, 0x11d);
 }
 
 static void
 nve0_graph_generate_gpc(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x418380, 0x16);
-	nv_wr32(priv, 0x418400, 0x38004e00);
-	nv_wr32(priv, 0x418404, 0x71e0ffff);
-	nv_wr32(priv, 0x41840c, 0x1008);
-	nv_wr32(priv, 0x418410, 0xfff0fff);
-	nv_wr32(priv, 0x418414, 0x2200fff);
-	nv_wr32(priv, 0x418450, 0x0);
-	nv_wr32(priv, 0x418454, 0x0);
-	nv_wr32(priv, 0x418458, 0x0);
-	nv_wr32(priv, 0x41845c, 0x0);
-	nv_wr32(priv, 0x418460, 0x0);
-	nv_wr32(priv, 0x418464, 0x0);
-	nv_wr32(priv, 0x418468, 0x1);
-	nv_wr32(priv, 0x41846c, 0x0);
-	nv_wr32(priv, 0x418470, 0x0);
-	nv_wr32(priv, 0x418600, 0x1f);
-	nv_wr32(priv, 0x418684, 0xf);
-	nv_wr32(priv, 0x418700, 0x2);
-	nv_wr32(priv, 0x418704, 0x80);
-	nv_wr32(priv, 0x418708, 0x0);
-	nv_wr32(priv, 0x41870c, 0x0);
-	nv_wr32(priv, 0x418710, 0x0);
-	nv_wr32(priv, 0x418800, 0x7006860a);
-	nv_wr32(priv, 0x418808, 0x0);
-	nv_wr32(priv, 0x41880c, 0x0);
-	nv_wr32(priv, 0x418810, 0x0);
-	nv_wr32(priv, 0x418828, 0x44);
-	nv_wr32(priv, 0x418830, 0x10000001);
-	nv_wr32(priv, 0x4188d8, 0x8);
-	nv_wr32(priv, 0x4188e0, 0x1000000);
-	nv_wr32(priv, 0x4188e8, 0x0);
-	nv_wr32(priv, 0x4188ec, 0x0);
-	nv_wr32(priv, 0x4188f0, 0x0);
-	nv_wr32(priv, 0x4188f4, 0x0);
-	nv_wr32(priv, 0x4188f8, 0x0);
-	nv_wr32(priv, 0x4188fc, 0x20100018);
-	nv_wr32(priv, 0x41891c, 0xff00ff);
-	nv_wr32(priv, 0x418924, 0x0);
-	nv_wr32(priv, 0x418928, 0xffff00);
-	nv_wr32(priv, 0x41892c, 0xff00);
-	nv_wr32(priv, 0x418a00, 0x0);
-	nv_wr32(priv, 0x418a04, 0x0);
-	nv_wr32(priv, 0x418a08, 0x0);
-	nv_wr32(priv, 0x418a0c, 0x10000);
-	nv_wr32(priv, 0x418a10, 0x0);
-	nv_wr32(priv, 0x418a14, 0x0);
-	nv_wr32(priv, 0x418a18, 0x0);
-	nv_wr32(priv, 0x418a20, 0x0);
-	nv_wr32(priv, 0x418a24, 0x0);
-	nv_wr32(priv, 0x418a28, 0x0);
-	nv_wr32(priv, 0x418a2c, 0x10000);
-	nv_wr32(priv, 0x418a30, 0x0);
-	nv_wr32(priv, 0x418a34, 0x0);
-	nv_wr32(priv, 0x418a38, 0x0);
-	nv_wr32(priv, 0x418a40, 0x0);
-	nv_wr32(priv, 0x418a44, 0x0);
-	nv_wr32(priv, 0x418a48, 0x0);
-	nv_wr32(priv, 0x418a4c, 0x10000);
-	nv_wr32(priv, 0x418a50, 0x0);
-	nv_wr32(priv, 0x418a54, 0x0);
-	nv_wr32(priv, 0x418a58, 0x0);
-	nv_wr32(priv, 0x418a60, 0x0);
-	nv_wr32(priv, 0x418a64, 0x0);
-	nv_wr32(priv, 0x418a68, 0x0);
-	nv_wr32(priv, 0x418a6c, 0x10000);
-	nv_wr32(priv, 0x418a70, 0x0);
-	nv_wr32(priv, 0x418a74, 0x0);
-	nv_wr32(priv, 0x418a78, 0x0);
-	nv_wr32(priv, 0x418a80, 0x0);
-	nv_wr32(priv, 0x418a84, 0x0);
-	nv_wr32(priv, 0x418a88, 0x0);
-	nv_wr32(priv, 0x418a8c, 0x10000);
-	nv_wr32(priv, 0x418a90, 0x0);
-	nv_wr32(priv, 0x418a94, 0x0);
-	nv_wr32(priv, 0x418a98, 0x0);
-	nv_wr32(priv, 0x418aa0, 0x0);
-	nv_wr32(priv, 0x418aa4, 0x0);
-	nv_wr32(priv, 0x418aa8, 0x0);
-	nv_wr32(priv, 0x418aac, 0x10000);
-	nv_wr32(priv, 0x418ab0, 0x0);
-	nv_wr32(priv, 0x418ab4, 0x0);
-	nv_wr32(priv, 0x418ab8, 0x0);
-	nv_wr32(priv, 0x418ac0, 0x0);
-	nv_wr32(priv, 0x418ac4, 0x0);
-	nv_wr32(priv, 0x418ac8, 0x0);
-	nv_wr32(priv, 0x418acc, 0x10000);
-	nv_wr32(priv, 0x418ad0, 0x0);
-	nv_wr32(priv, 0x418ad4, 0x0);
-	nv_wr32(priv, 0x418ad8, 0x0);
-	nv_wr32(priv, 0x418ae0, 0x0);
-	nv_wr32(priv, 0x418ae4, 0x0);
-	nv_wr32(priv, 0x418ae8, 0x0);
-	nv_wr32(priv, 0x418aec, 0x10000);
-	nv_wr32(priv, 0x418af0, 0x0);
-	nv_wr32(priv, 0x418af4, 0x0);
-	nv_wr32(priv, 0x418af8, 0x0);
-	nv_wr32(priv, 0x418b00, 0x6);
-	nv_wr32(priv, 0x418b08, 0xa418820);
-	nv_wr32(priv, 0x418b0c, 0x62080e6);
-	nv_wr32(priv, 0x418b10, 0x20398a4);
-	nv_wr32(priv, 0x418b14, 0xe629062);
-	nv_wr32(priv, 0x418b18, 0xa418820);
-	nv_wr32(priv, 0x418b1c, 0xe6);
-	nv_wr32(priv, 0x418bb8, 0x103);
-	nv_wr32(priv, 0x418c08, 0x1);
-	nv_wr32(priv, 0x418c10, 0x0);
-	nv_wr32(priv, 0x418c14, 0x0);
-	nv_wr32(priv, 0x418c18, 0x0);
-	nv_wr32(priv, 0x418c1c, 0x0);
-	nv_wr32(priv, 0x418c20, 0x0);
-	nv_wr32(priv, 0x418c24, 0x0);
-	nv_wr32(priv, 0x418c28, 0x0);
-	nv_wr32(priv, 0x418c2c, 0x0);
-	nv_wr32(priv, 0x418c40, 0xffffffff);
-	nv_wr32(priv, 0x418c6c, 0x1);
-	nv_wr32(priv, 0x418c80, 0x20200004);
-	nv_wr32(priv, 0x418c8c, 0x1);
-	nv_wr32(priv, 0x419000, 0x780);
-	nv_wr32(priv, 0x419004, 0x0);
-	nv_wr32(priv, 0x419008, 0x0);
-	nv_wr32(priv, 0x419014, 0x4);
+	nvc0_graph_wr32(priv, 0x418380, 0x16);
+	nvc0_graph_wr32(priv, 0x418400, 0x38004e00);
+	nvc0_graph_wr32(priv, 0x418404, 0x71e0ffff);
+	nvc0_graph_wr32(priv, 0x41840c, 0x1008);
+	nvc0_graph_wr32(priv, 0x418410, 0xfff0fff);
+	nvc0_graph_wr32(priv, 0x418414, 0x2200fff);
+	nvc0_graph_wr32(priv, 0x418450, 0x0);
+	nvc0_graph_wr32(priv, 0x418454, 0x0);
+	nvc0_graph_wr32(priv, 0x418458, 0x0);
+	nvc0_graph_wr32(priv, 0x41845c, 0x0);
+	nvc0_graph_wr32(priv, 0x418460, 0x0);
+	nvc0_graph_wr32(priv, 0x418464, 0x0);
+	nvc0_graph_wr32(priv, 0x418468, 0x1);
+	nvc0_graph_wr32(priv, 0x41846c, 0x0);
+	nvc0_graph_wr32(priv, 0x418470, 0x0);
+	nvc0_graph_wr32(priv, 0x418600, 0x1f);
+	nvc0_graph_wr32(priv, 0x418684, 0xf);
+	nvc0_graph_wr32(priv, 0x418700, 0x2);
+	nvc0_graph_wr32(priv, 0x418704, 0x80);
+	nvc0_graph_wr32(priv, 0x418708, 0x0);
+	nvc0_graph_wr32(priv, 0x41870c, 0x0);
+	nvc0_graph_wr32(priv, 0x418710, 0x0);
+	nvc0_graph_wr32(priv, 0x418800, 0x7006860a);
+	nvc0_graph_wr32(priv, 0x418808, 0x0);
+	nvc0_graph_wr32(priv, 0x41880c, 0x0);
+	nvc0_graph_wr32(priv, 0x418810, 0x0);
+	nvc0_graph_wr32(priv, 0x418828, 0x44);
+	nvc0_graph_wr32(priv, 0x418830, 0x10000001);
+	nvc0_graph_wr32(priv, 0x4188d8, 0x8);
+	nvc0_graph_wr32(priv, 0x4188e0, 0x1000000);
+	nvc0_graph_wr32(priv, 0x4188e8, 0x0);
+	nvc0_graph_wr32(priv, 0x4188ec, 0x0);
+	nvc0_graph_wr32(priv, 0x4188f0, 0x0);
+	nvc0_graph_wr32(priv, 0x4188f4, 0x0);
+	nvc0_graph_wr32(priv, 0x4188f8, 0x0);
+	nvc0_graph_wr32(priv, 0x4188fc, 0x20100018);
+	nvc0_graph_wr32(priv, 0x41891c, 0xff00ff);
+	nvc0_graph_wr32(priv, 0x418924, 0x0);
+	nvc0_graph_wr32(priv, 0x418928, 0xffff00);
+	nvc0_graph_wr32(priv, 0x41892c, 0xff00);
+	nvc0_graph_wr32(priv, 0x418a00, 0x0);
+	nvc0_graph_wr32(priv, 0x418a04, 0x0);
+	nvc0_graph_wr32(priv, 0x418a08, 0x0);
+	nvc0_graph_wr32(priv, 0x418a0c, 0x10000);
+	nvc0_graph_wr32(priv, 0x418a10, 0x0);
+	nvc0_graph_wr32(priv, 0x418a14, 0x0);
+	nvc0_graph_wr32(priv, 0x418a18, 0x0);
+	nvc0_graph_wr32(priv, 0x418a20, 0x0);
+	nvc0_graph_wr32(priv, 0x418a24, 0x0);
+	nvc0_graph_wr32(priv, 0x418a28, 0x0);
+	nvc0_graph_wr32(priv, 0x418a2c, 0x10000);
+	nvc0_graph_wr32(priv, 0x418a30, 0x0);
+	nvc0_graph_wr32(priv, 0x418a34, 0x0);
+	nvc0_graph_wr32(priv, 0x418a38, 0x0);
+	nvc0_graph_wr32(priv, 0x418a40, 0x0);
+	nvc0_graph_wr32(priv, 0x418a44, 0x0);
+	nvc0_graph_wr32(priv, 0x418a48, 0x0);
+	nvc0_graph_wr32(priv, 0x418a4c, 0x10000);
+	nvc0_graph_wr32(priv, 0x418a50, 0x0);
+	nvc0_graph_wr32(priv, 0x418a54, 0x0);
+	nvc0_graph_wr32(priv, 0x418a58, 0x0);
+	nvc0_graph_wr32(priv, 0x418a60, 0x0);
+	nvc0_graph_wr32(priv, 0x418a64, 0x0);
+	nvc0_graph_wr32(priv, 0x418a68, 0x0);
+	nvc0_graph_wr32(priv, 0x418a6c, 0x10000);
+	nvc0_graph_wr32(priv, 0x418a70, 0x0);
+	nvc0_graph_wr32(priv, 0x418a74, 0x0);
+	nvc0_graph_wr32(priv, 0x418a78, 0x0);
+	nvc0_graph_wr32(priv, 0x418a80, 0x0);
+	nvc0_graph_wr32(priv, 0x418a84, 0x0);
+	nvc0_graph_wr32(priv, 0x418a88, 0x0);
+	nvc0_graph_wr32(priv, 0x418a8c, 0x10000);
+	nvc0_graph_wr32(priv, 0x418a90, 0x0);
+	nvc0_graph_wr32(priv, 0x418a94, 0x0);
+	nvc0_graph_wr32(priv, 0x418a98, 0x0);
+	nvc0_graph_wr32(priv, 0x418aa0, 0x0);
+	nvc0_graph_wr32(priv, 0x418aa4, 0x0);
+	nvc0_graph_wr32(priv, 0x418aa8, 0x0);
+	nvc0_graph_wr32(priv, 0x418aac, 0x10000);
+	nvc0_graph_wr32(priv, 0x418ab0, 0x0);
+	nvc0_graph_wr32(priv, 0x418ab4, 0x0);
+	nvc0_graph_wr32(priv, 0x418ab8, 0x0);
+	nvc0_graph_wr32(priv, 0x418ac0, 0x0);
+	nvc0_graph_wr32(priv, 0x418ac4, 0x0);
+	nvc0_graph_wr32(priv, 0x418ac8, 0x0);
+	nvc0_graph_wr32(priv, 0x418acc, 0x10000);
+	nvc0_graph_wr32(priv, 0x418ad0, 0x0);
+	nvc0_graph_wr32(priv, 0x418ad4, 0x0);
+	nvc0_graph_wr32(priv, 0x418ad8, 0x0);
+	nvc0_graph_wr32(priv, 0x418ae0, 0x0);
+	nvc0_graph_wr32(priv, 0x418ae4, 0x0);
+	nvc0_graph_wr32(priv, 0x418ae8, 0x0);
+	nvc0_graph_wr32(priv, 0x418aec, 0x10000);
+	nvc0_graph_wr32(priv, 0x418af0, 0x0);
+	nvc0_graph_wr32(priv, 0x418af4, 0x0);
+	nvc0_graph_wr32(priv, 0x418af8, 0x0);
+	nvc0_graph_wr32(priv, 0x418b00, 0x6);
+	nvc0_graph_wr32(priv, 0x418b08, 0xa418820);
+	nvc0_graph_wr32(priv, 0x418b0c, 0x62080e6);
+	nvc0_graph_wr32(priv, 0x418b10, 0x20398a4);
+	nvc0_graph_wr32(priv, 0x418b14, 0xe629062);
+	nvc0_graph_wr32(priv, 0x418b18, 0xa418820);
+	nvc0_graph_wr32(priv, 0x418b1c, 0xe6);
+	nvc0_graph_wr32(priv, 0x418bb8, 0x103);
+	nvc0_graph_wr32(priv, 0x418c08, 0x1);
+	nvc0_graph_wr32(priv, 0x418c10, 0x0);
+	nvc0_graph_wr32(priv, 0x418c14, 0x0);
+	nvc0_graph_wr32(priv, 0x418c18, 0x0);
+	nvc0_graph_wr32(priv, 0x418c1c, 0x0);
+	nvc0_graph_wr32(priv, 0x418c20, 0x0);
+	nvc0_graph_wr32(priv, 0x418c24, 0x0);
+	nvc0_graph_wr32(priv, 0x418c28, 0x0);
+	nvc0_graph_wr32(priv, 0x418c2c, 0x0);
+	nvc0_graph_wr32(priv, 0x418c40, 0xffffffff);
+	nvc0_graph_wr32(priv, 0x418c6c, 0x1);
+	nvc0_graph_wr32(priv, 0x418c80, 0x20200004);
+	nvc0_graph_wr32(priv, 0x418c8c, 0x1);
+	nvc0_graph_wr32(priv, 0x419000, 0x780);
+	nvc0_graph_wr32(priv, 0x419004, 0x0);
+	nvc0_graph_wr32(priv, 0x419008, 0x0);
+	nvc0_graph_wr32(priv, 0x419014, 0x4);
 }
 
 static void
 nve0_graph_generate_tpc(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x419848, 0x0);
-	nv_wr32(priv, 0x419864, 0x129);
-	nv_wr32(priv, 0x419888, 0x0);
-	nv_wr32(priv, 0x419a00, 0xf0);
-	nv_wr32(priv, 0x419a04, 0x1);
-	nv_wr32(priv, 0x419a08, 0x21);
-	nv_wr32(priv, 0x419a0c, 0x20000);
-	nv_wr32(priv, 0x419a10, 0x0);
-	nv_wr32(priv, 0x419a14, 0x200);
-	nv_wr32(priv, 0x419a1c, 0xc000);
-	nv_wr32(priv, 0x419a20, 0x800);
-	nv_wr32(priv, 0x419a30, 0x1);
-	nv_wr32(priv, 0x419ac4, 0x37f440);
-	nv_wr32(priv, 0x419c00, 0xa);
-	nv_wr32(priv, 0x419c04, 0x80000006);
-	nv_wr32(priv, 0x419c08, 0x2);
-	nv_wr32(priv, 0x419c20, 0x0);
-	nv_wr32(priv, 0x419c24, 0x84210);
-	nv_wr32(priv, 0x419c28, 0x3efbefbe);
-	nv_wr32(priv, 0x419ce8, 0x0);
-	nv_wr32(priv, 0x419cf4, 0x3203);
-	nv_wr32(priv, 0x419e04, 0x0);
-	nv_wr32(priv, 0x419e08, 0x0);
-	nv_wr32(priv, 0x419e0c, 0x0);
-	nv_wr32(priv, 0x419e10, 0x402);
-	nv_wr32(priv, 0x419e44, 0x13eff2);
-	nv_wr32(priv, 0x419e48, 0x0);
-	nv_wr32(priv, 0x419e4c, 0x7f);
-	nv_wr32(priv, 0x419e50, 0x0);
-	nv_wr32(priv, 0x419e54, 0x0);
-	nv_wr32(priv, 0x419e58, 0x0);
-	nv_wr32(priv, 0x419e5c, 0x0);
-	nv_wr32(priv, 0x419e60, 0x0);
-	nv_wr32(priv, 0x419e64, 0x0);
-	nv_wr32(priv, 0x419e68, 0x0);
-	nv_wr32(priv, 0x419e6c, 0x0);
-	nv_wr32(priv, 0x419e70, 0x0);
-	nv_wr32(priv, 0x419e74, 0x0);
-	nv_wr32(priv, 0x419e78, 0x0);
-	nv_wr32(priv, 0x419e7c, 0x0);
-	nv_wr32(priv, 0x419e80, 0x0);
-	nv_wr32(priv, 0x419e84, 0x0);
-	nv_wr32(priv, 0x419e88, 0x0);
-	nv_wr32(priv, 0x419e8c, 0x0);
-	nv_wr32(priv, 0x419e90, 0x0);
-	nv_wr32(priv, 0x419e94, 0x0);
-	nv_wr32(priv, 0x419e98, 0x0);
-	nv_wr32(priv, 0x419eac, 0x1fcf);
-	nv_wr32(priv, 0x419eb0, 0xd3f);
-	nv_wr32(priv, 0x419ec8, 0x1304f);
-	nv_wr32(priv, 0x419f30, 0x0);
-	nv_wr32(priv, 0x419f34, 0x0);
-	nv_wr32(priv, 0x419f38, 0x0);
-	nv_wr32(priv, 0x419f3c, 0x0);
-	nv_wr32(priv, 0x419f40, 0x0);
-	nv_wr32(priv, 0x419f44, 0x0);
-	nv_wr32(priv, 0x419f48, 0x0);
-	nv_wr32(priv, 0x419f4c, 0x0);
-	nv_wr32(priv, 0x419f58, 0x0);
-	nv_wr32(priv, 0x419f78, 0xb);
+	nvc0_graph_wr32(priv, 0x419848, 0x0);
+	nvc0_graph_wr32(priv, 0x419864, 0x129);
+	nvc0_graph_wr32(priv, 0x419888, 0x0);
+	nvc0_graph_wr32(priv, 0x419a00, 0xf0);
+	nvc0_graph_wr32(priv, 0x419a04, 0x1);
+	nvc0_graph_wr32(priv, 0x419a08, 0x21);
+	nvc0_graph_wr32(priv, 0x419a0c, 0x20000);
+	nvc0_graph_wr32(priv, 0x419a10, 0x0);
+	nvc0_graph_wr32(priv, 0x419a14, 0x200);
+	nvc0_graph_wr32(priv, 0x419a1c, 0xc000);
+	nvc0_graph_wr32(priv, 0x419a20, 0x800);
+	nvc0_graph_wr32(priv, 0x419a30, 0x1);
+	nvc0_graph_wr32(priv, 0x419ac4, 0x37f440);
+	nvc0_graph_wr32(priv, 0x419c00, 0xa);
+	nvc0_graph_wr32(priv, 0x419c04, 0x80000006);
+	nvc0_graph_wr32(priv, 0x419c08, 0x2);
+	nvc0_graph_wr32(priv, 0x419c20, 0x0);
+	nvc0_graph_wr32(priv, 0x419c24, 0x84210);
+	nvc0_graph_wr32(priv, 0x419c28, 0x3efbefbe);
+	nvc0_graph_wr32(priv, 0x419ce8, 0x0);
+	nvc0_graph_wr32(priv, 0x419cf4, 0x3203);
+	nvc0_graph_wr32(priv, 0x419e04, 0x0);
+	nvc0_graph_wr32(priv, 0x419e08, 0x0);
+	nvc0_graph_wr32(priv, 0x419e0c, 0x0);
+	nvc0_graph_wr32(priv, 0x419e10, 0x402);
+	nvc0_graph_wr32(priv, 0x419e44, 0x13eff2);
+	nvc0_graph_wr32(priv, 0x419e48, 0x0);
+	nvc0_graph_wr32(priv, 0x419e4c, 0x7f);
+	nvc0_graph_wr32(priv, 0x419e50, 0x0);
+	nvc0_graph_wr32(priv, 0x419e54, 0x0);
+	nvc0_graph_wr32(priv, 0x419e58, 0x0);
+	nvc0_graph_wr32(priv, 0x419e5c, 0x0);
+	nvc0_graph_wr32(priv, 0x419e60, 0x0);
+	nvc0_graph_wr32(priv, 0x419e64, 0x0);
+	nvc0_graph_wr32(priv, 0x419e68, 0x0);
+	nvc0_graph_wr32(priv, 0x419e6c, 0x0);
+	nvc0_graph_wr32(priv, 0x419e70, 0x0);
+	nvc0_graph_wr32(priv, 0x419e74, 0x0);
+	nvc0_graph_wr32(priv, 0x419e78, 0x0);
+	nvc0_graph_wr32(priv, 0x419e7c, 0x0);
+	nvc0_graph_wr32(priv, 0x419e80, 0x0);
+	nvc0_graph_wr32(priv, 0x419e84, 0x0);
+	nvc0_graph_wr32(priv, 0x419e88, 0x0);
+	nvc0_graph_wr32(priv, 0x419e8c, 0x0);
+	nvc0_graph_wr32(priv, 0x419e90, 0x0);
+	nvc0_graph_wr32(priv, 0x419e94, 0x0);
+	nvc0_graph_wr32(priv, 0x419e98, 0x0);
+	nvc0_graph_wr32(priv, 0x419eac, 0x1fcf);
+	nvc0_graph_wr32(priv, 0x419eb0, 0xd3f);
+	nvc0_graph_wr32(priv, 0x419ec8, 0x1304f);
+	nvc0_graph_wr32(priv, 0x419f30, 0x0);
+	nvc0_graph_wr32(priv, 0x419f34, 0x0);
+	nvc0_graph_wr32(priv, 0x419f38, 0x0);
+	nvc0_graph_wr32(priv, 0x419f3c, 0x0);
+	nvc0_graph_wr32(priv, 0x419f40, 0x0);
+	nvc0_graph_wr32(priv, 0x419f44, 0x0);
+	nvc0_graph_wr32(priv, 0x419f48, 0x0);
+	nvc0_graph_wr32(priv, 0x419f4c, 0x0);
+	nvc0_graph_wr32(priv, 0x419f58, 0x0);
+	nvc0_graph_wr32(priv, 0x419f78, 0xb);
 }
 
 static void
 nve0_graph_generate_tpcunk(struct nvc0_graph_priv *priv)
 {
-	nv_wr32(priv, 0x41be24, 0x6);
-	nv_wr32(priv, 0x41bec0, 0x12180000);
-	nv_wr32(priv, 0x41bec4, 0x37f7f);
-	nv_wr32(priv, 0x41bee4, 0x6480430);
-	nv_wr32(priv, 0x41bf00, 0xa418820);
-	nv_wr32(priv, 0x41bf04, 0x62080e6);
-	nv_wr32(priv, 0x41bf08, 0x20398a4);
-	nv_wr32(priv, 0x41bf0c, 0xe629062);
-	nv_wr32(priv, 0x41bf10, 0xa418820);
-	nv_wr32(priv, 0x41bf14, 0xe6);
-	nv_wr32(priv, 0x41bfd0, 0x900103);
-	nv_wr32(priv, 0x41bfe0, 0x400001);
-	nv_wr32(priv, 0x41bfe4, 0x0);
+	nvc0_graph_wr32(priv, 0x41be24, 0x6);
+	nvc0_graph_wr32(priv, 0x41bec0, 0x12180000);
+	nvc0_graph_wr32(priv, 0x41bec4, 0x37f7f);
+	nvc0_graph_wr32(priv, 0x41bee4, 0x6480430);
+	nvc0_graph_wr32(priv, 0x41bf00, 0xa418820);
+	nvc0_graph_wr32(priv, 0x41bf04, 0x62080e6);
+	nvc0_graph_wr32(priv, 0x41bf08, 0x20398a4);
+	nvc0_graph_wr32(priv, 0x41bf0c, 0xe629062);
+	nvc0_graph_wr32(priv, 0x41bf10, 0xa418820);
+	nvc0_graph_wr32(priv, 0x41bf14, 0xe6);
+	nvc0_graph_wr32(priv, 0x41bfd0, 0x900103);
+	nvc0_graph_wr32(priv, 0x41bfe0, 0x400001);
+	nvc0_graph_wr32(priv, 0x41bfe4, 0x0);
 }
 
 int
@@ -2615,9 +2615,9 @@ nve0_grctx_generate(struct nvc0_graph_priv *priv)
 	if (ret)
 		return ret;
 
-	nv_mask(priv, 0x000260, 0x00000001, 0x00000000);
-	nv_wr32(priv, 0x400204, 0x00000000);
-	nv_wr32(priv, 0x400208, 0x00000000);
+	nvc0_graph_mask(priv, 0x000260, 0x00000001, 0x00000000);
+	nvc0_graph_wr32(priv, 0x400204, 0x00000000);
+	nvc0_graph_wr32(priv, 0x400208, 0x00000000);
 
 	nve0_graph_generate_unk40xx(priv);
 	nve0_graph_generate_unk44xx(priv);
@@ -2634,7 +2634,7 @@ nve0_grctx_generate(struct nvc0_graph_priv *priv)
 	nve0_graph_generate_tpc(priv);
 	nve0_graph_generate_tpcunk(priv);
 
-	nv_wr32(priv, 0x404154, 0x0);
+	nvc0_graph_wr32(priv, 0x404154, 0x0);
 
 	mmio_data(0x003000, 0x0100, NV_MEM_ACCESS_RW | NV_MEM_ACCESS_SYS);
 	mmio_data(0x008000, 0x0100, NV_MEM_ACCESS_RW | NV_MEM_ACCESS_SYS);
@@ -2668,39 +2668,49 @@ nve0_grctx_generate(struct nvc0_graph_priv *priv)
 	mmio_list(0x17e91c, 0x06060609, 0, 0);
 	mmio_list(0x17e920, 0x00090a05, 0, 0);
 
-	nv_wr32(priv, 0x418c6c, 0x1);
-	nv_wr32(priv, 0x41980c, 0x10);
-	nv_wr32(priv, 0x41be08, 0x4);
-	nv_wr32(priv, 0x4064c0, 0x801a00f0);
-	nv_wr32(priv, 0x405800, 0xf8000bf);
-	nv_wr32(priv, 0x419c00, 0xa);
+	nvc0_graph_wr32(priv, 0x418c6c, 0x1);
+	nvc0_graph_wr32(priv, 0x41980c, 0x10);
+	nvc0_graph_wr32(priv, 0x41be08, 0x4);
+	nvc0_graph_wr32(priv, 0x4064c0, 0x801a00f0);
+	nvc0_graph_wr32(priv, 0x405800, 0xf8000bf);
+	nvc0_graph_wr32(priv, 0x419c00, 0xa);
 
 	for (tpc = 0, id = 0; tpc < 4; tpc++) {
 		for (gpc = 0; gpc < priv->gpc_nr; gpc++) {
 			if (tpc < priv->tpc_nr[gpc]) {
-				nv_wr32(priv, TPC_UNIT(gpc, tpc, 0x0698), id);
-				nv_wr32(priv, TPC_UNIT(gpc, tpc, 0x04e8), id);
-				nv_wr32(priv, GPC_UNIT(gpc, 0x0c10 + tpc * 4), id);
-				nv_wr32(priv, TPC_UNIT(gpc, tpc, 0x0088), id++);
+				nvc0_graph_wr32(priv,
+						TPC_UNIT(gpc, tpc, 0x0698),
+						id);
+				nvc0_graph_wr32(priv,
+						TPC_UNIT(gpc, tpc, 0x04e8),
+						id);
+				nvc0_graph_wr32(priv,
+						GPC_UNIT(gpc, 0x0c10 + tpc * 4),
+						id);
+				nvc0_graph_wr32(priv,
+						TPC_UNIT(gpc, tpc, 0x0088),
+						id++);
 			}
 
-			nv_wr32(priv, GPC_UNIT(gpc, 0x0c08), priv->tpc_nr[gpc]);
-			nv_wr32(priv, GPC_UNIT(gpc, 0x0c8c), priv->tpc_nr[gpc]);
+			nvc0_graph_wr32(priv, GPC_UNIT(gpc, 0x0c08),
+					priv->tpc_nr[gpc]);
+			nvc0_graph_wr32(priv, GPC_UNIT(gpc, 0x0c8c),
+					priv->tpc_nr[gpc]);
 		}
 	}
 
 	tmp = 0;
 	for (i = 0; i < priv->gpc_nr; i++)
 		tmp |= priv->tpc_nr[i] << (i * 4);
-	nv_wr32(priv, 0x406028, tmp);
-	nv_wr32(priv, 0x405870, tmp);
+	nvc0_graph_wr32(priv, 0x406028, tmp);
+	nvc0_graph_wr32(priv, 0x405870, tmp);
 
-	nv_wr32(priv, 0x40602c, 0x0);
-	nv_wr32(priv, 0x405874, 0x0);
-	nv_wr32(priv, 0x406030, 0x0);
-	nv_wr32(priv, 0x405878, 0x0);
-	nv_wr32(priv, 0x406034, 0x0);
-	nv_wr32(priv, 0x40587c, 0x0);
+	nvc0_graph_wr32(priv, 0x40602c, 0x0);
+	nvc0_graph_wr32(priv, 0x405874, 0x0);
+	nvc0_graph_wr32(priv, 0x406030, 0x0);
+	nvc0_graph_wr32(priv, 0x405878, 0x0);
+	nvc0_graph_wr32(priv, 0x406034, 0x0);
+	nvc0_graph_wr32(priv, 0x40587c, 0x0);
 
 	/* calculate first set of magics */
 	memcpy(tpcnr, priv->tpc_nr, sizeof(priv->tpc_nr));
@@ -2735,18 +2745,20 @@ nve0_grctx_generate(struct nvc0_graph_priv *priv)
 		data2[1] |= ((1 << (i + 5)) % ntpcv) << ((i - 1) * 5);
 
 	/* and write it all the various parts of PGRAPH */
-	nv_wr32(priv, 0x418bb8, (priv->tpc_total << 8) | priv->magic_not_rop_nr);
+	nvc0_graph_wr32(priv, 0x418bb8,
+			(priv->tpc_total << 8) | priv->magic_not_rop_nr);
 	for (i = 0; i < 6; i++)
-		nv_wr32(priv, 0x418b08 + (i * 4), data[i]);
+		nvc0_graph_wr32(priv, 0x418b08 + (i * 4), data[i]);
 
-	nv_wr32(priv, 0x41bfd0, data2[0]);
-	nv_wr32(priv, 0x41bfe4, data2[1]);
+	nvc0_graph_wr32(priv, 0x41bfd0, data2[0]);
+	nvc0_graph_wr32(priv, 0x41bfe4, data2[1]);
 	for (i = 0; i < 6; i++)
-		nv_wr32(priv, 0x41bf00 + (i * 4), data[i]);
+		nvc0_graph_wr32(priv, 0x41bf00 + (i * 4), data[i]);
 
-	nv_wr32(priv, 0x4078bc, (priv->tpc_total << 8) | priv->magic_not_rop_nr);
+	nvc0_graph_wr32(priv, 0x4078bc,
+			(priv->tpc_total << 8) | priv->magic_not_rop_nr);
 	for (i = 0; i < 6; i++)
-		nv_wr32(priv, 0x40780c + (i * 4), data[i]);
+		nvc0_graph_wr32(priv, 0x40780c + (i * 4), data[i]);
 
 
 	memcpy(tpcnr, priv->tpc_nr, sizeof(priv->tpc_nr));
@@ -2765,24 +2777,25 @@ nve0_grctx_generate(struct nvc0_graph_priv *priv)
 			tpc_set |= 1 << ((gpc * 8) + tpc);
 		}
 
-		nv_wr32(priv, 0x406800 + (i * 0x20), tpc_set);
-		nv_wr32(priv, 0x406c00 + (i * 0x20), tpc_set ^ tpc_mask);
+		nvc0_graph_wr32(priv, 0x406800 + (i * 0x20), tpc_set);
+		nvc0_graph_wr32(priv, 0x406c00 + (i * 0x20),
+				tpc_set ^ tpc_mask);
 	}
 
 	for (i = 0; i < 8; i++)
-		nv_wr32(priv, 0x4064d0 + (i * 0x04), 0x00000000);
+		nvc0_graph_wr32(priv, 0x4064d0 + (i * 0x04), 0x00000000);
 
-	nv_wr32(priv, 0x405b00, 0x201);
-	nv_wr32(priv, 0x408850, 0x2);
-	nv_wr32(priv, 0x408958, 0x2);
-	nv_wr32(priv, 0x419f78, 0xa);
+	nvc0_graph_wr32(priv, 0x405b00, 0x201);
+	nvc0_graph_wr32(priv, 0x408850, 0x2);
+	nvc0_graph_wr32(priv, 0x408958, 0x2);
+	nvc0_graph_wr32(priv, 0x419f78, 0xa);
 
 	nve0_grctx_generate_icmd(priv);
 	nve0_grctx_generate_a097(priv);
 	nve0_grctx_generate_902d(priv);
 
-	nv_mask(priv, 0x000260, 0x00000001, 0x00000001);
-	nv_wr32(priv, 0x418800, 0x7026860a); //XXX
-	nv_wr32(priv, 0x41be10, 0x00bb8bc7); //XXX
+	nvc0_graph_mask(priv, 0x000260, 0x00000001, 0x00000001);
+	nvc0_graph_wr32(priv, 0x418800, 0x7026860a); //XXX
+	nvc0_graph_wr32(priv, 0x41be10, 0x00bb8bc7); //XXX
 	return nvc0_grctx_fini(&info);
 }

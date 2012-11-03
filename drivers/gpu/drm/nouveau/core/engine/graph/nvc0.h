@@ -134,8 +134,8 @@ void nv_icmd(struct nvc0_graph_priv *priv, u32 icmd, u32 data);
 static inline void
 nv_mthd(struct nvc0_graph_priv *priv, u32 class, u32 mthd, u32 data)
 {
-	nv_wr32(priv, 0x40448c, data);
-	nv_wr32(priv, 0x404488, 0x80000000 | (mthd << 14) | class);
+	nvc0_graph_wr32(priv, 0x40448c, data);
+	nvc0_graph_wr32(priv, 0x404488, 0x80000000 | (mthd << 14) | class);
 }
 
 struct nvc0_grctx {
