@@ -2217,8 +2217,8 @@ static int load_nv17_hwsq_ucode_entry(struct drm_device *dev, struct nvbios *bio
 			       ROM32(bios->data[hwsq_entry_offset + i + 4]));
 
 	/* twiddle NV_PBUS_DEBUG_4 */
-	nv_wr32(device, NV_PBUS_DEBUG_4, nv_device_rd32(device,
-							NV_PBUS_DEBUG_4) | 0x18);
+	nv_device_wr32(device, NV_PBUS_DEBUG_4,
+			nv_device_rd32(device, NV_PBUS_DEBUG_4) | 0x18);
 
 	return 0;
 }

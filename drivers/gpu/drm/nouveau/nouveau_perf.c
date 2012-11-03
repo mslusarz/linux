@@ -149,7 +149,7 @@ nouveau_perf_ramcfg(struct drm_device *dev, u32 freq, u8 *ver, u8 *len)
 	u8 strap, hdr, cnt;
 	u8 *rammap;
 
-	strap = (nv_rd32(device, 0x101000) & 0x0000003c) >> 2;
+	strap = (nv_device_rd32(device, 0x101000) & 0x0000003c) >> 2;
 	if (bios->ram_restrict_tbl_ptr)
 		strap = bios->data[bios->ram_restrict_tbl_ptr + strap];
 

@@ -351,7 +351,8 @@ nve0_graph_init_gpc_0(struct nvc0_graph_priv *priv)
 	}
 
 	nvc0_graph_wr32(priv, GPC_BCAST(0x1bd4), magicgpc918);
-	nv_wr32(priv, GPC_BCAST(0x08ac), nvc0_graph_rd32(priv, 0x100800));
+	nvc0_graph_wr32(priv, GPC_BCAST(0x08ac),
+			nvc0_graph_rd32(priv, 0x100800));
 }
 
 static void

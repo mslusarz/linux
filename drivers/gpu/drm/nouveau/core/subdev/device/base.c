@@ -359,37 +359,37 @@ fail:
 static u8
 nouveau_devobj_rd08(struct nouveau_object *object, u32 addr)
 {
-	return nv_rd08(object->engine, addr);
+	return nv_rd08(nv_subdev(object->engine), addr);
 }
 
 static u16
 nouveau_devobj_rd16(struct nouveau_object *object, u32 addr)
 {
-	return nv_rd16(object->engine, addr);
+	return nv_rd16(nv_subdev(object->engine), addr);
 }
 
 static u32
 nouveau_devobj_rd32(struct nouveau_object *object, u32 addr)
 {
-	return nv_rd32(object->engine, addr);
+	return nv_rd32(nv_subdev(object->engine), addr);
 }
 
 static void
 nouveau_devobj_wr08(struct nouveau_object *object, u32 addr, u8 data)
 {
-	nv_wr08(object->engine, addr, data);
+	nv_wr08(nv_subdev(object->engine), addr, data);
 }
 
 static void
 nouveau_devobj_wr16(struct nouveau_object *object, u32 addr, u16 data)
 {
-	nv_wr16(object->engine, addr, data);
+	nv_wr16(nv_subdev(object->engine), addr, data);
 }
 
 static void
 nouveau_devobj_wr32(struct nouveau_object *object, u32 addr, u32 data)
 {
-	nv_wr32(object->engine, addr, data);
+	nv_wr32(nv_subdev(object->engine), addr, data);
 }
 
 static struct nouveau_ofuncs

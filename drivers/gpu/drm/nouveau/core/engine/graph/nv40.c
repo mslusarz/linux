@@ -477,10 +477,10 @@ nv40_graph_init(struct nouveau_object *object)
 	vramsz = pci_resource_len(nv_device(priv)->pdev, 0) - 1;
 	switch (nv_device(priv)->chipset) {
 	case 0x40:
-		nv_wr32(priv, 0x4009A4, nv40_graph_rd32(priv, 0x100200));
-		nv_wr32(priv, 0x4009A8, nv40_graph_rd32(priv, 0x100204));
-		nv_wr32(priv, 0x4069A4, nv40_graph_rd32(priv, 0x100200));
-		nv_wr32(priv, 0x4069A8, nv40_graph_rd32(priv, 0x100204));
+		nv40_graph_wr32(priv, 0x4009A4, nv40_graph_rd32(priv, 0x100200));
+		nv40_graph_wr32(priv, 0x4009A8, nv40_graph_rd32(priv, 0x100204));
+		nv40_graph_wr32(priv, 0x4069A4, nv40_graph_rd32(priv, 0x100200));
+		nv40_graph_wr32(priv, 0x4069A8, nv40_graph_rd32(priv, 0x100204));
 		nv40_graph_wr32(priv, 0x400820, 0);
 		nv40_graph_wr32(priv, 0x400824, 0);
 		nv40_graph_wr32(priv, 0x400864, vramsz);
@@ -495,20 +495,20 @@ nv40_graph_init(struct nouveau_object *object)
 		case 0x4e:
 		case 0x44:
 		case 0x4a:
-			nv_wr32(priv, 0x4009F0, nv40_graph_rd32(priv,
-								0x100200));
-			nv_wr32(priv, 0x4009F4, nv40_graph_rd32(priv,
-								0x100204));
+			nv40_graph_wr32(priv, 0x4009F0,
+					nv40_graph_rd32(priv, 0x100200));
+			nv40_graph_wr32(priv, 0x4009F4,
+					nv40_graph_rd32(priv, 0x100204));
 			break;
 		default:
-			nv_wr32(priv, 0x400DF0, nv40_graph_rd32(priv,
-								0x100200));
-			nv_wr32(priv, 0x400DF4, nv40_graph_rd32(priv,
-								0x100204));
+			nv40_graph_wr32(priv, 0x400DF0,
+					nv40_graph_rd32(priv, 0x100200));
+			nv40_graph_wr32(priv, 0x400DF4,
+					nv40_graph_rd32(priv, 0x100204));
 			break;
 		}
-		nv_wr32(priv, 0x4069F0, nv40_graph_rd32(priv, 0x100200));
-		nv_wr32(priv, 0x4069F4, nv40_graph_rd32(priv, 0x100204));
+		nv40_graph_wr32(priv, 0x4069F0, nv40_graph_rd32(priv, 0x100200));
+		nv40_graph_wr32(priv, 0x4069F4, nv40_graph_rd32(priv, 0x100204));
 		nv40_graph_wr32(priv, 0x400840, 0);
 		nv40_graph_wr32(priv, 0x400844, 0);
 		nv40_graph_wr32(priv, 0x4008A0, vramsz);

@@ -419,17 +419,17 @@ nv10_graph_priv(struct nv10_graph_chan *chan)
 #define PIPE_SAVE(priv, state, addr)					\
 	do {								\
 		int __i;						\
-		nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, addr);		\
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, addr);		\
 		for (__i = 0; __i < ARRAY_SIZE(state); __i++)		\
-			state[__i] = nv_rd32(priv, NV10_PGRAPH_PIPE_DATA); \
+			state[__i] = nv10_graph_rd32(priv, NV10_PGRAPH_PIPE_DATA); \
 	} while (0)
 
 #define PIPE_RESTORE(priv, state, addr)					\
 	do {								\
 		int __i;						\
-		nv_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, addr);		\
+		nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_ADDRESS, addr);		\
 		for (__i = 0; __i < ARRAY_SIZE(state); __i++)		\
-			nv_wr32(priv, NV10_PGRAPH_PIPE_DATA, state[__i]); \
+			nv10_graph_wr32(priv, NV10_PGRAPH_PIPE_DATA, state[__i]); \
 	} while (0)
 
 static struct nouveau_oclass
@@ -908,7 +908,7 @@ nv10_graph_load_dma_vtxbuf(struct nv10_graph_chan *chan, int chid, u32 inst)
 
 	/* Switch to the celsius subchannel */
 	for (i = 0; i < 5; i++)
-		nv_wr32(priv, NV10_PGRAPH_CTX_SWITCH(i),
+		nv10_graph_wr32(priv, NV10_PGRAPH_CTX_SWITCH(i),
 			nv10_graph_rd32(priv,
 					NV10_PGRAPH_CTX_CACHE(subchan, i)));
 	nv10_graph_mask(priv, NV10_PGRAPH_CTX_USER, 0xe000, subchan << 13);

@@ -175,13 +175,13 @@ nv04_instmem_dtor(struct nouveau_object *object)
 static u32
 nv04_instmem_rd32(struct nouveau_object *object, u32 addr)
 {
-	return nv_rd32(object, 0x700000 + addr);
+	return nv_rd32(nv_subdev(object), 0x700000 + addr);
 }
 
 static void
 nv04_instmem_wr32(struct nouveau_object *object, u32 addr, u32 data)
 {
-	return nv_wr32(object, 0x700000 + addr, data);
+	return nv_wr32(nv_subdev(object), 0x700000 + addr, data);
 }
 
 struct nouveau_oclass

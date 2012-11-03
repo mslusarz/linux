@@ -127,7 +127,7 @@ nv50_display_init(struct drm_device *dev)
 
 	NV_DEBUG(drm, "\n");
 
-	nv_wr32(device, 0x00610184, nv_device_rd32(device, 0x00614004));
+	nv_device_wr32(device, 0x00610184, nv_device_rd32(device, 0x00614004));
 
 	/*
 	 * I think the 0x006101XX range is some kind of main control area
@@ -175,7 +175,8 @@ nv50_display_init(struct drm_device *dev)
 	 */
 	if (nv_device_rd32(device, NV50_PDISPLAY_INTR_1) & 0x100) {
 		nv_device_wr32(device, NV50_PDISPLAY_INTR_1, 0x100);
-		nv_wr32(device, 0x006194e8, nv_device_rd32(device, 0x006194e8) & ~1);
+		nv_device_wr32(device, 0x006194e8,
+				nv_device_rd32(device, 0x006194e8) & ~1);
 		if (!nv_wait(device, 0x006194e8, 2, 0)) {
 			NV_ERROR(drm, "timeout: (0x6194e8 & 2) != 0\n");
 			NV_ERROR(drm, "0x6194e8 = 0x%08x\n",
@@ -613,7 +614,7 @@ nv50_display_unk10_handler(struct drm_device *dev)
 	NV_DEBUG(drm, "0x610030: 0x%08x\n", unk30);
 	disp->irq.dcb = NULL;
 
-	nv_wr32(device, 0x619494, nv_device_rd32(device, 0x619494) & ~8);
+	nv_device_wr32(device, 0x619494, nv_device_rd32(device, 0x619494) & ~8);
 
 	/* Determine which CRTC we're dealing with, only 1 ever will be
 	 * signalled at the same time with the current nouveau code.
@@ -884,7 +885,7 @@ ack:
 	nv_device_wr32(device, NV50_PDISPLAY_INTR_1,
 		       NV50_PDISPLAY_INTR_1_CLK_UNK40);
 	nv_device_wr32(device, 0x610030, 0x80000000);
-	nv_wr32(device, 0x619494, nv_device_rd32(device, 0x619494) | 8);
+	nv_device_wr32(device, 0x619494, nv_device_rd32(device, 0x619494) | 8);
 }
 
 static void

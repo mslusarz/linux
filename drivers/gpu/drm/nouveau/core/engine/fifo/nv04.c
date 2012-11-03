@@ -453,14 +453,14 @@ nv04_fifo_intr(struct nouveau_subdev *subdev)
 			nv04_fifo_wr32(priv, NV03_PFIFO_INTR_0,
 				       NV_PFIFO_INTR_CACHE_ERROR);
 
-			nv_wr32(priv, NV03_PFIFO_CACHE1_PUSH0,
+			nv04_fifo_wr32(priv, NV03_PFIFO_CACHE1_PUSH0,
 				nv04_fifo_rd32(priv, NV03_PFIFO_CACHE1_PUSH0) & ~1);
 			nv04_fifo_wr32(priv, NV03_PFIFO_CACHE1_GET, get + 4);
-			nv_wr32(priv, NV03_PFIFO_CACHE1_PUSH0,
+			nv04_fifo_wr32(priv, NV03_PFIFO_CACHE1_PUSH0,
 				nv04_fifo_rd32(priv, NV03_PFIFO_CACHE1_PUSH0) | 1);
 			nv04_fifo_wr32(priv, NV04_PFIFO_CACHE1_HASH, 0);
 
-			nv_wr32(priv, NV04_PFIFO_CACHE1_DMA_PUSH,
+			nv04_fifo_wr32(priv, NV04_PFIFO_CACHE1_DMA_PUSH,
 				nv04_fifo_rd32(priv,
 					       NV04_PFIFO_CACHE1_DMA_PUSH) | 1);
 			nv04_fifo_wr32(priv, NV04_PFIFO_CACHE1_PULL0, 1);

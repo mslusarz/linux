@@ -99,7 +99,7 @@ nve0_copy0_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	struct nve0_copy_priv *priv;
 	int ret;
 
-	if (nv_rd32(parent, 0x022500) & 0x00000100)
+	if (nv_rd32(nv_subdev(parent), 0x022500) & 0x00000100)
 		return -ENODEV;
 
 	ret = nouveau_copy_create(parent, engine, oclass, true, 0, &priv);
@@ -121,7 +121,7 @@ nve0_copy1_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	struct nve0_copy_priv *priv;
 	int ret;
 
-	if (nv_rd32(parent, 0x022500) & 0x00000200)
+	if (nv_rd32(nv_subdev(parent), 0x022500) & 0x00000200)
 		return -ENODEV;
 
 	ret = nouveau_copy_create(parent, engine, oclass, true, 1, &priv);

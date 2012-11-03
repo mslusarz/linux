@@ -336,9 +336,9 @@ nv20_graph_init(struct nouveau_object *object)
 	for (i = 0; i < pfb->tile.regions; i++)
 		engine->tile_prog(engine, i);
 
-	nv_wr32(priv, 0x4009a0, nv20_graph_rd32(priv, 0x100324));
+	nv20_graph_wr32(priv, 0x4009a0, nv20_graph_rd32(priv, 0x100324));
 	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA000C);
-	nv_wr32(priv, NV10_PGRAPH_RDI_DATA, nv20_graph_rd32(priv, 0x100324));
+	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA, nv20_graph_rd32(priv, 0x100324));
 
 	nv20_graph_wr32(priv, NV10_PGRAPH_CTX_CONTROL, 0x10000100);
 	nv20_graph_wr32(priv, NV10_PGRAPH_STATE, 0xFFFFFFFF);
@@ -350,12 +350,12 @@ nv20_graph_init(struct nouveau_object *object)
 
 	/* begin RAM config */
 	vramsz = pci_resource_len(nv_device(priv)->pdev, 0) - 1;
-	nv_wr32(priv, 0x4009A4, nv20_graph_rd32(priv, 0x100200));
-	nv_wr32(priv, 0x4009A8, nv20_graph_rd32(priv, 0x100204));
+	nv20_graph_wr32(priv, 0x4009A4, nv20_graph_rd32(priv, 0x100200));
+	nv20_graph_wr32(priv, 0x4009A8, nv20_graph_rd32(priv, 0x100204));
 	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA0000);
-	nv_wr32(priv, NV10_PGRAPH_RDI_DATA , nv20_graph_rd32(priv, 0x100200));
+	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA , nv20_graph_rd32(priv, 0x100200));
 	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA0004);
-	nv_wr32(priv, NV10_PGRAPH_RDI_DATA , nv20_graph_rd32(priv, 0x100204));
+	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA , nv20_graph_rd32(priv, 0x100204));
 	nv20_graph_wr32(priv, 0x400820, 0);
 	nv20_graph_wr32(priv, 0x400824, 0);
 	nv20_graph_wr32(priv, 0x400864, vramsz - 1);

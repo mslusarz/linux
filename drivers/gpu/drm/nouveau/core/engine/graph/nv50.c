@@ -513,8 +513,8 @@ nv50_graph_trap_handler(struct nv50_graph_priv *priv, u32 display,
 			}
 
 			nv50_graph_wr32(priv, 0x400808, 0);
-			nv_wr32(priv, 0x4008e8, nv50_graph_rd32(priv,
-								0x4008e8) & 3);
+			nv50_graph_wr32(priv, 0x4008e8,
+					nv50_graph_rd32(priv, 0x4008e8) & 3);
 			nv50_graph_wr32(priv, 0x400848, 0);
 			ustatus &= ~0x00000001;
 		}
@@ -742,7 +742,8 @@ nv50_graph_intr(struct nouveau_subdev *subdev)
 	}
 
 	if (nv50_graph_rd32(priv, 0x400824) & (1 << 31))
-		nv_wr32(priv, 0x400824, nv50_graph_rd32(priv, 0x400824) & ~(1 << 31));
+		nv50_graph_wr32(priv, 0x400824,
+				nv50_graph_rd32(priv, 0x400824) & ~(1 << 31));
 
 	nouveau_engctx_put(engctx);
 }
