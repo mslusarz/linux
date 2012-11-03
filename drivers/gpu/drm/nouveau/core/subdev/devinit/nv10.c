@@ -52,11 +52,11 @@ nv10_devinit_meminit(struct nouveau_devinit *devinit)
 		return;
 	}
 
-	nv_wr32(priv, NV10_PFB_REFCTRL, NV10_PFB_REFCTRL_VALID_1);
+	nv10_devinit_wr32(priv, NV10_PFB_REFCTRL, NV10_PFB_REFCTRL_VALID_1);
 
 	/* Probe memory bus width */
 	for (i = 0; i < mem_width_count; i++) {
-		nv_mask(priv, NV04_PFB_CFG0, 0x30, mem_width[i]);
+		nv10_devinit_mask(priv, NV04_PFB_CFG0, 0x30, mem_width[i]);
 
 		for (j = 0; j < 4; j++) {
 			for (k = 0; k < 4; k++)
@@ -75,7 +75,7 @@ mem_width_found:
 
 	/* Probe amount of installed memory */
 	for (i = 0; i < 4; i++) {
-		int off = nv_rd32(priv, 0x10020c) - 0x100000;
+		int off = nv10_devinit_rd32(priv, 0x10020c) - 0x100000;
 
 		fbmem_poke(fb, off, patt);
 		fbmem_poke(fb, 0, 0);
@@ -90,7 +90,7 @@ mem_width_found:
 	}
 
 	/* IC missing - disable the upper half memory space. */
-	nv_mask(priv, NV04_PFB_CFG0, 0x1000, 0);
+	nv10_devinit_mask(priv, NV04_PFB_CFG0, 0x1000, 0);
 
 amount_found:
 	fbmem_fini(fb);

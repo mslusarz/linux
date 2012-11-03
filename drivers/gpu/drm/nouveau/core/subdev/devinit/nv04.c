@@ -52,12 +52,11 @@ nv04_devinit_meminit(struct nouveau_devinit *devinit)
 
 	/* Sequencer and refresh off */
 	nv_wrvgas(priv, 0, 1, nv_rdvgas(priv, 0, 1) | 0x20);
-	nv_mask(priv, NV04_PFB_DEBUG_0, 0, NV04_PFB_DEBUG_0_REFRESH_OFF);
+	nv04_devinit_mask(priv, NV04_PFB_DEBUG_0, 0,
+			  NV04_PFB_DEBUG_0_REFRESH_OFF);
 
-	nv_mask(priv, NV04_PFB_BOOT_0, ~0,
-		      NV04_PFB_BOOT_0_RAM_AMOUNT_16MB |
-		      NV04_PFB_BOOT_0_RAM_WIDTH_128 |
-		      NV04_PFB_BOOT_0_RAM_TYPE_SGRAM_16MBIT);
+	nv04_devinit_mask(priv, NV04_PFB_BOOT_0, ~0,
+			  NV04_PFB_BOOT_0_RAM_AMOUNT_16MB | NV04_PFB_BOOT_0_RAM_WIDTH_128 | NV04_PFB_BOOT_0_RAM_TYPE_SGRAM_16MBIT);
 
 	for (i = 0; i < 4; i++)
 		fbmem_poke(fb, 4 * i, patt);
@@ -65,48 +64,49 @@ nv04_devinit_meminit(struct nouveau_devinit *devinit)
 	fbmem_poke(fb, 0x400000, patt + 1);
 
 	if (fbmem_peek(fb, 0) == patt + 1) {
-		nv_mask(priv, NV04_PFB_BOOT_0,
-			      NV04_PFB_BOOT_0_RAM_TYPE,
-			      NV04_PFB_BOOT_0_RAM_TYPE_SDRAM_16MBIT);
-		nv_mask(priv, NV04_PFB_DEBUG_0,
-			      NV04_PFB_DEBUG_0_REFRESH_OFF, 0);
+		nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_TYPE,
+				  NV04_PFB_BOOT_0_RAM_TYPE_SDRAM_16MBIT);
+		nv04_devinit_mask(priv, NV04_PFB_DEBUG_0,
+				  NV04_PFB_DEBUG_0_REFRESH_OFF, 0);
 
 		for (i = 0; i < 4; i++)
 			fbmem_poke(fb, 4 * i, patt);
 
 		if ((fbmem_peek(fb, 0xc) & 0xffff) != (patt & 0xffff))
-			nv_mask(priv, NV04_PFB_BOOT_0,
-				      NV04_PFB_BOOT_0_RAM_WIDTH_128 |
-				      NV04_PFB_BOOT_0_RAM_AMOUNT,
-				      NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
+			nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+					  NV04_PFB_BOOT_0_RAM_WIDTH_128 | NV04_PFB_BOOT_0_RAM_AMOUNT,
+					  NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
 	} else
 	if ((fbmem_peek(fb, 0xc) & 0xffff0000) != (patt & 0xffff0000)) {
-		nv_mask(priv, NV04_PFB_BOOT_0,
-			      NV04_PFB_BOOT_0_RAM_WIDTH_128 |
-			      NV04_PFB_BOOT_0_RAM_AMOUNT,
-			      NV04_PFB_BOOT_0_RAM_AMOUNT_4MB);
+		nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_WIDTH_128 | NV04_PFB_BOOT_0_RAM_AMOUNT,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT_4MB);
 	} else
 	if (fbmem_peek(fb, 0) != patt) {
 		if (fbmem_readback(fb, 0x800000, patt))
-			nv_mask(priv, NV04_PFB_BOOT_0,
-				      NV04_PFB_BOOT_0_RAM_AMOUNT,
-				      NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
+			nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+					  NV04_PFB_BOOT_0_RAM_AMOUNT,
+					  NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
 		else
-			nv_mask(priv, NV04_PFB_BOOT_0,
-				      NV04_PFB_BOOT_0_RAM_AMOUNT,
-				      NV04_PFB_BOOT_0_RAM_AMOUNT_4MB);
+			nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+					  NV04_PFB_BOOT_0_RAM_AMOUNT,
+					  NV04_PFB_BOOT_0_RAM_AMOUNT_4MB);
 
-		nv_mask(priv, NV04_PFB_BOOT_0, NV04_PFB_BOOT_0_RAM_TYPE,
-			      NV04_PFB_BOOT_0_RAM_TYPE_SGRAM_8MBIT);
+		nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_TYPE,
+				  NV04_PFB_BOOT_0_RAM_TYPE_SGRAM_8MBIT);
 	} else
 	if (!fbmem_readback(fb, 0x800000, patt)) {
-		nv_mask(priv, NV04_PFB_BOOT_0, NV04_PFB_BOOT_0_RAM_AMOUNT,
-			      NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
+		nv04_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
 
 	}
 
 	/* Refresh on, sequencer on */
-	nv_mask(priv, NV04_PFB_DEBUG_0, NV04_PFB_DEBUG_0_REFRESH_OFF, 0);
+	nv04_devinit_mask(priv, NV04_PFB_DEBUG_0,
+			  NV04_PFB_DEBUG_0_REFRESH_OFF, 0);
 	nv_wrvgas(priv, 0, 1, nv_rdvgas(priv, 0, 1) & ~0x20);
 	fbmem_fini(fb);
 }
@@ -167,7 +167,7 @@ nv04_devinit_fini(struct nouveau_object *object, bool suspend)
 	struct nv04_devinit_priv *priv = (void *)object;
 
 	/* make i2c busses accessible */
-	nv_mask(priv, 0x000200, 0x00000001, 0x00000001);
+	nv04_devinit_mask(priv, 0x000200, 0x00000001, 0x00000001);
 
 	/* unlock extended vga crtc regs, and unslave crtcs */
 	nv_lockvgac(priv, false);

@@ -51,19 +51,19 @@ nv20_devinit_meminit(struct nouveau_devinit *devinit)
 		return;
 	}
 
-	nv_wr32(priv, NV10_PFB_REFCTRL, NV10_PFB_REFCTRL_VALID_1);
+	nv20_devinit_wr32(priv, NV10_PFB_REFCTRL, NV10_PFB_REFCTRL_VALID_1);
 
 	/* Allow full addressing */
-	nv_mask(priv, NV04_PFB_CFG0, 0, mask);
+	nv20_devinit_mask(priv, NV04_PFB_CFG0, 0, mask);
 
-	amount = nv_rd32(priv, 0x10020c);
+	amount = nv20_devinit_rd32(priv, 0x10020c);
 	for (off = amount; off > 0x2000000; off -= 0x2000000)
 		fbmem_poke(fb, off - 4, off);
 
-	amount = nv_rd32(priv, 0x10020c);
+	amount = nv20_devinit_rd32(priv, 0x10020c);
 	if (amount != fbmem_peek(fb, amount - 4))
 		/* IC missing - disable the upper half memory space. */
-		nv_mask(priv, NV04_PFB_CFG0, mask, 0);
+		nv20_devinit_mask(priv, NV04_PFB_CFG0, mask, 0);
 
 	fbmem_fini(fb);
 }

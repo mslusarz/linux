@@ -65,7 +65,7 @@ nv05_devinit_meminit(struct nouveau_devinit *devinit)
 		return;
 	}
 
-	strap = (nv_rd32(priv, 0x101000) & 0x0000003c) >> 2;
+	strap = (nv05_devinit_rd32(priv, 0x101000) & 0x0000003c) >> 2;
 	if ((data = bmp_mem_init_table(bios))) {
 		ramcfg[0] = nv_ro08(bios, data + 2 * strap + 0);
 		ramcfg[1] = nv_ro08(bios, data + 2 * strap + 1);
@@ -77,53 +77,60 @@ nv05_devinit_meminit(struct nouveau_devinit *devinit)
 	/* Sequencer off */
 	nv_wrvgas(priv, 0, 1, nv_rdvgas(priv, 0, 1) | 0x20);
 
-	if (nv_rd32(priv, NV04_PFB_BOOT_0) & NV04_PFB_BOOT_0_UMA_ENABLE)
+	if (nv05_devinit_rd32(priv, NV04_PFB_BOOT_0) & NV04_PFB_BOOT_0_UMA_ENABLE)
 		goto out;
 
-	nv_mask(priv, NV04_PFB_DEBUG_0, NV04_PFB_DEBUG_0_REFRESH_OFF, 0);
+	nv05_devinit_mask(priv, NV04_PFB_DEBUG_0,
+			  NV04_PFB_DEBUG_0_REFRESH_OFF, 0);
 
 	/* If present load the hardcoded scrambling table */
 	if (data) {
 		for (i = 0, data += 0x10; i < 8; i++, data += 4) {
 			u32 scramble = nv_ro32(bios, data);
-			nv_wr32(priv, NV04_PFB_SCRAMBLE(i), scramble);
+			nv05_devinit_wr32(priv, NV04_PFB_SCRAMBLE(i),
+					  scramble);
 		}
 	}
 
 	/* Set memory type/width/length defaults depending on the straps */
-	nv_mask(priv, NV04_PFB_BOOT_0, 0x3f, ramcfg[0]);
+	nv05_devinit_mask(priv, NV04_PFB_BOOT_0, 0x3f, ramcfg[0]);
 
 	if (ramcfg[1] & 0x80)
-		nv_mask(priv, NV04_PFB_CFG0, 0, NV04_PFB_CFG0_SCRAMBLE);
+		nv05_devinit_mask(priv, NV04_PFB_CFG0, 0,
+				  NV04_PFB_CFG0_SCRAMBLE);
 
-	nv_mask(priv, NV04_PFB_CFG1, 0x700001, (ramcfg[1] & 1) << 20);
-	nv_mask(priv, NV04_PFB_CFG1, 0, 1);
+	nv05_devinit_mask(priv, NV04_PFB_CFG1, 0x700001,
+			  (ramcfg[1] & 1) << 20);
+	nv05_devinit_mask(priv, NV04_PFB_CFG1, 0, 1);
 
 	/* Probe memory bus width */
 	for (i = 0; i < 4; i++)
 		fbmem_poke(fb, 4 * i, patt);
 
 	if (fbmem_peek(fb, 0xc) != patt)
-		nv_mask(priv, NV04_PFB_BOOT_0,
-			  NV04_PFB_BOOT_0_RAM_WIDTH_128, 0);
+		nv05_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_WIDTH_128, 0);
 
 	/* Probe memory length */
-	v = nv_rd32(priv, NV04_PFB_BOOT_0) & NV04_PFB_BOOT_0_RAM_AMOUNT;
+	v = nv05_devinit_rd32(priv, NV04_PFB_BOOT_0) & NV04_PFB_BOOT_0_RAM_AMOUNT;
 
 	if (v == NV04_PFB_BOOT_0_RAM_AMOUNT_32MB &&
 	    (!fbmem_readback(fb, 0x1000000, ++patt) ||
 	     !fbmem_readback(fb, 0, ++patt)))
-		nv_mask(priv, NV04_PFB_BOOT_0, NV04_PFB_BOOT_0_RAM_AMOUNT,
-			  NV04_PFB_BOOT_0_RAM_AMOUNT_16MB);
+		nv05_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT_16MB);
 
 	if (v == NV04_PFB_BOOT_0_RAM_AMOUNT_16MB &&
 	    !fbmem_readback(fb, 0x800000, ++patt))
-		nv_mask(priv, NV04_PFB_BOOT_0, NV04_PFB_BOOT_0_RAM_AMOUNT,
-			  NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
+		nv05_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT_8MB);
 
 	if (!fbmem_readback(fb, 0x400000, ++patt))
-		nv_mask(priv, NV04_PFB_BOOT_0, NV04_PFB_BOOT_0_RAM_AMOUNT,
-			  NV04_PFB_BOOT_0_RAM_AMOUNT_4MB);
+		nv05_devinit_mask(priv, NV04_PFB_BOOT_0,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT,
+				  NV04_PFB_BOOT_0_RAM_AMOUNT_4MB);
 
 out:
 	/* Sequencer on */
