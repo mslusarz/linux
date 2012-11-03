@@ -32,7 +32,7 @@ nouveau_fb_bios_memtype(struct nouveau_bios *bios)
 	struct bit_entry M;
 	u8 ramcfg;
 
-	ramcfg = (nv_rd32(bios, 0x101000) & 0x0000003c) >> 2;
+	ramcfg = (nv_bios_rd32(bios, 0x101000) & 0x0000003c) >> 2;
 	if (!bit_entry(bios, 'M', &M) && M.version == 2 && M.length >= 5) {
 		u16 table   = nv_ro16(bios, M.offset + 3);
 		u8  version = nv_ro08(bios, table + 0);

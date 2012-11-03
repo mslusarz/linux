@@ -361,7 +361,7 @@ nvbios_pll_parse(struct nouveau_bios *bios, u32 type, struct nvbios_pll *info)
 	if (!info->refclk) {
 		info->refclk = nv_device(bios)->crystal;
 		if (bios->version.chip == 0x51) {
-			u32 sel_clk = nv_rd32(bios, 0x680524);
+			u32 sel_clk = nv_bios_rd32(bios, 0x680524);
 			if ((info->reg == 0x680508 && sel_clk & 0x20) ||
 			    (info->reg == 0x680520 && sel_clk & 0x80)) {
 				if (nv_rdvgac(bios, 0, 0x27) < 0xa3)
