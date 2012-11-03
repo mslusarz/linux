@@ -33,7 +33,7 @@
 static void
 auxch_fini(struct nouveau_i2c *aux, int ch)
 {
-	nv_mask(aux, 0x00e4e4 + (ch * 0x50), 0x00310000, 0x00000000);
+	nv_i2c_mask(aux, 0x00e4e4 + (ch * 0x50), 0x00310000, 0x00000000);
 }
 
 static int
@@ -47,7 +47,7 @@ auxch_init(struct nouveau_i2c *aux, int ch)
 	/* wait up to 1ms for any previous transaction to be done... */
 	timeout = 1000;
 	do {
-		ctrl = nv_rd32(aux, 0x00e4e4 + (ch * 0x50));
+		ctrl = nv_i2c_rd32(aux, 0x00e4e4 + (ch * 0x50));
 		udelay(1);
 		if (!timeout--) {
 			AUX_ERR("begin idle timeout 0x%08x", ctrl);
@@ -56,10 +56,10 @@ auxch_init(struct nouveau_i2c *aux, int ch)
 	} while (ctrl & 0x03010000);
 
 	/* set some magic, and wait up to 1ms for it to appear */
-	nv_mask(aux, 0x00e4e4 + (ch * 0x50), 0x00300000, ureq);
+	nv_i2c_mask(aux, 0x00e4e4 + (ch * 0x50), 0x00300000, ureq);
 	timeout = 1000;
 	do {
-		ctrl = nv_rd32(aux, 0x00e4e4 + (ch * 0x50));
+		ctrl = nv_i2c_rd32(aux, 0x00e4e4 + (ch * 0x50));
 		udelay(1);
 		if (!timeout--) {
 			AUX_ERR("magic wait 0x%08x\n", ctrl);
@@ -84,7 +84,7 @@ auxch_tx(struct nouveau_i2c *aux, int ch, u8 type, u32 addr, u8 *data, u8 size)
 	if (ret)
 		goto out;
 
-	stat = nv_rd32(aux, 0x00e4e8 + (ch * 0x50));
+	stat = nv_i2c_rd32(aux, 0x00e4e8 + (ch * 0x50));
 	if (!(stat & 0x10000000)) {
 		AUX_DBG("sink not detected\n");
 		ret = -ENXIO;
@@ -95,31 +95,32 @@ auxch_tx(struct nouveau_i2c *aux, int ch, u8 type, u32 addr, u8 *data, u8 size)
 		memcpy(xbuf, data, size);
 		for (i = 0; i < 16; i += 4) {
 			AUX_DBG("wr 0x%08x\n", xbuf[i / 4]);
-			nv_wr32(aux, 0x00e4c0 + (ch * 0x50) + i, xbuf[i / 4]);
+			nv_i2c_wr32(aux, 0x00e4c0 + (ch * 0x50) + i,
+				    xbuf[i / 4]);
 		}
 	}
 
-	ctrl  = nv_rd32(aux, 0x00e4e4 + (ch * 0x50));
+	ctrl  = nv_i2c_rd32(aux, 0x00e4e4 + (ch * 0x50));
 	ctrl &= ~0x0001f0ff;
 	ctrl |= type << 12;
 	ctrl |= size - 1;
-	nv_wr32(aux, 0x00e4e0 + (ch * 0x50), addr);
+	nv_i2c_wr32(aux, 0x00e4e0 + (ch * 0x50), addr);
 
 	/* retry transaction a number of times on failure... */
 	ret = -EREMOTEIO;
 	for (retries = 0; retries < 32; retries++) {
 		/* reset, and delay a while if this is a retry */
-		nv_wr32(aux, 0x00e4e4 + (ch * 0x50), 0x80000000 | ctrl);
-		nv_wr32(aux, 0x00e4e4 + (ch * 0x50), 0x00000000 | ctrl);
+		nv_i2c_wr32(aux, 0x00e4e4 + (ch * 0x50), 0x80000000 | ctrl);
+		nv_i2c_wr32(aux, 0x00e4e4 + (ch * 0x50), 0x00000000 | ctrl);
 		if (retries)
 			udelay(400);
 
 		/* transaction request, wait up to 1ms for it to complete */
-		nv_wr32(aux, 0x00e4e4 + (ch * 0x50), 0x00010000 | ctrl);
+		nv_i2c_wr32(aux, 0x00e4e4 + (ch * 0x50), 0x00010000 | ctrl);
 
 		timeout = 1000;
 		do {
-			ctrl = nv_rd32(aux, 0x00e4e4 + (ch * 0x50));
+			ctrl = nv_i2c_rd32(aux, 0x00e4e4 + (ch * 0x50));
 			udelay(1);
 			if (!timeout--) {
 				AUX_ERR("tx req timeout 0x%08x\n", ctrl);
@@ -128,7 +129,7 @@ auxch_tx(struct nouveau_i2c *aux, int ch, u8 type, u32 addr, u8 *data, u8 size)
 		} while (ctrl & 0x00010000);
 
 		/* read status, and check if transaction completed ok */
-		stat = nv_mask(aux, 0x00e4e8 + (ch * 0x50), 0, 0);
+		stat = nv_i2c_mask(aux, 0x00e4e8 + (ch * 0x50), 0, 0);
 		if (!(stat & 0x000f0f00)) {
 			ret = 0;
 			break;
@@ -139,7 +140,8 @@ auxch_tx(struct nouveau_i2c *aux, int ch, u8 type, u32 addr, u8 *data, u8 size)
 
 	if (type & 1) {
 		for (i = 0; i < 16; i += 4) {
-			xbuf[i / 4] = nv_rd32(aux, 0x00e4d0 + (ch * 0x50) + i);
+			xbuf[i / 4] = nv_i2c_rd32(aux,
+						  0x00e4d0 + (ch * 0x50) + i);
 			AUX_DBG("rd 0x%08x\n", xbuf[i / 4]);
 		}
 		memcpy(data, xbuf, size);

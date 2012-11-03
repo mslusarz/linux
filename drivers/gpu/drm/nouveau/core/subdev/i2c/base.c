@@ -120,9 +120,9 @@ nouveau_i2c_find(struct nouveau_i2c *i2c, u8 index)
 		}
 
 		/* nfi, but neither auxch or i2c work if it's 1 */
-		nv_mask(i2c, reg + 0x0c, 0x00000001, 0x00000000);
+		nv_i2c_mask(i2c, reg + 0x0c, 0x00000001, 0x00000000);
 		/* nfi, but switches auxch vs normal i2c */
-		nv_mask(i2c, reg + 0x00, 0x0000f003, val);
+		nv_i2c_mask(i2c, reg + 0x00, 0x0000f003, val);
 	}
 
 	return port;
@@ -167,12 +167,12 @@ nouveau_i2c_drive_scl(void *data, int state)
 		nv_wrvgac(port->i2c, 0, port->drive, val | 0x01);
 	} else
 	if (port->type == DCB_I2C_NV4E_BIT) {
-		nv_mask(port->i2c, port->drive, 0x2f, state ? 0x21 : 0x01);
+		nv_i2c_mask(port->i2c, port->drive, 0x2f, state ? 0x21 : 0x01);
 	} else
 	if (port->type == DCB_I2C_NVIO_BIT) {
 		if (state) port->state |= 0x01;
 		else	   port->state &= 0xfe;
-		nv_wr32(port->i2c, port->drive, 4 | port->state);
+		nv_i2c_wr32(port->i2c, port->drive, 4 | port->state);
 	}
 }
 
@@ -188,12 +188,12 @@ nouveau_i2c_drive_sda(void *data, int state)
 		nv_wrvgac(port->i2c, 0, port->drive, val | 0x01);
 	} else
 	if (port->type == DCB_I2C_NV4E_BIT) {
-		nv_mask(port->i2c, port->drive, 0x1f, state ? 0x11 : 0x01);
+		nv_i2c_mask(port->i2c, port->drive, 0x1f, state ? 0x11 : 0x01);
 	} else
 	if (port->type == DCB_I2C_NVIO_BIT) {
 		if (state) port->state |= 0x02;
 		else	   port->state &= 0xfd;
-		nv_wr32(port->i2c, port->drive, 4 | port->state);
+		nv_i2c_wr32(port->i2c, port->drive, 4 | port->state);
 	}
 }
 
@@ -207,13 +207,13 @@ nouveau_i2c_sense_scl(void *data)
 		return !!(nv_rdvgac(port->i2c, 0, port->sense) & 0x04);
 	} else
 	if (port->type == DCB_I2C_NV4E_BIT) {
-		return !!(nv_rd32(port->i2c, port->sense) & 0x00040000);
+		return !!(nv_i2c_rd32(port->i2c, port->sense) & 0x00040000);
 	} else
 	if (port->type == DCB_I2C_NVIO_BIT) {
 		if (device->card_type < NV_D0)
-			return !!(nv_rd32(port->i2c, port->sense) & 0x01);
+			return !!(nv_i2c_rd32(port->i2c, port->sense) & 0x01);
 		else
-			return !!(nv_rd32(port->i2c, port->sense) & 0x10);
+			return !!(nv_i2c_rd32(port->i2c, port->sense) & 0x10);
 	}
 
 	return 0;
@@ -229,13 +229,13 @@ nouveau_i2c_sense_sda(void *data)
 		return !!(nv_rdvgac(port->i2c, 0, port->sense) & 0x08);
 	} else
 	if (port->type == DCB_I2C_NV4E_BIT) {
-		return !!(nv_rd32(port->i2c, port->sense) & 0x00080000);
+		return !!(nv_i2c_rd32(port->i2c, port->sense) & 0x00080000);
 	} else
 	if (port->type == DCB_I2C_NVIO_BIT) {
 		if (device->card_type < NV_D0)
-			return !!(nv_rd32(port->i2c, port->sense) & 0x02);
+			return !!(nv_i2c_rd32(port->i2c, port->sense) & 0x02);
 		else
-			return !!(nv_rd32(port->i2c, port->sense) & 0x20);
+			return !!(nv_i2c_rd32(port->i2c, port->sense) & 0x20);
 	}
 
 	return 0;
