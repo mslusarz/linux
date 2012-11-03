@@ -117,7 +117,8 @@ nv20_graph_context_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wo32(priv->ctxtab, chan->chid * 4, nv_gpuobj(chan)->addr >> 4);
+	nv_gpuobj_wo32(priv->ctxtab, chan->chid * 4,
+		       nv_gpuobj(chan)->addr >> 4);
 	return 0;
 }
 
@@ -140,7 +141,7 @@ nv20_graph_context_fini(struct nouveau_object *object, bool suspend)
 	}
 	nv20_graph_mask(priv, 0x400720, 0x00000001, 0x00000001);
 
-	nv_wo32(priv->ctxtab, chan->chid * 4, 0x00000000);
+	nv_gpuobj_wo32(priv->ctxtab, chan->chid * 4, 0x00000000);
 	return nouveau_graph_context_fini(&chan->base, suspend);
 }
 

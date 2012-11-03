@@ -114,8 +114,8 @@ nve0_fifo_playlist_update(struct nve0_fifo_priv *priv, u32 engine)
 		u32 ctrl = nve0_fifo_rd32(priv, 0x800004 + (i * 8)) & 0x001f0001;
 		if (ctrl != match)
 			continue;
-		nv_wo32(cur, p + 0, i);
-		nv_wo32(cur, p + 4, 0x00000000);
+		nv_gpuobj_wo32(cur, p + 0, i);
+		nv_gpuobj_wo32(cur, p + 4, 0x00000000);
 		p += 8;
 	}
 	bar->flush(bar);
@@ -239,7 +239,7 @@ nve0_fifo_chan_ctor(struct nouveau_object *parent,
 	ilength = log2i(args->ilength / 8);
 
 	for (i = 0; i < 0x200; i += 4)
-		nv_wo32(priv->user.mem, usermem + i, 0x00000000);
+		nv_gpuobj_wo32(priv->user.mem, usermem + i, 0x00000000);
 
 	nv_wo32(base, 0x08, lower_32_bits(priv->user.mem->addr + usermem));
 	nv_wo32(base, 0x0c, upper_32_bits(priv->user.mem->addr + usermem));

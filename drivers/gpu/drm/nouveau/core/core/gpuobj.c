@@ -36,7 +36,7 @@ nouveau_gpuobj_destroy(struct nouveau_gpuobj *gpuobj)
 
 	if (gpuobj->flags & NVOBJ_FLAG_ZERO_FREE) {
 		for (i = 0; i < gpuobj->size; i += 4)
-			nv_wo32(gpuobj, i, 0x00000000);
+			nv_gpuobj_wo32(gpuobj, i, 0x00000000);
 	}
 
 	if (gpuobj->node) {
@@ -131,7 +131,7 @@ nouveau_gpuobj_create_(struct nouveau_object *parent,
 
 	if (flags & NVOBJ_FLAG_ZERO_ALLOC) {
 		for (i = 0; i < gpuobj->size; i += 4)
-			nv_wo32(gpuobj, i, 0x00000000);
+			nv_gpuobj_wo32(gpuobj, i, 0x00000000);
 	}
 
 	return ret;

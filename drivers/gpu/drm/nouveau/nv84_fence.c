@@ -86,7 +86,7 @@ nv84_fence_read(struct nouveau_channel *chan)
 {
 	struct nouveau_fifo_chan *fifo = (void *)chan->object;
 	struct nv84_fence_priv *priv = chan->drm->fence;
-	return nv_ro32(priv->mem, fifo->chid * 16);
+	return nv_gpuobj_ro32(priv->mem, fifo->chid * 16);
 }
 
 static void
@@ -142,7 +142,7 @@ nv84_fence_context_new(struct nouveau_channel *chan)
 
 	if (ret)
 		nv84_fence_context_del(chan);
-	nv_wo32(priv->mem, fifo->chid * 16, 0x00000000);
+	nv_gpuobj_wo32(priv->mem, fifo->chid * 16, 0x00000000);
 	return ret;
 }
 

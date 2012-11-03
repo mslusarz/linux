@@ -42,7 +42,7 @@ nv04_vm_map_sg(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 		u32 page = PAGE_SIZE / NV04_PDMA_PAGE;
 		u32 phys = (u32)*list++;
 		while (cnt && page--) {
-			nv_wo32(pgt, pte, phys | 3);
+			nv_gpuobj_wo32(pgt, pte, phys | 3);
 			phys += NV04_PDMA_PAGE;
 			pte += 4;
 			cnt -= 1;
@@ -55,7 +55,7 @@ nv04_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 {
 	pte = 0x00008 + (pte * 4);
 	while (cnt--) {
-		nv_wo32(pgt, pte, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte, 0x00000000);
 		pte += 4;
 	}
 }
@@ -119,8 +119,8 @@ nv04_vmmgr_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_wo32(dma, 0x00000, 0x0002103d); /* PCI, RW, PT, !LN */
-	nv_wo32(dma, 0x00004, NV04_PDMA_SIZE - 1);
+	nv_gpuobj_wo32(dma, 0x00000, 0x0002103d); /* PCI, RW, PT, !LN */
+	nv_gpuobj_wo32(dma, 0x00004, NV04_PDMA_SIZE - 1);
 	return 0;
 }
 

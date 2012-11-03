@@ -162,13 +162,13 @@ nv50_bar_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_wo32(priv->bar3, 0x00, 0x7fc00000);
-	nv_wo32(priv->bar3, 0x04, lower_32_bits(limit));
-	nv_wo32(priv->bar3, 0x08, lower_32_bits(start));
-	nv_wo32(priv->bar3, 0x0c, upper_32_bits(limit) << 24 |
-				  upper_32_bits(start));
-	nv_wo32(priv->bar3, 0x10, 0x00000000);
-	nv_wo32(priv->bar3, 0x14, 0x00000000);
+	nv_gpuobj_wo32(priv->bar3, 0x00, 0x7fc00000);
+	nv_gpuobj_wo32(priv->bar3, 0x04, lower_32_bits(limit));
+	nv_gpuobj_wo32(priv->bar3, 0x08, lower_32_bits(start));
+	nv_gpuobj_wo32(priv->bar3, 0x0c,
+		       upper_32_bits(limit) << 24 | upper_32_bits(start));
+	nv_gpuobj_wo32(priv->bar3, 0x10, 0x00000000);
+	nv_gpuobj_wo32(priv->bar3, 0x14, 0x00000000);
 
 	/* BAR1 */
 	start = 0x0000000000ULL;
@@ -187,13 +187,13 @@ nv50_bar_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_wo32(priv->bar1, 0x00, 0x7fc00000);
-	nv_wo32(priv->bar1, 0x04, lower_32_bits(limit));
-	nv_wo32(priv->bar1, 0x08, lower_32_bits(start));
-	nv_wo32(priv->bar1, 0x0c, upper_32_bits(limit) << 24 |
-				  upper_32_bits(start));
-	nv_wo32(priv->bar1, 0x10, 0x00000000);
-	nv_wo32(priv->bar1, 0x14, 0x00000000);
+	nv_gpuobj_wo32(priv->bar1, 0x00, 0x7fc00000);
+	nv_gpuobj_wo32(priv->bar1, 0x04, lower_32_bits(limit));
+	nv_gpuobj_wo32(priv->bar1, 0x08, lower_32_bits(start));
+	nv_gpuobj_wo32(priv->bar1, 0x0c,
+		       upper_32_bits(limit) << 24 | upper_32_bits(start));
+	nv_gpuobj_wo32(priv->bar1, 0x10, 0x00000000);
+	nv_gpuobj_wo32(priv->bar1, 0x14, 0x00000000);
 
 	priv->base.alloc = nouveau_bar_alloc;
 	priv->base.kmap = nv50_bar_kmap;

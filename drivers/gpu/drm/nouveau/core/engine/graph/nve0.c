@@ -236,8 +236,8 @@ nve0_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 		return ret;
 
 	for (i = 0; i < 0x1000; i += 4) {
-		nv_wo32(priv->unk4188b4, i, 0x00000010);
-		nv_wo32(priv->unk4188b8, i, 0x00000010);
+		nv_gpuobj_wo32(priv->unk4188b4, i, 0x00000010);
+		nv_gpuobj_wo32(priv->unk4188b8, i, 0x00000010);
 	}
 
 	priv->gpc_nr =  nvc0_graph_rd32(priv, 0x409604) & 0x0000001f;

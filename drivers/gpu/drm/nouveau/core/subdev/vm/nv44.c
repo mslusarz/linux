@@ -44,10 +44,10 @@ nv44_vm_fill(struct nouveau_gpuobj *pgt, dma_addr_t null,
 	u32 base = (pte << 2) & ~0x0000000f;
 	u32 tmp[4];
 
-	tmp[0] = nv_ro32(pgt, base + 0x0);
-	tmp[1] = nv_ro32(pgt, base + 0x4);
-	tmp[2] = nv_ro32(pgt, base + 0x8);
-	tmp[3] = nv_ro32(pgt, base + 0xc);
+	tmp[0] = nv_gpuobj_ro32(pgt, base + 0x0);
+	tmp[1] = nv_gpuobj_ro32(pgt, base + 0x4);
+	tmp[2] = nv_gpuobj_ro32(pgt, base + 0x8);
+	tmp[3] = nv_gpuobj_ro32(pgt, base + 0xc);
 
 	while (cnt--) {
 		u32 addr = list ? (*list++ >> 12) : (null >> 12);
@@ -77,10 +77,10 @@ nv44_vm_fill(struct nouveau_gpuobj *pgt, dma_addr_t null,
 		}
 	}
 
-	nv_wo32(pgt, base + 0x0, tmp[0]);
-	nv_wo32(pgt, base + 0x4, tmp[1]);
-	nv_wo32(pgt, base + 0x8, tmp[2]);
-	nv_wo32(pgt, base + 0xc, tmp[3] | 0x40000000);
+	nv_gpuobj_wo32(pgt, base + 0x0, tmp[0]);
+	nv_gpuobj_wo32(pgt, base + 0x4, tmp[1]);
+	nv_gpuobj_wo32(pgt, base + 0x8, tmp[2]);
+	nv_gpuobj_wo32(pgt, base + 0xc, tmp[3] | 0x40000000);
 }
 
 static void
@@ -103,10 +103,10 @@ nv44_vm_map_sg(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 	while (cnt >= 4) {
 		for (i = 0; i < 4; i++)
 			tmp[i] = *list++ >> 12;
-		nv_wo32(pgt, pte++ * 4, tmp[0] >>  0 | tmp[1] << 27);
-		nv_wo32(pgt, pte++ * 4, tmp[1] >>  5 | tmp[2] << 22);
-		nv_wo32(pgt, pte++ * 4, tmp[2] >> 10 | tmp[3] << 17);
-		nv_wo32(pgt, pte++ * 4, tmp[3] >> 15 | 0x40000000);
+		nv_gpuobj_wo32(pgt, pte++ * 4, tmp[0] >> 0 | tmp[1] << 27);
+		nv_gpuobj_wo32(pgt, pte++ * 4, tmp[1] >> 5 | tmp[2] << 22);
+		nv_gpuobj_wo32(pgt, pte++ * 4, tmp[2] >> 10 | tmp[3] << 17);
+		nv_gpuobj_wo32(pgt, pte++ * 4, tmp[3] >> 15 | 0x40000000);
 		cnt -= 4;
 	}
 
@@ -128,10 +128,10 @@ nv44_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 	}
 
 	while (cnt >= 4) {
-		nv_wo32(pgt, pte++ * 4, 0x00000000);
-		nv_wo32(pgt, pte++ * 4, 0x00000000);
-		nv_wo32(pgt, pte++ * 4, 0x00000000);
-		nv_wo32(pgt, pte++ * 4, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte++ * 4, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte++ * 4, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte++ * 4, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte++ * 4, 0x00000000);
 		cnt -= 4;
 	}
 

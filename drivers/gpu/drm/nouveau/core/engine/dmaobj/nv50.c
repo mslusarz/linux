@@ -83,13 +83,13 @@ nv50_dmaobj_bind(struct nouveau_dmaeng *dmaeng,
 
 	ret = nouveau_gpuobj_new(parent, parent, 24, 32, 0, pgpuobj);
 	if (ret == 0) {
-		nv_wo32(*pgpuobj, 0x00, flags);
-		nv_wo32(*pgpuobj, 0x04, lower_32_bits(dmaobj->limit));
-		nv_wo32(*pgpuobj, 0x08, lower_32_bits(dmaobj->start));
-		nv_wo32(*pgpuobj, 0x0c, upper_32_bits(dmaobj->limit) << 24 |
-					upper_32_bits(dmaobj->start));
-		nv_wo32(*pgpuobj, 0x10, 0x00000000);
-		nv_wo32(*pgpuobj, 0x14, 0x00000000);
+		nv_gpuobj_wo32(*pgpuobj, 0x00, flags);
+		nv_gpuobj_wo32(*pgpuobj, 0x04, lower_32_bits(dmaobj->limit));
+		nv_gpuobj_wo32(*pgpuobj, 0x08, lower_32_bits(dmaobj->start));
+		nv_gpuobj_wo32(*pgpuobj, 0x0c,
+			       upper_32_bits(dmaobj->limit) << 24 | upper_32_bits(dmaobj->start));
+		nv_gpuobj_wo32(*pgpuobj, 0x10, 0x00000000);
+		nv_gpuobj_wo32(*pgpuobj, 0x14, 0x00000000);
 	}
 
 	return ret;

@@ -53,25 +53,25 @@ nvc0_grctx_init(struct nvc0_graph_priv *priv, struct nvc0_grctx *info)
 	}
 
 	/* PGD pointer */
-	nv_wo32(chan, 0x0200, lower_32_bits(chan->addr + 0x1000));
-	nv_wo32(chan, 0x0204, upper_32_bits(chan->addr + 0x1000));
-	nv_wo32(chan, 0x0208, 0xffffffff);
-	nv_wo32(chan, 0x020c, 0x000000ff);
+	nv_gpuobj_wo32(chan, 0x0200, lower_32_bits(chan->addr + 0x1000));
+	nv_gpuobj_wo32(chan, 0x0204, upper_32_bits(chan->addr + 0x1000));
+	nv_gpuobj_wo32(chan, 0x0208, 0xffffffff);
+	nv_gpuobj_wo32(chan, 0x020c, 0x000000ff);
 
 	/* PGT[0] pointer */
-	nv_wo32(chan, 0x1000, 0x00000000);
-	nv_wo32(chan, 0x1004, 0x00000001 | (chan->addr + 0x2000) >> 8);
+	nv_gpuobj_wo32(chan, 0x1000, 0x00000000);
+	nv_gpuobj_wo32(chan, 0x1004, 0x00000001 | (chan->addr + 0x2000) >> 8);
 
 	/* identity-map the whole "channel" into its own vm */
 	for (i = 0; i < size / 4096; i++) {
 		u64 addr = ((chan->addr + (i * 4096)) >> 8) | 1;
-		nv_wo32(chan, 0x2000 + (i * 8), lower_32_bits(addr));
-		nv_wo32(chan, 0x2004 + (i * 8), upper_32_bits(addr));
+		nv_gpuobj_wo32(chan, 0x2000 + (i * 8), lower_32_bits(addr));
+		nv_gpuobj_wo32(chan, 0x2004 + (i * 8), upper_32_bits(addr));
 	}
 
 	/* context pointer (virt) */
-	nv_wo32(chan, 0x0210, 0x00080004);
-	nv_wo32(chan, 0x0214, 0x00000000);
+	nv_gpuobj_wo32(chan, 0x0210, 0x00080004);
+	nv_gpuobj_wo32(chan, 0x0214, 0x00000000);
 
 	bar->flush(bar);
 
@@ -93,10 +93,10 @@ nvc0_grctx_init(struct nvc0_graph_priv *priv, struct nvc0_grctx *info)
 		if (!nv_wait(priv, 0x409800, 0x00000010, 0x00000010))
 			nv_error(priv, "load_ctx timeout\n");
 
-		nv_wo32(chan, 0x8001c, 1);
-		nv_wo32(chan, 0x80020, 0);
-		nv_wo32(chan, 0x80028, 0);
-		nv_wo32(chan, 0x8002c, 0);
+		nv_gpuobj_wo32(chan, 0x8001c, 1);
+		nv_gpuobj_wo32(chan, 0x80020, 0);
+		nv_gpuobj_wo32(chan, 0x80028, 0);
+		nv_gpuobj_wo32(chan, 0x8002c, 0);
 		bar->flush(bar);
 		return 0;
 	}
@@ -164,7 +164,8 @@ nvc0_grctx_fini(struct nvc0_grctx *info)
 	priv->data = kmalloc(priv->size, GFP_KERNEL);
 	if (priv->data) {
 		for (i = 0; i < priv->size; i += 4)
-			priv->data[i / 4] = nv_ro32(info->chan, 0x80000 + i);
+			priv->data[i / 4] = nv_gpuobj_ro32(info->chan,
+							   0x80000 + i);
 	}
 
 	nouveau_gpuobj_ref(NULL, &info->chan);

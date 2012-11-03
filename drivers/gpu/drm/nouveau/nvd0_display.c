@@ -2110,45 +2110,48 @@ nvd0_display_create(struct drm_device *dev)
 			goto out;
 		}
 
-		nv_wo32(disp->mem, dmao + 0x00, 0x00000049);
-		nv_wo32(disp->mem, dmao + 0x04, (offset + 0x0000) >> 8);
-		nv_wo32(disp->mem, dmao + 0x08, (offset + 0x0fff) >> 8);
-		nv_wo32(disp->mem, dmao + 0x0c, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x10, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x14, 0x00000000);
-		nv_wo32(disp->mem, hash + 0x00, NvEvoSync);
-		nv_wo32(disp->mem, hash + 0x04, 0x00000001 | (i << 27) |
-						((dmao + 0x00) << 9));
+		nv_gpuobj_wo32(disp->mem, dmao + 0x00, 0x00000049);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x04, (offset + 0x0000) >> 8);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x08, (offset + 0x0fff) >> 8);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x0c, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x10, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x14, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, hash + 0x00, NvEvoSync);
+		nv_gpuobj_wo32(disp->mem, hash + 0x04,
+			       0x00000001 | (i << 27) | ((dmao + 0x00) << 9));
 
-		nv_wo32(disp->mem, dmao + 0x20, 0x00000049);
-		nv_wo32(disp->mem, dmao + 0x24, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x28, (pfb->ram.size - 1) >> 8);
-		nv_wo32(disp->mem, dmao + 0x2c, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x30, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x34, 0x00000000);
-		nv_wo32(disp->mem, hash + 0x08, NvEvoVRAM);
-		nv_wo32(disp->mem, hash + 0x0c, 0x00000001 | (i << 27) |
-						((dmao + 0x20) << 9));
+		nv_gpuobj_wo32(disp->mem, dmao + 0x20, 0x00000049);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x24, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x28,
+			       (pfb->ram.size - 1) >> 8);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x2c, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x30, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x34, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, hash + 0x08, NvEvoVRAM);
+		nv_gpuobj_wo32(disp->mem, hash + 0x0c,
+			       0x00000001 | (i << 27) | ((dmao + 0x20) << 9));
 
-		nv_wo32(disp->mem, dmao + 0x40, 0x00000009);
-		nv_wo32(disp->mem, dmao + 0x44, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x48, (pfb->ram.size - 1) >> 8);
-		nv_wo32(disp->mem, dmao + 0x4c, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x50, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x54, 0x00000000);
-		nv_wo32(disp->mem, hash + 0x10, NvEvoVRAM_LP);
-		nv_wo32(disp->mem, hash + 0x14, 0x00000001 | (i << 27) |
-						((dmao + 0x40) << 9));
+		nv_gpuobj_wo32(disp->mem, dmao + 0x40, 0x00000009);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x44, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x48,
+			       (pfb->ram.size - 1) >> 8);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x4c, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x50, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x54, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, hash + 0x10, NvEvoVRAM_LP);
+		nv_gpuobj_wo32(disp->mem, hash + 0x14,
+			       0x00000001 | (i << 27) | ((dmao + 0x40) << 9));
 
-		nv_wo32(disp->mem, dmao + 0x60, 0x0fe00009);
-		nv_wo32(disp->mem, dmao + 0x64, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x68, (pfb->ram.size - 1) >> 8);
-		nv_wo32(disp->mem, dmao + 0x6c, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x70, 0x00000000);
-		nv_wo32(disp->mem, dmao + 0x74, 0x00000000);
-		nv_wo32(disp->mem, hash + 0x18, NvEvoFB32);
-		nv_wo32(disp->mem, hash + 0x1c, 0x00000001 | (i << 27) |
-						((dmao + 0x60) << 9));
+		nv_gpuobj_wo32(disp->mem, dmao + 0x60, 0x0fe00009);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x64, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x68,
+			       (pfb->ram.size - 1) >> 8);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x6c, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x70, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, dmao + 0x74, 0x00000000);
+		nv_gpuobj_wo32(disp->mem, hash + 0x18, NvEvoFB32);
+		nv_gpuobj_wo32(disp->mem, hash + 0x1c,
+			       0x00000001 | (i << 27) | ((dmao + 0x60) << 9));
 	}
 
 	bar->flush(bar);

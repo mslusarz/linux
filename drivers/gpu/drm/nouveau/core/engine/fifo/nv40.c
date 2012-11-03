@@ -133,7 +133,8 @@ nv40_fifo_context_attach(struct nouveau_object *parent,
 
 	if ((nv04_fifo_rd32(priv, 0x003204) & priv->base.max) == chan->base.chid)
 		nv04_fifo_wr32(priv, reg, nv_engctx(engctx)->addr);
-	nv_wo32(priv->ramfc, chan->ramfc + ctx, nv_engctx(engctx)->addr);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + ctx,
+		       nv_engctx(engctx)->addr);
 
 	nv04_fifo_mask(priv, 0x002500, 0x00000001, 0x00000001);
 	spin_unlock_irqrestore(&priv->base.lock, flags);
@@ -169,7 +170,7 @@ nv40_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 
 	if ((nv04_fifo_rd32(priv, 0x003204) & priv->base.max) == chan->base.chid)
 		nv04_fifo_wr32(priv, reg, 0x00000000);
-	nv_wo32(priv->ramfc, chan->ramfc + ctx, 0x00000000);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + ctx, 0x00000000);
 
 	nv04_fifo_mask(priv, 0x002500, 0x00000001, 0x00000001);
 	spin_unlock_irqrestore(&priv->base.lock, flags);
@@ -206,17 +207,16 @@ nv40_fifo_chan_ctor(struct nouveau_object *parent,
 	nv_parent(chan)->object_detach = nv04_fifo_object_detach;
 	chan->ramfc = chan->base.chid * 128;
 
-	nv_wo32(priv->ramfc, chan->ramfc + 0x00, args->offset);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x04, args->offset);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x0c, chan->base.pushgpu->addr >> 4);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x18, 0x30000000 |
-			     NV_PFIFO_CACHE1_DMA_FETCH_TRIG_128_BYTES |
-			     NV_PFIFO_CACHE1_DMA_FETCH_SIZE_128_BYTES |
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x00, args->offset);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x04, args->offset);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x0c,
+		       chan->base.pushgpu->addr >> 4);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x18, 0x30000000 | NV_PFIFO_CACHE1_DMA_FETCH_TRIG_128_BYTES | NV_PFIFO_CACHE1_DMA_FETCH_SIZE_128_BYTES |
 #ifdef __BIG_ENDIAN
-			     NV_PFIFO_CACHE1_BIG_ENDIAN |
+ NV_PFIFO_CACHE1_BIG_ENDIAN |
 #endif
-			     NV_PFIFO_CACHE1_DMA_FETCH_MAX_REQS_8);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x3c, 0x0001ffff);
+ NV_PFIFO_CACHE1_DMA_FETCH_MAX_REQS_8);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x3c, 0x0001ffff);
 	return 0;
 }
 

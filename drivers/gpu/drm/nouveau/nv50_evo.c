@@ -88,17 +88,18 @@ nv50_evo_dmaobj_new(struct nouveau_channel *evo, u32 handle, u32 memtype,
 			flags5 = 0x00020000;
 	}
 
-	nv_wo32(disp->ramin, dmao + 0x00, 0x0019003d | (memtype << 22));
-	nv_wo32(disp->ramin, dmao + 0x04, lower_32_bits(base + size - 1));
-	nv_wo32(disp->ramin, dmao + 0x08, lower_32_bits(base));
-	nv_wo32(disp->ramin, dmao + 0x0c, upper_32_bits(base + size - 1) << 24 |
-					  upper_32_bits(base));
-	nv_wo32(disp->ramin, dmao + 0x10, 0x00000000);
-	nv_wo32(disp->ramin, dmao + 0x14, flags5);
+	nv_gpuobj_wo32(disp->ramin, dmao + 0x00, 0x0019003d | (memtype << 22));
+	nv_gpuobj_wo32(disp->ramin, dmao + 0x04,
+		       lower_32_bits(base + size - 1));
+	nv_gpuobj_wo32(disp->ramin, dmao + 0x08, lower_32_bits(base));
+	nv_gpuobj_wo32(disp->ramin, dmao + 0x0c,
+		       upper_32_bits(base + size - 1) << 24 | upper_32_bits(base));
+	nv_gpuobj_wo32(disp->ramin, dmao + 0x10, 0x00000000);
+	nv_gpuobj_wo32(disp->ramin, dmao + 0x14, flags5);
 
-	nv_wo32(disp->ramin, hash + 0x00, handle);
-	nv_wo32(disp->ramin, hash + 0x04, (evo->handle << 28) | (dmao << 10) |
-					   evo->handle);
+	nv_gpuobj_wo32(disp->ramin, hash + 0x00, handle);
+	nv_gpuobj_wo32(disp->ramin, hash + 0x04,
+		       (evo->handle << 28) | (dmao << 10) | evo->handle);
 
 	disp->dmao += 0x20;
 	disp->hash += 0x08;

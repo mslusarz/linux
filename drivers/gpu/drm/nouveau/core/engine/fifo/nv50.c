@@ -52,7 +52,7 @@ nv50_fifo_playlist_update(struct nv50_fifo_priv *priv)
 
 	for (i = priv->base.min, p = 0; i < priv->base.max; i++) {
 		if (nv50_fifo_rd32(priv, 0x002600 + (i * 4)) & 0x80000000)
-			nv_wo32(cur, p++ * 4, i);
+			nv_gpuobj_wo32(cur, p++ * 4, i);
 	}
 
 	bar->flush(bar);
@@ -82,13 +82,13 @@ nv50_fifo_context_attach(struct nouveau_object *parent,
 	}
 
 	nv_engctx(ectx)->addr = nv_gpuobj(base)->addr >> 12;
-	nv_wo32(base->eng, addr + 0x00, 0x00190000);
-	nv_wo32(base->eng, addr + 0x04, lower_32_bits(limit));
-	nv_wo32(base->eng, addr + 0x08, lower_32_bits(start));
-	nv_wo32(base->eng, addr + 0x0c, upper_32_bits(limit) << 24 |
-					upper_32_bits(start));
-	nv_wo32(base->eng, addr + 0x10, 0x00000000);
-	nv_wo32(base->eng, addr + 0x14, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x00, 0x00190000);
+	nv_gpuobj_wo32(base->eng, addr + 0x04, lower_32_bits(limit));
+	nv_gpuobj_wo32(base->eng, addr + 0x08, lower_32_bits(start));
+	nv_gpuobj_wo32(base->eng, addr + 0x0c,
+		       upper_32_bits(limit) << 24 | upper_32_bits(start));
+	nv_gpuobj_wo32(base->eng, addr + 0x10, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x14, 0x00000000);
 	bar->flush(bar);
 	return 0;
 }
@@ -112,12 +112,12 @@ nv50_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 		return -EINVAL;
 	}
 
-	nv_wo32(base->eng, addr + 0x00, 0x00000000);
-	nv_wo32(base->eng, addr + 0x04, 0x00000000);
-	nv_wo32(base->eng, addr + 0x08, 0x00000000);
-	nv_wo32(base->eng, addr + 0x0c, 0x00000000);
-	nv_wo32(base->eng, addr + 0x10, 0x00000000);
-	nv_wo32(base->eng, addr + 0x14, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x00, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x04, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x08, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x0c, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x10, 0x00000000);
+	nv_gpuobj_wo32(base->eng, addr + 0x14, 0x00000000);
 	bar->flush(bar);
 
 	/* HW bug workaround:
@@ -211,20 +211,20 @@ nv50_fifo_chan_ctor_dma(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_wo32(base->ramfc, 0x08, lower_32_bits(args->offset));
-	nv_wo32(base->ramfc, 0x0c, upper_32_bits(args->offset));
-	nv_wo32(base->ramfc, 0x10, lower_32_bits(args->offset));
-	nv_wo32(base->ramfc, 0x14, upper_32_bits(args->offset));
-	nv_wo32(base->ramfc, 0x3c, 0x003f6078);
-	nv_wo32(base->ramfc, 0x44, 0x01003fff);
-	nv_wo32(base->ramfc, 0x48, chan->base.pushgpu->node->offset >> 4);
-	nv_wo32(base->ramfc, 0x4c, 0xffffffff);
-	nv_wo32(base->ramfc, 0x60, 0x7fffffff);
-	nv_wo32(base->ramfc, 0x78, 0x00000000);
-	nv_wo32(base->ramfc, 0x7c, 0x30000001);
-	nv_wo32(base->ramfc, 0x80, ((chan->ramht->bits - 9) << 27) |
-				   (4 << 24) /* SEARCH_FULL */ |
-				   (chan->ramht->base.node->offset >> 4));
+	nv_gpuobj_wo32(base->ramfc, 0x08, lower_32_bits(args->offset));
+	nv_gpuobj_wo32(base->ramfc, 0x0c, upper_32_bits(args->offset));
+	nv_gpuobj_wo32(base->ramfc, 0x10, lower_32_bits(args->offset));
+	nv_gpuobj_wo32(base->ramfc, 0x14, upper_32_bits(args->offset));
+	nv_gpuobj_wo32(base->ramfc, 0x3c, 0x003f6078);
+	nv_gpuobj_wo32(base->ramfc, 0x44, 0x01003fff);
+	nv_gpuobj_wo32(base->ramfc, 0x48,
+		       chan->base.pushgpu->node->offset >> 4);
+	nv_gpuobj_wo32(base->ramfc, 0x4c, 0xffffffff);
+	nv_gpuobj_wo32(base->ramfc, 0x60, 0x7fffffff);
+	nv_gpuobj_wo32(base->ramfc, 0x78, 0x00000000);
+	nv_gpuobj_wo32(base->ramfc, 0x7c, 0x30000001);
+	nv_gpuobj_wo32(base->ramfc, 0x80,
+		       ((chan->ramht->bits - 9) << 27) | (4 << 24) | (chan->ramht->base.node->offset >> 4));
 	bar->flush(bar);
 	return 0;
 }
@@ -267,17 +267,18 @@ nv50_fifo_chan_ctor_ind(struct nouveau_object *parent,
 	ioffset = args->ioffset;
 	ilength = log2i(args->ilength / 8);
 
-	nv_wo32(base->ramfc, 0x3c, 0x403f6078);
-	nv_wo32(base->ramfc, 0x44, 0x01003fff);
-	nv_wo32(base->ramfc, 0x48, chan->base.pushgpu->node->offset >> 4);
-	nv_wo32(base->ramfc, 0x50, lower_32_bits(ioffset));
-	nv_wo32(base->ramfc, 0x54, upper_32_bits(ioffset) | (ilength << 16));
-	nv_wo32(base->ramfc, 0x60, 0x7fffffff);
-	nv_wo32(base->ramfc, 0x78, 0x00000000);
-	nv_wo32(base->ramfc, 0x7c, 0x30000001);
-	nv_wo32(base->ramfc, 0x80, ((chan->ramht->bits - 9) << 27) |
-				   (4 << 24) /* SEARCH_FULL */ |
-				   (chan->ramht->base.node->offset >> 4));
+	nv_gpuobj_wo32(base->ramfc, 0x3c, 0x403f6078);
+	nv_gpuobj_wo32(base->ramfc, 0x44, 0x01003fff);
+	nv_gpuobj_wo32(base->ramfc, 0x48,
+		       chan->base.pushgpu->node->offset >> 4);
+	nv_gpuobj_wo32(base->ramfc, 0x50, lower_32_bits(ioffset));
+	nv_gpuobj_wo32(base->ramfc, 0x54,
+		       upper_32_bits(ioffset) | (ilength << 16));
+	nv_gpuobj_wo32(base->ramfc, 0x60, 0x7fffffff);
+	nv_gpuobj_wo32(base->ramfc, 0x78, 0x00000000);
+	nv_gpuobj_wo32(base->ramfc, 0x7c, 0x30000001);
+	nv_gpuobj_wo32(base->ramfc, 0x80,
+		       ((chan->ramht->bits - 9) << 27) | (4 << 24) | (chan->ramht->base.node->offset >> 4));
 	bar->flush(bar);
 	return 0;
 }

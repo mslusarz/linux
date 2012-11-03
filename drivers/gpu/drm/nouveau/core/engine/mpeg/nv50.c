@@ -61,10 +61,10 @@ nv50_mpeg_object_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_wo32(obj, 0x00, nv_mclass(obj));
-	nv_wo32(obj, 0x04, 0x00000000);
-	nv_wo32(obj, 0x08, 0x00000000);
-	nv_wo32(obj, 0x0c, 0x00000000);
+	nv_gpuobj_wo32(obj, 0x00, nv_mclass(obj));
+	nv_gpuobj_wo32(obj, 0x04, 0x00000000);
+	nv_gpuobj_wo32(obj, 0x08, 0x00000000);
+	nv_gpuobj_wo32(obj, 0x0c, 0x00000000);
 	return 0;
 }
 

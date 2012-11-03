@@ -124,8 +124,8 @@ nvc0_graph_context_ctor(struct nouveau_object *parent,
 			data |= info >> mmio->shift;
 		}
 
-		nv_wo32(chan->mmio, chan->mmio_nr++ * 4, addr);
-		nv_wo32(chan->mmio, chan->mmio_nr++ * 4, data);
+		nv_gpuobj_wo32(chan->mmio, chan->mmio_nr++ * 4, addr);
+		nv_gpuobj_wo32(chan->mmio, chan->mmio_nr++ * 4, data);
 		mmio++;
 	}
 
@@ -575,8 +575,8 @@ nvc0_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 		return ret;
 
 	for (i = 0; i < 0x1000; i += 4) {
-		nv_wo32(priv->unk4188b4, i, 0x00000010);
-		nv_wo32(priv->unk4188b8, i, 0x00000010);
+		nv_gpuobj_wo32(priv->unk4188b4, i, 0x00000010);
+		nv_gpuobj_wo32(priv->unk4188b8, i, 0x00000010);
 	}
 
 	priv->rop_nr = (nvc0_graph_rd32(priv, 0x409604) & 0x001f0000) >> 16;

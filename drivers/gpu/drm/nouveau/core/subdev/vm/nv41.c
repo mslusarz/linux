@@ -46,7 +46,7 @@ nv41_vm_map_sg(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 		u32 page = PAGE_SIZE / NV41_GART_PAGE;
 		u64 phys = (u64)*list++;
 		while (cnt && page--) {
-			nv_wo32(pgt, pte, (phys >> 7) | 1);
+			nv_gpuobj_wo32(pgt, pte, (phys >> 7) | 1);
 			phys += NV41_GART_PAGE;
 			pte += 4;
 			cnt -= 1;
@@ -59,7 +59,7 @@ nv41_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 {
 	pte = pte * 4;
 	while (cnt--) {
-		nv_wo32(pgt, pte, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte, 0x00000000);
 		pte += 4;
 	}
 }

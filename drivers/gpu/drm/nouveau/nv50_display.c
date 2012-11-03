@@ -106,7 +106,7 @@ nv50_display_sync(struct drm_device *dev)
 		BEGIN_NV04(evo, 0, 0x0084, 1);
 		OUT_RING  (evo, 0x00000000);
 
-		nv_wo32(disp->ramin, 0x2000, 0x00000000);
+		nv_gpuobj_wo32(disp->ramin, 0x2000, 0x00000000);
 		FIRE_RING (evo);
 
 		if (nv_wait_ne(disp->ramin, 0x2000, 0xffffffff, 0x00000000))

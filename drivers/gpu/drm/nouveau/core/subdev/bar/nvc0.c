@@ -128,10 +128,12 @@ nvc0_bar_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_wo32(mem, 0x0200, lower_32_bits(priv->bar[0].pgd->addr));
-	nv_wo32(mem, 0x0204, upper_32_bits(priv->bar[0].pgd->addr));
-	nv_wo32(mem, 0x0208, lower_32_bits(pci_resource_len(pdev, 3) - 1));
-	nv_wo32(mem, 0x020c, upper_32_bits(pci_resource_len(pdev, 3) - 1));
+	nv_gpuobj_wo32(mem, 0x0200, lower_32_bits(priv->bar[0].pgd->addr));
+	nv_gpuobj_wo32(mem, 0x0204, upper_32_bits(priv->bar[0].pgd->addr));
+	nv_gpuobj_wo32(mem, 0x0208,
+		       lower_32_bits(pci_resource_len(pdev, 3) - 1));
+	nv_gpuobj_wo32(mem, 0x020c,
+		       upper_32_bits(pci_resource_len(pdev, 3) - 1));
 
 	/* BAR1 */
 	ret = nouveau_gpuobj_new(parent, NULL, 0x1000, 0, 0, &priv->bar[1].mem);
@@ -152,10 +154,12 @@ nvc0_bar_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_wo32(mem, 0x0200, lower_32_bits(priv->bar[1].pgd->addr));
-	nv_wo32(mem, 0x0204, upper_32_bits(priv->bar[1].pgd->addr));
-	nv_wo32(mem, 0x0208, lower_32_bits(pci_resource_len(pdev, 1) - 1));
-	nv_wo32(mem, 0x020c, upper_32_bits(pci_resource_len(pdev, 1) - 1));
+	nv_gpuobj_wo32(mem, 0x0200, lower_32_bits(priv->bar[1].pgd->addr));
+	nv_gpuobj_wo32(mem, 0x0204, upper_32_bits(priv->bar[1].pgd->addr));
+	nv_gpuobj_wo32(mem, 0x0208,
+		       lower_32_bits(pci_resource_len(pdev, 1) - 1));
+	nv_gpuobj_wo32(mem, 0x020c,
+		       upper_32_bits(pci_resource_len(pdev, 1) - 1));
 
 	priv->base.alloc = nouveau_bar_alloc;
 	priv->base.kmap = nvc0_bar_kmap;

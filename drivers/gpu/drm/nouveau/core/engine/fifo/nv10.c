@@ -81,16 +81,15 @@ nv10_fifo_chan_ctor(struct nouveau_object *parent,
 	nv_parent(chan)->context_attach = nv04_fifo_context_attach;
 	chan->ramfc = chan->base.chid * 32;
 
-	nv_wo32(priv->ramfc, chan->ramfc + 0x00, args->offset);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x04, args->offset);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x0c, chan->base.pushgpu->addr >> 4);
-	nv_wo32(priv->ramfc, chan->ramfc + 0x14,
-			     NV_PFIFO_CACHE1_DMA_FETCH_TRIG_128_BYTES |
-			     NV_PFIFO_CACHE1_DMA_FETCH_SIZE_128_BYTES |
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x00, args->offset);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x04, args->offset);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x0c,
+		       chan->base.pushgpu->addr >> 4);
+	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x14, NV_PFIFO_CACHE1_DMA_FETCH_TRIG_128_BYTES | NV_PFIFO_CACHE1_DMA_FETCH_SIZE_128_BYTES |
 #ifdef __BIG_ENDIAN
-			     NV_PFIFO_CACHE1_BIG_ENDIAN |
+ NV_PFIFO_CACHE1_BIG_ENDIAN |
 #endif
-			     NV_PFIFO_CACHE1_DMA_FETCH_MAX_REQS_8);
+ NV_PFIFO_CACHE1_DMA_FETCH_MAX_REQS_8);
 	return 0;
 }
 

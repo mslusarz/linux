@@ -59,8 +59,8 @@ nv50_vm_map_pgt(struct nouveau_gpuobj *pgd, u32 pde,
 			phys |= 0x20;
 	}
 
-	nv_wo32(pgd, (pde * 8) + 0, lower_32_bits(phys));
-	nv_wo32(pgd, (pde * 8) + 4, upper_32_bits(phys));
+	nv_gpuobj_wo32(pgd, (pde * 8) + 0, lower_32_bits(phys));
+	nv_gpuobj_wo32(pgd, (pde * 8) + 4, upper_32_bits(phys));
 }
 
 static inline u64
@@ -115,8 +115,8 @@ nv50_vm_map(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 		}
 
 		while (block) {
-			nv_wo32(pgt, pte + 0, offset_l);
-			nv_wo32(pgt, pte + 4, offset_h);
+			nv_gpuobj_wo32(pgt, pte + 0, offset_l);
+			nv_gpuobj_wo32(pgt, pte + 4, offset_h);
 			pte += 8;
 			block -= 8;
 		}
@@ -131,8 +131,8 @@ nv50_vm_map_sg(struct nouveau_vma *vma, struct nouveau_gpuobj *pgt,
 	pte <<= 3;
 	while (cnt--) {
 		u64 phys = vm_addr(vma, (u64)*list++, mem->memtype, target);
-		nv_wo32(pgt, pte + 0, lower_32_bits(phys));
-		nv_wo32(pgt, pte + 4, upper_32_bits(phys));
+		nv_gpuobj_wo32(pgt, pte + 0, lower_32_bits(phys));
+		nv_gpuobj_wo32(pgt, pte + 4, upper_32_bits(phys));
 		pte += 8;
 	}
 }
@@ -142,8 +142,8 @@ nv50_vm_unmap(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt)
 {
 	pte <<= 3;
 	while (cnt--) {
-		nv_wo32(pgt, pte + 0, 0x00000000);
-		nv_wo32(pgt, pte + 4, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte + 0, 0x00000000);
+		nv_gpuobj_wo32(pgt, pte + 4, 0x00000000);
 		pte += 8;
 	}
 }

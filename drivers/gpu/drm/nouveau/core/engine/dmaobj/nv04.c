@@ -60,7 +60,7 @@ nv04_dmaobj_bind(struct nouveau_dmaeng *dmaeng,
 			struct nouveau_gpuobj *pgt = vmm->vm->pgt[0].obj[0];
 			if (!dmaobj->start)
 				return nouveau_gpuobj_dup(parent, pgt, pgpuobj);
-			offset  = nv_ro32(pgt, 8 + (offset >> 10));
+			offset  = nv_gpuobj_ro32(pgt, 8 + (offset >> 10));
 			offset &= 0xfffff000;
 		}
 
@@ -98,10 +98,10 @@ nv04_dmaobj_bind(struct nouveau_dmaeng *dmaeng,
 	ret = nouveau_gpuobj_new(parent, parent, 16, 16, 0, &gpuobj);
 	*pgpuobj = gpuobj;
 	if (ret == 0) {
-		nv_wo32(*pgpuobj, 0x00, flags0 | (adjust << 20));
-		nv_wo32(*pgpuobj, 0x04, length);
-		nv_wo32(*pgpuobj, 0x08, flags2 | offset);
-		nv_wo32(*pgpuobj, 0x0c, flags2 | offset);
+		nv_gpuobj_wo32(*pgpuobj, 0x00, flags0 | (adjust << 20));
+		nv_gpuobj_wo32(*pgpuobj, 0x04, length);
+		nv_gpuobj_wo32(*pgpuobj, 0x08, flags2 | offset);
+		nv_gpuobj_wo32(*pgpuobj, 0x0c, flags2 | offset);
 	}
 
 	return ret;
