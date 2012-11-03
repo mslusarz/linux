@@ -65,7 +65,7 @@ int
 nv50_mc_init(struct nouveau_object *object)
 {
 	struct nv50_mc_priv *priv = (void *)object;
-	nv_wr32(priv, 0x000200, 0xffffffff); /* everything on */
+	nv50_mc_wr32(priv, 0x000200, 0xffffffff); /* everything on */
 	return nouveau_mc_init(&priv->base);
 }
 

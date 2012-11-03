@@ -51,14 +51,14 @@ static int
 nv44_mc_init(struct nouveau_object *object)
 {
 	struct nv44_mc_priv *priv = (void *)object;
-	u32 tmp = nv_rd32(priv, 0x10020c);
+	u32 tmp = nv44_mc_rd32(priv, 0x10020c);
 
-	nv_wr32(priv, 0x000200, 0xffffffff); /* everything enabled */
+	nv44_mc_wr32(priv, 0x000200, 0xffffffff); /* everything enabled */
 
-	nv_wr32(priv, 0x001700, tmp);
-	nv_wr32(priv, 0x001704, 0);
-	nv_wr32(priv, 0x001708, 0);
-	nv_wr32(priv, 0x00170c, tmp);
+	nv44_mc_wr32(priv, 0x001700, tmp);
+	nv44_mc_wr32(priv, 0x001704, 0);
+	nv44_mc_wr32(priv, 0x001708, 0);
+	nv44_mc_wr32(priv, 0x00170c, tmp);
 
 	return nouveau_mc_init(&priv->base);
 }

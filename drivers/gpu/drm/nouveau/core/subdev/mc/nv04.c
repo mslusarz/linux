@@ -66,8 +66,8 @@ nv04_mc_init(struct nouveau_object *object)
 {
 	struct nv04_mc_priv *priv = (void *)object;
 
-	nv_wr32(priv, 0x000200, 0xffffffff); /* everything enabled */
-	nv_wr32(priv, 0x001850, 0x00000001); /* disable rom access */
+	nv04_mc_wr32(priv, 0x000200, 0xffffffff); /* everything enabled */
+	nv04_mc_wr32(priv, 0x001850, 0x00000001); /* disable rom access */
 
 	return nouveau_mc_init(&priv->base);
 }
