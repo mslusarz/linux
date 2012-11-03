@@ -63,58 +63,52 @@ int  _nouveau_subdev_fini(struct nouveau_object *, bool suspend);
 } while(0)
 
 static inline u8
-nv_rd08(void *obj, u32 addr)
+nv_rd08(struct nouveau_subdev *subdev, u32 addr)
 {
-	struct nouveau_subdev *subdev = nv_subdev(obj);
 	u8 data = ioread8(subdev->mmio + addr);
 	nv_spam(subdev, "nv_rd08 0x%06x 0x%02x\n", addr, data);
 	return data;
 }
 
 static inline u16
-nv_rd16(void *obj, u32 addr)
+nv_rd16(struct nouveau_subdev *subdev, u32 addr)
 {
-	struct nouveau_subdev *subdev = nv_subdev(obj);
 	u16 data = ioread16_native(subdev->mmio + addr);
 	nv_spam(subdev, "nv_rd16 0x%06x 0x%04x\n", addr, data);
 	return data;
 }
 
 static inline u32
-nv_rd32(void *obj, u32 addr)
+nv_rd32(struct nouveau_subdev *subdev, u32 addr)
 {
-	struct nouveau_subdev *subdev = nv_subdev(obj);
 	u32 data = ioread32_native(subdev->mmio + addr);
 	nv_spam(subdev, "nv_rd32 0x%06x 0x%08x\n", addr, data);
 	return data;
 }
 
 static inline void
-nv_wr08(void *obj, u32 addr, u8 data)
+nv_wr08(struct nouveau_subdev *subdev, u32 addr, u8 data)
 {
-	struct nouveau_subdev *subdev = nv_subdev(obj);
 	nv_spam(subdev, "nv_wr08 0x%06x 0x%02x\n", addr, data);
 	iowrite8(data, subdev->mmio + addr);
 }
 
 static inline void
-nv_wr16(void *obj, u32 addr, u16 data)
+nv_wr16(struct nouveau_subdev *subdev, u32 addr, u16 data)
 {
-	struct nouveau_subdev *subdev = nv_subdev(obj);
 	nv_spam(subdev, "nv_wr16 0x%06x 0x%04x\n", addr, data);
 	iowrite16_native(data, subdev->mmio + addr);
 }
 
 static inline void
-nv_wr32(void *obj, u32 addr, u32 data)
+nv_wr32(struct nouveau_subdev *subdev, u32 addr, u32 data)
 {
-	struct nouveau_subdev *subdev = nv_subdev(obj);
 	nv_spam(subdev, "nv_wr32 0x%06x 0x%08x\n", addr, data);
 	iowrite32_native(data, subdev->mmio + addr);
 }
 
 static inline u32
-nv_mask(void *obj, u32 addr, u32 mask, u32 data)
+nv_mask(struct nouveau_subdev *obj, u32 addr, u32 mask, u32 data)
 {
 	u32 temp = nv_rd32(obj, addr);
 	nv_wr32(obj, addr, (temp & ~mask) | data);
