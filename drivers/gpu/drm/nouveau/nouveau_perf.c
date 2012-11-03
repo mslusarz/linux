@@ -240,7 +240,7 @@ legacy_perf_init(struct drm_device *dev)
 
 	entry = perf + headerlen;
 	if (use_straps)
-		entry += (nv_rd32(device, NV_PEXTDEV_BOOT_0) & 0x3c) >> 1;
+		entry += (nv_device_rd32(device, NV_PEXTDEV_BOOT_0) & 0x3c) >> 1;
 
 	sprintf(pm->perflvl[0].name, "performance_level_0");
 	pm->perflvl[0].memory = ROM16(entry[0]) * 20;

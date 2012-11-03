@@ -505,19 +505,19 @@ nouveau_mem_timing_read(struct drm_device *dev, struct nouveau_pm_memtiming *t)
 		return;
 	}
 	for(i = 0; i < timing_regs; i++)
-		t->reg[i] = nv_rd32(device, timing_base + (0x04 * i));
+		t->reg[i] = nv_device_rd32(device, timing_base + (0x04 * i));
 
 	t->tCWL = 0;
 	if (device->card_type < NV_C0) {
-		t->tCWL = ((nv_rd32(device, 0x100228) & 0x0f000000) >> 24) + 1;
+		t->tCWL = ((nv_device_rd32(device, 0x100228) & 0x0f000000) >> 24) + 1;
 	} else if (device->card_type <= NV_D0) {
-		t->tCWL = ((nv_rd32(device, 0x10f294) & 0x00000f80) >> 7);
+		t->tCWL = ((nv_device_rd32(device, 0x10f294) & 0x00000f80) >> 7);
 	}
 
-	t->mr[0] = nv_rd32(device, mr_base);
-	t->mr[1] = nv_rd32(device, mr_base + 0x04);
-	t->mr[2] = nv_rd32(device, mr_base + 0x20);
-	t->mr[3] = nv_rd32(device, mr_base + 0x24);
+	t->mr[0] = nv_device_rd32(device, mr_base);
+	t->mr[1] = nv_device_rd32(device, mr_base + 0x04);
+	t->mr[2] = nv_device_rd32(device, mr_base + 0x20);
+	t->mr[3] = nv_device_rd32(device, mr_base + 0x24);
 
 	t->odt = 0;
 	t->drive_strength = 0;

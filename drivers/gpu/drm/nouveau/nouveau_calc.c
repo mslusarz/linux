@@ -203,7 +203,7 @@ nv04_update_arb(struct drm_device *dev, int VClk, int bpp,
 	struct nv_sim_state sim_data;
 	int MClk = nouveau_hw_get_clock(dev, PLL_MEMORY);
 	int NVClk = nouveau_hw_get_clock(dev, PLL_CORE);
-	uint32_t cfg1 = nv_rd32(device, NV04_PFB_CFG1);
+	uint32_t cfg1 = nv_device_rd32(device, NV04_PFB_CFG1);
 
 	sim_data.pclk_khz = VClk;
 	sim_data.mclk_khz = MClk;
@@ -221,8 +221,9 @@ nv04_update_arb(struct drm_device *dev, int VClk, int bpp,
 		sim_data.mem_latency = 3;
 		sim_data.mem_page_miss = 10;
 	} else {
-		sim_data.memory_type = nv_rd32(device, NV04_PFB_CFG0) & 0x1;
-		sim_data.memory_width = (nv_rd32(device, NV_PEXTDEV_BOOT_0) & 0x10) ? 128 : 64;
+		sim_data.memory_type = nv_device_rd32(device, NV04_PFB_CFG0) & 0x1;
+		sim_data.memory_width = (nv_device_rd32(device,
+							NV_PEXTDEV_BOOT_0) & 0x10) ? 128 : 64;
 		sim_data.mem_latency = cfg1 & 0xf;
 		sim_data.mem_page_miss = ((cfg1 >> 4) & 0xf) + ((cfg1 >> 31) & 0x1);
 	}

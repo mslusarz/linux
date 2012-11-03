@@ -15,9 +15,9 @@ nouveau_vga_set_decode(void *priv, bool state)
 	struct nouveau_device *device = nouveau_dev(priv);
 
 	if (device->chipset >= 0x40)
-		nv_wr32(device, 0x088054, state);
+		nv_device_wr32(device, 0x088054, state);
 	else
-		nv_wr32(device, 0x001854, state);
+		nv_device_wr32(device, 0x001854, state);
 
 	if (state)
 		return VGA_RSRC_LEGACY_IO | VGA_RSRC_LEGACY_MEM |

@@ -39,7 +39,7 @@ static u32
 read_vco(struct drm_device *dev, u32 dsrc)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ssrc = nv_rd32(device, dsrc);
+	u32 ssrc = nv_device_rd32(device, dsrc);
 	if (!(ssrc & 0x00000100))
 		return read_pll(dev, 0x00e800);
 	return read_pll(dev, 0x00e820);
@@ -49,8 +49,8 @@ static u32
 read_pll(struct drm_device *dev, u32 pll)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ctrl = nv_rd32(device, pll + 0);
-	u32 coef = nv_rd32(device, pll + 4);
+	u32 ctrl = nv_device_rd32(device, pll + 0);
+	u32 coef = nv_device_rd32(device, pll + 4);
 	u32 P = (coef & 0x003f0000) >> 16;
 	u32 N = (coef & 0x0000ff00) >> 8;
 	u32 M = (coef & 0x000000ff) >> 0;
@@ -91,8 +91,8 @@ static u32
 read_div(struct drm_device *dev, int doff, u32 dsrc, u32 dctl)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ssrc = nv_rd32(device, dsrc + (doff * 4));
-	u32 sctl = nv_rd32(device, dctl + (doff * 4));
+	u32 ssrc = nv_device_rd32(device, dsrc + (doff * 4));
+	u32 sctl = nv_device_rd32(device, dctl + (doff * 4));
 
 	switch (ssrc & 0x00000003) {
 	case 0:
@@ -118,7 +118,7 @@ static u32
 read_mem(struct drm_device *dev)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ssel = nv_rd32(device, 0x1373f0);
+	u32 ssel = nv_device_rd32(device, 0x1373f0);
 	if (ssel & 0x00000001)
 		return read_div(dev, 0, 0x137300, 0x137310);
 	return read_pll(dev, 0x132000);
@@ -128,8 +128,8 @@ static u32
 read_clk(struct drm_device *dev, int clk)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 sctl = nv_rd32(device, 0x137250 + (clk * 4));
-	u32 ssel = nv_rd32(device, 0x137100);
+	u32 sctl = nv_device_rd32(device, 0x137250 + (clk * 4));
+	u32 ssel = nv_device_rd32(device, 0x137100);
 	u32 sclk, sdiv;
 
 	if (ssel & (1 << clk)) {
@@ -327,20 +327,20 @@ calc_mem(struct drm_device *dev, struct nvc0_pm_clock *info, u32 freq)
 	u32 ctrl;
 
 	/* mclk pll input freq comes from another pll, make sure it's on */
-	ctrl = nv_rd32(device, 0x132020);
+	ctrl = nv_device_rd32(device, 0x132020);
 	if (!(ctrl & 0x00000001)) {
 		/* if not, program it to 567MHz.  nfi where this value comes
 		 * from - it looks like it's in the pll limits table for
 		 * 132000 but the binary driver ignores all my attempts to
 		 * change this value.
 		 */
-		nv_wr32(device, 0x137320, 0x00000103);
-		nv_wr32(device, 0x137330, 0x81200606);
+		nv_device_wr32(device, 0x137320, 0x00000103);
+		nv_device_wr32(device, 0x137330, 0x81200606);
 		nv_wait(device, 0x132020, 0x00010000, 0x00010000);
-		nv_wr32(device, 0x132024, 0x0001150f);
-		nv_mask(device, 0x132020, 0x00000001, 0x00000001);
+		nv_device_wr32(device, 0x132024, 0x0001150f);
+		nv_device_mask(device, 0x132020, 0x00000001, 0x00000001);
 		nv_wait(device, 0x137390, 0x00020000, 0x00020000);
-		nv_mask(device, 0x132020, 0x00000004, 0x00000004);
+		nv_device_mask(device, 0x132020, 0x00000004, 0x00000004);
 	}
 
 	/* for the moment, until the clock tree is better understood, use
@@ -412,36 +412,42 @@ prog_clk(struct drm_device *dev, int clk, struct nvc0_pm_clock *info)
 
 	/* program dividers at 137160/1371d0 first */
 	if (clk < 7 && !info->ssel) {
-		nv_mask(device, 0x1371d0 + (clk * 0x04), 0x80003f3f, info->ddiv);
-		nv_wr32(device, 0x137160 + (clk * 0x04), info->dsrc);
+		nv_device_mask(device, 0x1371d0 + (clk * 0x04), 0x80003f3f,
+			       info->ddiv);
+		nv_device_wr32(device, 0x137160 + (clk * 0x04), info->dsrc);
 	}
 
 	/* switch clock to non-pll mode */
-	nv_mask(device, 0x137100, (1 << clk), 0x00000000);
+	nv_device_mask(device, 0x137100, (1 << clk), 0x00000000);
 	nv_wait(device, 0x137100, (1 << clk), 0x00000000);
 
 	/* reprogram pll */
 	if (clk < 7) {
 		/* make sure it's disabled first... */
 		u32 base = 0x137000 + (clk * 0x20);
-		u32 ctrl = nv_rd32(device, base + 0x00);
+		u32 ctrl = nv_device_rd32(device, base + 0x00);
 		if (ctrl & 0x00000001) {
-			nv_mask(device, base + 0x00, 0x00000004, 0x00000000);
-			nv_mask(device, base + 0x00, 0x00000001, 0x00000000);
+			nv_device_mask(device, base + 0x00, 0x00000004,
+				       0x00000000);
+			nv_device_mask(device, base + 0x00, 0x00000001,
+				       0x00000000);
 		}
 		/* program it to new values, if necessary */
 		if (info->ssel) {
-			nv_wr32(device, base + 0x04, info->coef);
-			nv_mask(device, base + 0x00, 0x00000001, 0x00000001);
+			nv_device_wr32(device, base + 0x04, info->coef);
+			nv_device_mask(device, base + 0x00, 0x00000001,
+				       0x00000001);
 			nv_wait(device, base + 0x00, 0x00020000, 0x00020000);
-			nv_mask(device, base + 0x00, 0x00020004, 0x00000004);
+			nv_device_mask(device, base + 0x00, 0x00020004,
+				       0x00000004);
 		}
 	}
 
 	/* select pll/non-pll mode, and program final clock divider */
-	nv_mask(device, 0x137100, (1 << clk), info->ssel);
+	nv_device_mask(device, 0x137100, (1 << clk), info->ssel);
 	nv_wait(device, 0x137100, (1 << clk), info->ssel);
-	nv_mask(device, 0x137250 + (clk * 0x04), 0x00003f3f, info->mdiv);
+	nv_device_mask(device, 0x137250 + (clk * 0x04), 0x00003f3f,
+		       info->mdiv);
 }
 
 static void
@@ -458,7 +464,7 @@ static void
 mclk_refresh_auto(struct nouveau_mem_exec_func *exec, bool enable)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
-	nv_wr32(device, 0x10f210, enable ? 0x80000000 : 0x00000000);
+	nv_device_wr32(device, 0x10f210, enable ? 0x80000000 : 0x00000000);
 }
 
 static void
@@ -479,15 +485,16 @@ mclk_mrg(struct nouveau_mem_exec_func *exec, int mr)
 	struct nouveau_fb *pfb = nouveau_fb(device);
 	if (pfb->ram.type != NV_MEM_TYPE_GDDR5) {
 		if (mr <= 1)
-			return nv_rd32(device, 0x10f300 + ((mr - 0) * 4));
-		return nv_rd32(device, 0x10f320 + ((mr - 2) * 4));
+			return nv_device_rd32(device,
+					      0x10f300 + ((mr - 0) * 4));
+		return nv_device_rd32(device, 0x10f320 + ((mr - 2) * 4));
 	} else {
 		if (mr == 0)
-			return nv_rd32(device, 0x10f300 + (mr * 4));
+			return nv_device_rd32(device, 0x10f300 + (mr * 4));
 		else
 		if (mr <= 7)
-			return nv_rd32(device, 0x10f32c + (mr * 4));
-		return nv_rd32(device, 0x10f34c);
+			return nv_device_rd32(device, 0x10f32c + (mr * 4));
+		return nv_device_rd32(device, 0x10f34c);
 	}
 }
 
@@ -498,19 +505,27 @@ mclk_mrs(struct nouveau_mem_exec_func *exec, int mr, u32 data)
 	struct nouveau_fb *pfb = nouveau_fb(device);
 	if (pfb->ram.type != NV_MEM_TYPE_GDDR5) {
 		if (mr <= 1) {
-			nv_wr32(device, 0x10f300 + ((mr - 0) * 4), data);
+			nv_device_wr32(device, 0x10f300 + ((mr - 0) * 4),
+				       data);
 			if (pfb->ram.ranks > 1)
-				nv_wr32(device, 0x10f308 + ((mr - 0) * 4), data);
+				nv_device_wr32(device,
+					       0x10f308 + ((mr - 0) * 4),
+					       data);
 		} else
 		if (mr <= 3) {
-			nv_wr32(device, 0x10f320 + ((mr - 2) * 4), data);
+			nv_device_wr32(device, 0x10f320 + ((mr - 2) * 4),
+				       data);
 			if (pfb->ram.ranks > 1)
-				nv_wr32(device, 0x10f328 + ((mr - 2) * 4), data);
+				nv_device_wr32(device,
+					       0x10f328 + ((mr - 2) * 4),
+					       data);
 		}
 	} else {
-		if      (mr ==  0) nv_wr32(device, 0x10f300 + (mr * 4), data);
-		else if (mr <=  7) nv_wr32(device, 0x10f32c + (mr * 4), data);
-		else if (mr == 15) nv_wr32(device, 0x10f34c, data);
+		if      (mr ==  0) nv_device_wr32(device,
+						  0x10f300 + (mr * 4), data);
+		else if (mr <=  7) nv_device_wr32(device,
+						  0x10f32c + (mr * 4), data);
+		else if (mr == 15) nv_device_wr32(device, 0x10f34c, data);
 	}
 }
 
@@ -519,22 +534,22 @@ mclk_clock_set(struct nouveau_mem_exec_func *exec)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
 	struct nvc0_pm_state *info = exec->priv;
-	u32 ctrl = nv_rd32(device, 0x132000);
+	u32 ctrl = nv_device_rd32(device, 0x132000);
 
-	nv_wr32(device, 0x137360, 0x00000001);
-	nv_wr32(device, 0x137370, 0x00000000);
-	nv_wr32(device, 0x137380, 0x00000000);
+	nv_device_wr32(device, 0x137360, 0x00000001);
+	nv_device_wr32(device, 0x137370, 0x00000000);
+	nv_device_wr32(device, 0x137380, 0x00000000);
 	if (ctrl & 0x00000001)
-		nv_wr32(device, 0x132000, (ctrl &= ~0x00000001));
+		nv_device_wr32(device, 0x132000, (ctrl &= ~0x00000001));
 
-	nv_wr32(device, 0x132004, info->mem.coef);
-	nv_wr32(device, 0x132000, (ctrl |= 0x00000001));
+	nv_device_wr32(device, 0x132004, info->mem.coef);
+	nv_device_wr32(device, 0x132000, (ctrl |= 0x00000001));
 	nv_wait(device, 0x137390, 0x00000002, 0x00000002);
-	nv_wr32(device, 0x132018, 0x00005000);
+	nv_device_wr32(device, 0x132018, 0x00005000);
 
-	nv_wr32(device, 0x137370, 0x00000001);
-	nv_wr32(device, 0x137380, 0x00000001);
-	nv_wr32(device, 0x137360, 0x00000000);
+	nv_device_wr32(device, 0x137370, 0x00000001);
+	nv_device_wr32(device, 0x137380, 0x00000001);
+	nv_device_wr32(device, 0x137360, 0x00000000);
 }
 
 static void
@@ -546,7 +561,8 @@ mclk_timing_set(struct nouveau_mem_exec_func *exec)
 	int i;
 
 	for (i = 0; i < 5; i++)
-		nv_wr32(device, 0x10f290 + (i * 4), perflvl->timing.reg[i]);
+		nv_device_wr32(device, 0x10f290 + (i * 4),
+			       perflvl->timing.reg[i]);
 }
 
 static void
@@ -568,16 +584,16 @@ prog_mem(struct drm_device *dev, struct nvc0_pm_state *info)
 	};
 
 	if (device->chipset < 0xd0)
-		nv_wr32(device, 0x611200, 0x00003300);
+		nv_device_wr32(device, 0x611200, 0x00003300);
 	else
-		nv_wr32(device, 0x62c000, 0x03030000);
+		nv_device_wr32(device, 0x62c000, 0x03030000);
 
 	nouveau_mem_exec(&exec, info->perflvl);
 
 	if (device->chipset < 0xd0)
-		nv_wr32(device, 0x611200, 0x00003330);
+		nv_device_wr32(device, 0x611200, 0x00003330);
 	else
-		nv_wr32(device, 0x62c000, 0x03030300);
+		nv_device_wr32(device, 0x62c000, 0x03030300);
 }
 int
 nvc0_pm_clocks_set(struct drm_device *dev, void *data)

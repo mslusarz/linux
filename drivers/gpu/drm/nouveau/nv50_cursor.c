@@ -106,10 +106,11 @@ nv50_cursor_set_pos(struct nouveau_crtc *nv_crtc, int x, int y)
 	struct nouveau_device *device = nouveau_dev(nv_crtc->base.dev);
 
 	nv_crtc->cursor_saved_x = x; nv_crtc->cursor_saved_y = y;
-	nv_wr32(device, NV50_PDISPLAY_CURSOR_USER_POS(nv_crtc->index),
-		((y & 0xFFFF) << 16) | (x & 0xFFFF));
+	nv_device_wr32(device, NV50_PDISPLAY_CURSOR_USER_POS(nv_crtc->index),
+		       ((y & 0xFFFF) << 16) | (x & 0xFFFF));
 	/* Needed to make the cursor move. */
-	nv_wr32(device, NV50_PDISPLAY_CURSOR_USER_POS_CTRL(nv_crtc->index), 0);
+	nv_device_wr32(device,
+		       NV50_PDISPLAY_CURSOR_USER_POS_CTRL(nv_crtc->index), 0);
 }
 
 static void

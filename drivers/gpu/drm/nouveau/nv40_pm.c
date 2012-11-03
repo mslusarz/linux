@@ -40,7 +40,7 @@ static u32
 read_pll_1(struct drm_device *dev, u32 reg)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ctrl = nv_rd32(device, reg + 0x00);
+	u32 ctrl = nv_device_rd32(device, reg + 0x00);
 	int P = (ctrl & 0x00070000) >> 16;
 	int N = (ctrl & 0x0000ff00) >> 8;
 	int M = (ctrl & 0x000000ff) >> 0;
@@ -56,8 +56,8 @@ static u32
 read_pll_2(struct drm_device *dev, u32 reg)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ctrl = nv_rd32(device, reg + 0x00);
-	u32 coef = nv_rd32(device, reg + 0x04);
+	u32 ctrl = nv_device_rd32(device, reg + 0x00);
+	u32 coef = nv_device_rd32(device, reg + 0x04);
 	int N2 = (coef & 0xff000000) >> 24;
 	int M2 = (coef & 0x00ff0000) >> 16;
 	int N1 = (coef & 0x0000ff00) >> 8;
@@ -97,7 +97,7 @@ int
 nv40_pm_clocks_get(struct drm_device *dev, struct nouveau_pm_level *perflvl)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ctrl = nv_rd32(device, 0x00c040);
+	u32 ctrl = nv_device_rd32(device, 0x00c040);
 
 	perflvl->core   = read_clk(dev, (ctrl & 0x00000003) >> 0);
 	perflvl->shader = read_clk(dev, (ctrl & 0x00000030) >> 4);
@@ -225,11 +225,11 @@ nv40_pm_gr_idle(void *data)
 	struct drm_device *dev = data;
 	struct nouveau_device *device = nouveau_dev(dev);
 
-	if ((nv_rd32(device, 0x400760) & 0x000000f0) >> 4 !=
-	    (nv_rd32(device, 0x400760) & 0x0000000f))
+	if ((nv_device_rd32(device, 0x400760) & 0x000000f0) >> 4 !=
+	    (nv_device_rd32(device, 0x400760) & 0x0000000f))
 		return false;
 
-	if (nv_rd32(device, 0x400700))
+	if (nv_device_rd32(device, 0x400700))
 		return false;
 
 	return true;
@@ -250,12 +250,15 @@ nv40_pm_clocks_set(struct drm_device *dev, void *pre_state)
 
 	/* determine which CRTCs are active, fetch VGA_SR1 for each */
 	for (i = 0; i < 2; i++) {
-		u32 vbl = nv_rd32(device, 0x600808 + (i * 0x2000));
+		u32 vbl = nv_device_rd32(device, 0x600808 + (i * 0x2000));
 		u32 cnt = 0;
 		do {
-			if (vbl != nv_rd32(device, 0x600808 + (i * 0x2000))) {
-				nv_wr08(device, 0x0c03c4 + (i * 0x2000), 0x01);
-				sr1[i] = nv_rd08(device, 0x0c03c5 + (i * 0x2000));
+			if (vbl != nv_device_rd32(device,
+						  0x600808 + (i * 0x2000))) {
+				nv_device_wr08(device,
+					       0x0c03c4 + (i * 0x2000), 0x01);
+				sr1[i] = nv_device_rd08(device,
+							0x0c03c5 + (i * 0x2000));
 				if (!(sr1[i] & 0x20))
 					crtc_mask |= (1 << i);
 				break;
@@ -273,12 +276,12 @@ nv40_pm_clocks_set(struct drm_device *dev, void *pre_state)
 	ret = 0;
 
 	/* set engine clocks */
-	nv_mask(device, 0x00c040, 0x00000333, 0x00000000);
-	nv_wr32(device, 0x004004, info->npll_coef);
-	nv_mask(device, 0x004000, 0xc0070100, info->npll_ctrl);
-	nv_mask(device, 0x004008, 0xc007ffff, info->spll);
+	nv_device_mask(device, 0x00c040, 0x00000333, 0x00000000);
+	nv_device_wr32(device, 0x004004, info->npll_coef);
+	nv_device_mask(device, 0x004000, 0xc0070100, info->npll_ctrl);
+	nv_device_mask(device, 0x004008, 0xc007ffff, info->spll);
 	mdelay(5);
-	nv_mask(device, 0x00c040, 0x00000333, info->ctrl);
+	nv_device_mask(device, 0x00c040, 0x00000333, info->ctrl);
 
 	if (!info->mpll_ctrl)
 		goto resume;
@@ -289,45 +292,45 @@ nv40_pm_clocks_set(struct drm_device *dev, void *pre_state)
 			continue;
 		nv_wait(device, 0x600808 + (i * 0x2000), 0x00010000, 0x00000000);
 		nv_wait(device, 0x600808 + (i * 0x2000), 0x00010000, 0x00010000);
-		nv_wr08(device, 0x0c03c4 + (i * 0x2000), 0x01);
-		nv_wr08(device, 0x0c03c5 + (i * 0x2000), sr1[i] | 0x20);
+		nv_device_wr08(device, 0x0c03c4 + (i * 0x2000), 0x01);
+		nv_device_wr08(device, 0x0c03c5 + (i * 0x2000), sr1[i] | 0x20);
 	}
 
 	/* prepare ram for reclocking */
-	nv_wr32(device, 0x1002d4, 0x00000001); /* precharge */
-	nv_wr32(device, 0x1002d0, 0x00000001); /* refresh */
-	nv_wr32(device, 0x1002d0, 0x00000001); /* refresh */
-	nv_mask(device, 0x100210, 0x80000000, 0x00000000); /* no auto refresh */
-	nv_wr32(device, 0x1002dc, 0x00000001); /* enable self-refresh */
+	nv_device_wr32(device, 0x1002d4, 0x00000001); /* precharge */
+	nv_device_wr32(device, 0x1002d0, 0x00000001); /* refresh */
+	nv_device_wr32(device, 0x1002d0, 0x00000001); /* refresh */
+	nv_device_mask(device, 0x100210, 0x80000000, 0x00000000); /* no auto refresh */
+	nv_device_wr32(device, 0x1002dc, 0x00000001); /* enable self-refresh */
 
 	/* change the PLL of each memory partition */
-	nv_mask(device, 0x00c040, 0x0000c000, 0x00000000);
+	nv_device_mask(device, 0x00c040, 0x0000c000, 0x00000000);
 	switch (nv_device(drm->device)->chipset) {
 	case 0x40:
 	case 0x45:
 	case 0x41:
 	case 0x42:
 	case 0x47:
-		nv_mask(device, 0x004044, 0xc0771100, info->mpll_ctrl);
-		nv_mask(device, 0x00402c, 0xc0771100, info->mpll_ctrl);
-		nv_wr32(device, 0x004048, info->mpll_coef);
-		nv_wr32(device, 0x004030, info->mpll_coef);
+		nv_device_mask(device, 0x004044, 0xc0771100, info->mpll_ctrl);
+		nv_device_mask(device, 0x00402c, 0xc0771100, info->mpll_ctrl);
+		nv_device_wr32(device, 0x004048, info->mpll_coef);
+		nv_device_wr32(device, 0x004030, info->mpll_coef);
 	case 0x43:
 	case 0x49:
 	case 0x4b:
-		nv_mask(device, 0x004038, 0xc0771100, info->mpll_ctrl);
-		nv_wr32(device, 0x00403c, info->mpll_coef);
+		nv_device_mask(device, 0x004038, 0xc0771100, info->mpll_ctrl);
+		nv_device_wr32(device, 0x00403c, info->mpll_coef);
 	default:
-		nv_mask(device, 0x004020, 0xc0771100, info->mpll_ctrl);
-		nv_wr32(device, 0x004024, info->mpll_coef);
+		nv_device_mask(device, 0x004020, 0xc0771100, info->mpll_ctrl);
+		nv_device_wr32(device, 0x004024, info->mpll_coef);
 		break;
 	}
 	udelay(100);
-	nv_mask(device, 0x00c040, 0x0000c000, 0x0000c000);
+	nv_device_mask(device, 0x00c040, 0x0000c000, 0x0000c000);
 
 	/* re-enable normal operation of memory controller */
-	nv_wr32(device, 0x1002dc, 0x00000000);
-	nv_mask(device, 0x100210, 0x80000000, 0x80000000);
+	nv_device_wr32(device, 0x1002dc, 0x00000000);
+	nv_device_mask(device, 0x100210, 0x80000000, 0x80000000);
 	udelay(100);
 
 	/* execute memory reset script from vbios */
@@ -341,8 +344,8 @@ nv40_pm_clocks_set(struct drm_device *dev, void *pre_state)
 		if (!(crtc_mask & (1 << i)))
 			continue;
 		nv_wait(device, 0x600808 + (i * 0x2000), 0x00010000, 0x00010000);
-		nv_wr08(device, 0x0c03c4 + (i * 0x2000), 0x01);
-		nv_wr08(device, 0x0c03c5 + (i * 0x2000), sr1[i]);
+		nv_device_wr08(device, 0x0c03c4 + (i * 0x2000), 0x01);
+		nv_device_wr08(device, 0x0c03c5 + (i * 0x2000), sr1[i]);
 	}
 
 	/* resume engines */

@@ -132,10 +132,10 @@ nv04_pm_clocks_set(struct drm_device *dev, void *pre_state)
 		prog_pll(dev, &state->memory);
 		if (device->card_type < NV_30) {
 			if (device->card_type == NV_20)
-				nv_mask(device, 0x1002c4, 0, 1 << 20);
+				nv_device_mask(device, 0x1002c4, 0, 1 << 20);
 
 			/* Reset the DLLs */
-			nv_mask(device, 0x1002c0, 0, 1 << 8);
+			nv_device_mask(device, 0x1002c0, 0, 1 << 8);
 		}
 	}
 

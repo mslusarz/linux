@@ -54,7 +54,8 @@ nv50_sor_dp_train_set(struct drm_device *dev, struct dcb_output *dcb, u8 pattern
 {
 	struct nouveau_device *device = nouveau_dev(dev);
 	u32 or = ffs(dcb->or) - 1, link = !(dcb->sorconf.link & 1);
-	nv_mask(device, NV50_SOR_DP_CTRL(or, link), 0x0f000000, pattern << 24);
+	nv_device_mask(device, NV50_SOR_DP_CTRL(or, link), 0x0f000000,
+		       pattern << 24);
 }
 
 static void
@@ -81,9 +82,12 @@ nv50_sor_dp_train_adj(struct drm_device *dev, struct dcb_output *dcb,
 			return;
 	}
 
-	nv_mask(device, NV50_SOR_DP_UNK118(or, link), mask, config[2] << shift);
-	nv_mask(device, NV50_SOR_DP_UNK120(or, link), mask, config[3] << shift);
-	nv_mask(device, NV50_SOR_DP_UNK130(or, link), 0x0000ff00, config[4] << 8);
+	nv_device_mask(device, NV50_SOR_DP_UNK118(or, link), mask,
+		       config[2] << shift);
+	nv_device_mask(device, NV50_SOR_DP_UNK120(or, link), mask,
+		       config[3] << shift);
+	nv_device_mask(device, NV50_SOR_DP_UNK130(or, link), 0x0000ff00,
+		       config[4] << 8);
 }
 
 static void
@@ -93,8 +97,8 @@ nv50_sor_dp_link_set(struct drm_device *dev, struct dcb_output *dcb, int crtc,
 	struct nouveau_device *device = nouveau_dev(dev);
 	struct nouveau_drm *drm = nouveau_drm(dev);
 	u32 or = ffs(dcb->or) - 1, link = !(dcb->sorconf.link & 1);
-	u32 dpctrl = nv_rd32(device, NV50_SOR_DP_CTRL(or, link)) & ~0x001f4000;
-	u32 clksor = nv_rd32(device, 0x614300 + (or * 0x800)) & ~0x000c0000;
+	u32 dpctrl = nv_device_rd32(device, NV50_SOR_DP_CTRL(or, link)) & ~0x001f4000;
+	u32 clksor = nv_device_rd32(device, 0x614300 + (or * 0x800)) & ~0x000c0000;
 	u8 *table, *entry, mask;
 	int i;
 
@@ -119,21 +123,21 @@ nv50_sor_dp_link_set(struct drm_device *dev, struct dcb_output *dcb, int crtc,
 	if (link_bw > 162000)
 		clksor |= 0x00040000;
 
-	nv_wr32(device, 0x614300 + (or * 0x800), clksor);
-	nv_wr32(device, NV50_SOR_DP_CTRL(or, link), dpctrl);
+	nv_device_wr32(device, 0x614300 + (or * 0x800), clksor);
+	nv_device_wr32(device, NV50_SOR_DP_CTRL(or, link), dpctrl);
 
 	mask = 0;
 	for (i = 0; i < link_nr; i++)
 		mask |= 1 << (nv50_sor_dp_lane_map(dev, dcb, i) >> 3);
-	nv_mask(device, NV50_SOR_DP_UNK130(or, link), 0x0000000f, mask);
+	nv_device_mask(device, NV50_SOR_DP_UNK130(or, link), 0x0000000f, mask);
 }
 
 static void
 nv50_sor_dp_link_get(struct drm_device *dev, u32 or, u32 link, u32 *nr, u32 *bw)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 dpctrl = nv_rd32(device, NV50_SOR_DP_CTRL(or, link)) & 0x000f0000;
-	u32 clksor = nv_rd32(device, 0x614300 + (or * 0x800));
+	u32 dpctrl = nv_device_rd32(device, NV50_SOR_DP_CTRL(or, link)) & 0x000f0000;
+	u32 clksor = nv_device_rd32(device, 0x614300 + (or * 0x800));
 	if (clksor & 0x000c0000)
 		*bw = 270000;
 	else
@@ -227,11 +231,10 @@ nv50_sor_dp_calc_tu(struct drm_device *dev, int or, int link, u32 clk, u32 bpp)
 	r = do_div(unk, symbol);
 	unk += 6;
 
-	nv_mask(device, NV50_SOR_DP_CTRL(or, link), 0x000001fc, bestTU << 2);
-	nv_mask(device, NV50_SOR_DP_SCFG(or, link), 0x010f7f3f, bestVTUa << 24 |
-							     bestVTUf << 16 |
-							     bestVTUi << 8 |
-							     unk);
+	nv_device_mask(device, NV50_SOR_DP_CTRL(or, link), 0x000001fc,
+		       bestTU << 2);
+	nv_device_mask(device, NV50_SOR_DP_SCFG(or, link), 0x010f7f3f,
+		       bestVTUa << 24 | bestVTUf << 16 | bestVTUi << 8 | unk);
 }
 static void
 nv50_sor_disconnect(struct drm_encoder *encoder)
@@ -297,23 +300,25 @@ nv50_sor_dpms(struct drm_encoder *encoder, int mode)
 		     NV50_PDISPLAY_SOR_DPMS_CTRL_PENDING, 0)) {
 		NV_ERROR(drm, "timeout: SOR_DPMS_CTRL_PENDING(%d) == 0\n", or);
 		NV_ERROR(drm, "SOR_DPMS_CTRL(%d) = 0x%08x\n", or,
-			 nv_rd32(device, NV50_PDISPLAY_SOR_DPMS_CTRL(or)));
+			 nv_device_rd32(device,
+					NV50_PDISPLAY_SOR_DPMS_CTRL(or)));
 	}
 
-	val = nv_rd32(device, NV50_PDISPLAY_SOR_DPMS_CTRL(or));
+	val = nv_device_rd32(device, NV50_PDISPLAY_SOR_DPMS_CTRL(or));
 
 	if (mode == DRM_MODE_DPMS_ON)
 		val |= NV50_PDISPLAY_SOR_DPMS_CTRL_ON;
 	else
 		val &= ~NV50_PDISPLAY_SOR_DPMS_CTRL_ON;
 
-	nv_wr32(device, NV50_PDISPLAY_SOR_DPMS_CTRL(or), val |
-		NV50_PDISPLAY_SOR_DPMS_CTRL_PENDING);
+	nv_device_wr32(device, NV50_PDISPLAY_SOR_DPMS_CTRL(or),
+		       val | NV50_PDISPLAY_SOR_DPMS_CTRL_PENDING);
 	if (!nv_wait(device, NV50_PDISPLAY_SOR_DPMS_STATE(or),
 		     NV50_PDISPLAY_SOR_DPMS_STATE_WAIT, 0)) {
 		NV_ERROR(drm, "timeout: SOR_DPMS_STATE_WAIT(%d) == 0\n", or);
 		NV_ERROR(drm, "SOR_DPMS_STATE(%d) = 0x%08x\n", or,
-			 nv_rd32(device, NV50_PDISPLAY_SOR_DPMS_STATE(or)));
+			 nv_device_rd32(device,
+					NV50_PDISPLAY_SOR_DPMS_STATE(or)));
 	}
 
 	if (nv_encoder->dcb->type == DCB_OUTPUT_DP) {

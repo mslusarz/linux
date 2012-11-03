@@ -335,7 +335,7 @@ static void nv04_dfp_mode_set(struct drm_encoder *encoder,
 		regp->fp_control |= NV_PRAMDAC_FP_TG_CONTROL_MODE_NATIVE;
 	else /* gpu needs to scale */
 		regp->fp_control |= NV_PRAMDAC_FP_TG_CONTROL_MODE_SCALE;
-	if (nv_rd32(device, NV_PEXTDEV_BOOT_0) & NV_PEXTDEV_BOOT_0_STRAP_FP_IFACE_12BIT)
+	if (nv_device_rd32(device, NV_PEXTDEV_BOOT_0) & NV_PEXTDEV_BOOT_0_STRAP_FP_IFACE_12BIT)
 		regp->fp_control |= NV_PRAMDAC_FP_TG_CONTROL_WIDTH_12;
 	if (nv_encoder->dcb->location != DCB_LOC_ON_CHIP &&
 	    output_mode->clock > 165000)
@@ -493,11 +493,13 @@ static void nv04_dfp_update_backlight(struct drm_encoder *encoder, int mode)
 	if (dev->pci_device == 0x0179 || dev->pci_device == 0x0189 ||
 	    dev->pci_device == 0x0329) {
 		if (mode == DRM_MODE_DPMS_ON) {
-			nv_mask(device, NV_PBUS_DEBUG_DUALHEAD_CTL, 0, 1 << 31);
-			nv_mask(device, NV_PCRTC_GPIO_EXT, 3, 1);
+			nv_device_mask(device, NV_PBUS_DEBUG_DUALHEAD_CTL, 0,
+				       1 << 31);
+			nv_device_mask(device, NV_PCRTC_GPIO_EXT, 3, 1);
 		} else {
-			nv_mask(device, NV_PBUS_DEBUG_DUALHEAD_CTL, 1 << 31, 0);
-			nv_mask(device, NV_PCRTC_GPIO_EXT, 3, 0);
+			nv_device_mask(device, NV_PBUS_DEBUG_DUALHEAD_CTL,
+				       1 << 31, 0);
+			nv_device_mask(device, NV_PCRTC_GPIO_EXT, 3, 0);
 		}
 	}
 #endif

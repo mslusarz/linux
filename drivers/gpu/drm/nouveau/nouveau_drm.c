@@ -298,7 +298,7 @@ nouveau_drm_load(struct drm_device *dev, unsigned long flags)
 	 */
 	device = nv_device(drm->device);
 	if (nv_device(drm->device)->chipset == 0xc1)
-		nv_mask(device, 0x00088080, 0x00000800, 0x00000000);
+		nv_device_mask(device, 0x00088080, 0x00000800, 0x00000000);
 
 	nouveau_vga_init(drm);
 	nouveau_agp_init(drm);

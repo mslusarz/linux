@@ -64,14 +64,17 @@ nv50_display_active_crtcs(struct drm_device *dev)
 	    device->chipset == 0x92 ||
 	    device->chipset == 0xa0) {
 		for (i = 0; i < 2; i++)
-			mask |= nv_rd32(device, NV50_PDISPLAY_SOR_MODE_CTRL_C(i));
+			mask |= nv_device_rd32(device,
+					       NV50_PDISPLAY_SOR_MODE_CTRL_C(i));
 	} else {
 		for (i = 0; i < 4; i++)
-			mask |= nv_rd32(device, NV90_PDISPLAY_SOR_MODE_CTRL_C(i));
+			mask |= nv_device_rd32(device,
+					       NV90_PDISPLAY_SOR_MODE_CTRL_C(i));
 	}
 
 	for (i = 0; i < 3; i++)
-		mask |= nv_rd32(device, NV50_PDISPLAY_DAC_MODE_CTRL_C(i));
+		mask |= nv_device_rd32(device,
+				       NV50_PDISPLAY_DAC_MODE_CTRL_C(i));
 
 	return mask & 3;
 }
@@ -124,7 +127,7 @@ nv50_display_init(struct drm_device *dev)
 
 	NV_DEBUG(drm, "\n");
 
-	nv_wr32(device, 0x00610184, nv_rd32(device, 0x00614004));
+	nv_wr32(device, 0x00610184, nv_device_rd32(device, 0x00614004));
 
 	/*
 	 * I think the 0x006101XX range is some kind of main control area
@@ -132,92 +135,96 @@ nv50_display_init(struct drm_device *dev)
 	 */
 	/* CRTC? */
 	for (i = 0; i < 2; i++) {
-		val = nv_rd32(device, 0x00616100 + (i * 0x800));
-		nv_wr32(device, 0x00610190 + (i * 0x10), val);
-		val = nv_rd32(device, 0x00616104 + (i * 0x800));
-		nv_wr32(device, 0x00610194 + (i * 0x10), val);
-		val = nv_rd32(device, 0x00616108 + (i * 0x800));
-		nv_wr32(device, 0x00610198 + (i * 0x10), val);
-		val = nv_rd32(device, 0x0061610c + (i * 0x800));
-		nv_wr32(device, 0x0061019c + (i * 0x10), val);
+		val = nv_device_rd32(device, 0x00616100 + (i * 0x800));
+		nv_device_wr32(device, 0x00610190 + (i * 0x10), val);
+		val = nv_device_rd32(device, 0x00616104 + (i * 0x800));
+		nv_device_wr32(device, 0x00610194 + (i * 0x10), val);
+		val = nv_device_rd32(device, 0x00616108 + (i * 0x800));
+		nv_device_wr32(device, 0x00610198 + (i * 0x10), val);
+		val = nv_device_rd32(device, 0x0061610c + (i * 0x800));
+		nv_device_wr32(device, 0x0061019c + (i * 0x10), val);
 	}
 
 	/* DAC */
 	for (i = 0; i < 3; i++) {
-		val = nv_rd32(device, 0x0061a000 + (i * 0x800));
-		nv_wr32(device, 0x006101d0 + (i * 0x04), val);
+		val = nv_device_rd32(device, 0x0061a000 + (i * 0x800));
+		nv_device_wr32(device, 0x006101d0 + (i * 0x04), val);
 	}
 
 	/* SOR */
 	for (i = 0; i < nv50_sor_nr(dev); i++) {
-		val = nv_rd32(device, 0x0061c000 + (i * 0x800));
-		nv_wr32(device, 0x006101e0 + (i * 0x04), val);
+		val = nv_device_rd32(device, 0x0061c000 + (i * 0x800));
+		nv_device_wr32(device, 0x006101e0 + (i * 0x04), val);
 	}
 
 	/* EXT */
 	for (i = 0; i < 3; i++) {
-		val = nv_rd32(device, 0x0061e000 + (i * 0x800));
-		nv_wr32(device, 0x006101f0 + (i * 0x04), val);
+		val = nv_device_rd32(device, 0x0061e000 + (i * 0x800));
+		nv_device_wr32(device, 0x006101f0 + (i * 0x04), val);
 	}
 
 	for (i = 0; i < 3; i++) {
-		nv_wr32(device, NV50_PDISPLAY_DAC_DPMS_CTRL(i), 0x00550000 |
-			NV50_PDISPLAY_DAC_DPMS_CTRL_PENDING);
-		nv_wr32(device, NV50_PDISPLAY_DAC_CLK_CTRL1(i), 0x00000001);
+		nv_device_wr32(device, NV50_PDISPLAY_DAC_DPMS_CTRL(i),
+			       0x00550000 | NV50_PDISPLAY_DAC_DPMS_CTRL_PENDING);
+		nv_device_wr32(device, NV50_PDISPLAY_DAC_CLK_CTRL1(i),
+			       0x00000001);
 	}
 
 	/* The precise purpose is unknown, i suspect it has something to do
 	 * with text mode.
 	 */
-	if (nv_rd32(device, NV50_PDISPLAY_INTR_1) & 0x100) {
-		nv_wr32(device, NV50_PDISPLAY_INTR_1, 0x100);
-		nv_wr32(device, 0x006194e8, nv_rd32(device, 0x006194e8) & ~1);
+	if (nv_device_rd32(device, NV50_PDISPLAY_INTR_1) & 0x100) {
+		nv_device_wr32(device, NV50_PDISPLAY_INTR_1, 0x100);
+		nv_wr32(device, 0x006194e8, nv_device_rd32(device, 0x006194e8) & ~1);
 		if (!nv_wait(device, 0x006194e8, 2, 0)) {
 			NV_ERROR(drm, "timeout: (0x6194e8 & 2) != 0\n");
 			NV_ERROR(drm, "0x6194e8 = 0x%08x\n",
-						nv_rd32(device, 0x6194e8));
+						nv_device_rd32(device,
+							       0x6194e8));
 			return -EBUSY;
 		}
 	}
 
 	for (i = 0; i < 2; i++) {
-		nv_wr32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i), 0x2000);
+		nv_device_wr32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
+			       0x2000);
 		if (!nv_wait(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
 			     NV50_PDISPLAY_CURSOR_CURSOR_CTRL2_STATUS, 0)) {
 			NV_ERROR(drm, "timeout: CURSOR_CTRL2_STATUS == 0\n");
 			NV_ERROR(drm, "CURSOR_CTRL2 = 0x%08x\n",
-				 nv_rd32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i)));
+				 nv_device_rd32(device,
+						NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i)));
 			return -EBUSY;
 		}
 
-		nv_wr32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
-			NV50_PDISPLAY_CURSOR_CURSOR_CTRL2_ON);
+		nv_device_wr32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
+			       NV50_PDISPLAY_CURSOR_CURSOR_CTRL2_ON);
 		if (!nv_wait(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
 			     NV50_PDISPLAY_CURSOR_CURSOR_CTRL2_STATUS,
 			     NV50_PDISPLAY_CURSOR_CURSOR_CTRL2_STATUS_ACTIVE)) {
 			NV_ERROR(drm, "timeout: "
 				      "CURSOR_CTRL2_STATUS_ACTIVE(%d)\n", i);
 			NV_ERROR(drm, "CURSOR_CTRL2(%d) = 0x%08x\n", i,
-				 nv_rd32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i)));
+				 nv_device_rd32(device,
+						NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i)));
 			return -EBUSY;
 		}
 	}
 
-	nv_wr32(device, NV50_PDISPLAY_PIO_CTRL, 0x00000000);
-	nv_mask(device, NV50_PDISPLAY_INTR_0, 0x00000000, 0x00000000);
-	nv_wr32(device, NV50_PDISPLAY_INTR_EN_0, 0x00000000);
-	nv_mask(device, NV50_PDISPLAY_INTR_1, 0x00000000, 0x00000000);
-	nv_wr32(device, NV50_PDISPLAY_INTR_EN_1,
-		     NV50_PDISPLAY_INTR_EN_1_CLK_UNK10 |
-		     NV50_PDISPLAY_INTR_EN_1_CLK_UNK20 |
-		     NV50_PDISPLAY_INTR_EN_1_CLK_UNK40);
+	nv_device_wr32(device, NV50_PDISPLAY_PIO_CTRL, 0x00000000);
+	nv_device_mask(device, NV50_PDISPLAY_INTR_0, 0x00000000, 0x00000000);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_EN_0, 0x00000000);
+	nv_device_mask(device, NV50_PDISPLAY_INTR_1, 0x00000000, 0x00000000);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_EN_1,
+		       NV50_PDISPLAY_INTR_EN_1_CLK_UNK10 | NV50_PDISPLAY_INTR_EN_1_CLK_UNK20 | NV50_PDISPLAY_INTR_EN_1_CLK_UNK40);
 
 	ret = nv50_evo_init(dev);
 	if (ret)
 		return ret;
 	evo = nv50_display(dev)->master;
 
-	nv_wr32(device, NV50_PDISPLAY_OBJECTS, (nv50_display(dev)->ramin->addr >> 8) | 9);
+	nv_device_wr32(device, NV50_PDISPLAY_OBJECTS,
+		       (nv50_display(dev)->ramin->addr >> 8) | 9);
 
 	ret = RING_SPACE(evo, 3);
 	if (ret)
@@ -264,22 +271,24 @@ nv50_display_fini(struct drm_device *dev)
 		if (!crtc->base.enabled)
 			continue;
 
-		nv_wr32(device, NV50_PDISPLAY_INTR_1, mask);
+		nv_device_wr32(device, NV50_PDISPLAY_INTR_1, mask);
 		if (!nv_wait(device, NV50_PDISPLAY_INTR_1, mask, mask)) {
 			NV_ERROR(drm, "timeout: (0x610024 & 0x%08x) == "
 				      "0x%08x\n", mask, mask);
 			NV_ERROR(drm, "0x610024 = 0x%08x\n",
-				 nv_rd32(device, NV50_PDISPLAY_INTR_1));
+				 nv_device_rd32(device, NV50_PDISPLAY_INTR_1));
 		}
 	}
 
 	for (i = 0; i < 2; i++) {
-		nv_wr32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i), 0);
+		nv_device_wr32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
+			       0);
 		if (!nv_wait(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i),
 			     NV50_PDISPLAY_CURSOR_CURSOR_CTRL2_STATUS, 0)) {
 			NV_ERROR(drm, "timeout: CURSOR_CTRL2_STATUS == 0\n");
 			NV_ERROR(drm, "CURSOR_CTRL2 = 0x%08x\n",
-				 nv_rd32(device, NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i)));
+				 nv_device_rd32(device,
+						NV50_PDISPLAY_CURSOR_CURSOR_CTRL2(i)));
 		}
 	}
 
@@ -290,12 +299,13 @@ nv50_display_fini(struct drm_device *dev)
 			     NV50_PDISPLAY_SOR_DPMS_STATE_WAIT, 0)) {
 			NV_ERROR(drm, "timeout: SOR_DPMS_STATE_WAIT(%d) == 0\n", i);
 			NV_ERROR(drm, "SOR_DPMS_STATE(%d) = 0x%08x\n", i,
-				  nv_rd32(device, NV50_PDISPLAY_SOR_DPMS_STATE(i)));
+				  nv_device_rd32(device,
+						 NV50_PDISPLAY_SOR_DPMS_STATE(i)));
 		}
 	}
 
 	/* disable interrupts. */
-	nv_wr32(device, NV50_PDISPLAY_INTR_EN_1, 0x00000000);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_EN_1, 0x00000000);
 }
 
 int
@@ -597,13 +607,13 @@ nv50_display_unk10_handler(struct drm_device *dev)
 	struct nouveau_device *device = nouveau_dev(dev);
 	struct nouveau_drm *drm = nouveau_drm(dev);
 	struct nv50_display *disp = nv50_display(dev);
-	u32 unk30 = nv_rd32(device, 0x610030), mc;
+	u32 unk30 = nv_device_rd32(device, 0x610030), mc;
 	int i, crtc, or = 0, type = DCB_OUTPUT_ANY;
 
 	NV_DEBUG(drm, "0x610030: 0x%08x\n", unk30);
 	disp->irq.dcb = NULL;
 
-	nv_wr32(device, 0x619494, nv_rd32(device, 0x619494) & ~8);
+	nv_wr32(device, 0x619494, nv_device_rd32(device, 0x619494) & ~8);
 
 	/* Determine which CRTC we're dealing with, only 1 ever will be
 	 * signalled at the same time with the current nouveau code.
@@ -619,7 +629,7 @@ nv50_display_unk10_handler(struct drm_device *dev)
 
 	/* Find which encoder was connected to the CRTC */
 	for (i = 0; type == DCB_OUTPUT_ANY && i < 3; i++) {
-		mc = nv_rd32(device, NV50_PDISPLAY_DAC_MODE_CTRL_C(i));
+		mc = nv_device_rd32(device, NV50_PDISPLAY_DAC_MODE_CTRL_C(i));
 		NV_DEBUG(drm, "DAC-%d mc: 0x%08x\n", i, mc);
 		if (!(mc & (1 << crtc)))
 			continue;
@@ -639,9 +649,11 @@ nv50_display_unk10_handler(struct drm_device *dev)
 		if (nv_device(drm->device)->chipset  < 0x90 ||
 		    nv_device(drm->device)->chipset == 0x92 ||
 		    nv_device(drm->device)->chipset == 0xa0)
-			mc = nv_rd32(device, NV50_PDISPLAY_SOR_MODE_CTRL_C(i));
+			mc = nv_device_rd32(device,
+					    NV50_PDISPLAY_SOR_MODE_CTRL_C(i));
 		else
-			mc = nv_rd32(device, NV90_PDISPLAY_SOR_MODE_CTRL_C(i));
+			mc = nv_device_rd32(device,
+					    NV90_PDISPLAY_SOR_MODE_CTRL_C(i));
 
 		NV_DEBUG(drm, "SOR-%d mc: 0x%08x\n", i, mc);
 		if (!(mc & (1 << crtc)))
@@ -679,8 +691,9 @@ nv50_display_unk10_handler(struct drm_device *dev)
 
 	NV_ERROR(drm, "no dcb for %d %d 0x%08x\n", or, type, mc);
 ack:
-	nv_wr32(device, NV50_PDISPLAY_INTR_1, NV50_PDISPLAY_INTR_1_CLK_UNK10);
-	nv_wr32(device, 0x610030, 0x80000000);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_1,
+		       NV50_PDISPLAY_INTR_1_CLK_UNK10);
+	nv_device_wr32(device, 0x610030, 0x80000000);
 }
 
 static void
@@ -689,7 +702,7 @@ nv50_display_unk20_handler(struct drm_device *dev)
 	struct nouveau_device *device = nouveau_dev(dev);
 	struct nouveau_drm *drm = nouveau_drm(dev);
 	struct nv50_display *disp = nv50_display(dev);
-	u32 unk30 = nv_rd32(device, 0x610030), tmp, pclk, script, mc = 0;
+	u32 unk30 = nv_device_rd32(device, 0x610030), tmp, pclk, script, mc = 0;
 	struct dcb_output *dcb;
 	int i, crtc, or = 0, type = DCB_OUTPUT_ANY;
 
@@ -703,25 +716,28 @@ nv50_display_unk20_handler(struct drm_device *dev)
 	/* CRTC clock change requested? */
 	crtc = ffs((unk30 & 0x00000600) >> 9) - 1;
 	if (crtc >= 0) {
-		pclk  = nv_rd32(device, NV50_PDISPLAY_CRTC_P(crtc, CLOCK));
+		pclk  = nv_device_rd32(device,
+				       NV50_PDISPLAY_CRTC_P(crtc, CLOCK));
 		pclk &= 0x003fffff;
 		if (pclk)
 			nv50_crtc_set_clock(dev, crtc, pclk);
 
-		tmp = nv_rd32(device, NV50_PDISPLAY_CRTC_CLK_CTRL2(crtc));
+		tmp = nv_device_rd32(device,
+				     NV50_PDISPLAY_CRTC_CLK_CTRL2(crtc));
 		tmp &= ~0x000000f;
-		nv_wr32(device, NV50_PDISPLAY_CRTC_CLK_CTRL2(crtc), tmp);
+		nv_device_wr32(device, NV50_PDISPLAY_CRTC_CLK_CTRL2(crtc),
+			       tmp);
 	}
 
 	/* Nothing needs to be done for the encoder */
 	crtc = ffs((unk30 & 0x00000180) >> 7) - 1;
 	if (crtc < 0)
 		goto ack;
-	pclk  = nv_rd32(device, NV50_PDISPLAY_CRTC_P(crtc, CLOCK)) & 0x003fffff;
+	pclk  = nv_device_rd32(device, NV50_PDISPLAY_CRTC_P(crtc, CLOCK)) & 0x003fffff;
 
 	/* Find which encoder is connected to the CRTC */
 	for (i = 0; type == DCB_OUTPUT_ANY && i < 3; i++) {
-		mc = nv_rd32(device, NV50_PDISPLAY_DAC_MODE_CTRL_P(i));
+		mc = nv_device_rd32(device, NV50_PDISPLAY_DAC_MODE_CTRL_P(i));
 		NV_DEBUG(drm, "DAC-%d mc: 0x%08x\n", i, mc);
 		if (!(mc & (1 << crtc)))
 			continue;
@@ -741,9 +757,11 @@ nv50_display_unk20_handler(struct drm_device *dev)
 		if (nv_device(drm->device)->chipset  < 0x90 ||
 		    nv_device(drm->device)->chipset == 0x92 ||
 		    nv_device(drm->device)->chipset == 0xa0)
-			mc = nv_rd32(device, NV50_PDISPLAY_SOR_MODE_CTRL_P(i));
+			mc = nv_device_rd32(device,
+					    NV50_PDISPLAY_SOR_MODE_CTRL_P(i));
 		else
-			mc = nv_rd32(device, NV90_PDISPLAY_SOR_MODE_CTRL_P(i));
+			mc = nv_device_rd32(device,
+					    NV90_PDISPLAY_SOR_MODE_CTRL_P(i));
 
 		NV_DEBUG(drm, "SOR-%d mc: 0x%08x\n", i, mc);
 		if (!(mc & (1 << crtc)))
@@ -791,13 +809,13 @@ nv50_display_unk20_handler(struct drm_device *dev)
 	}
 
 	if (dcb->type != DCB_OUTPUT_ANALOG) {
-		tmp = nv_rd32(device, NV50_PDISPLAY_SOR_CLK_CTRL2(or));
+		tmp = nv_device_rd32(device, NV50_PDISPLAY_SOR_CLK_CTRL2(or));
 		tmp &= ~0x00000f0f;
 		if (script & 0x0100)
 			tmp |= 0x00000101;
-		nv_wr32(device, NV50_PDISPLAY_SOR_CLK_CTRL2(or), tmp);
+		nv_device_wr32(device, NV50_PDISPLAY_SOR_CLK_CTRL2(or), tmp);
 	} else {
-		nv_wr32(device, NV50_PDISPLAY_DAC_CLK_CTRL2(or), 0);
+		nv_device_wr32(device, NV50_PDISPLAY_DAC_CLK_CTRL2(or), 0);
 	}
 
 	disp->irq.dcb = dcb;
@@ -805,8 +823,9 @@ nv50_display_unk20_handler(struct drm_device *dev)
 	disp->irq.script = script;
 
 ack:
-	nv_wr32(device, NV50_PDISPLAY_INTR_1, NV50_PDISPLAY_INTR_1_CLK_UNK20);
-	nv_wr32(device, 0x610030, 0x80000000);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_1,
+		       NV50_PDISPLAY_INTR_1_CLK_UNK20);
+	nv_device_wr32(device, 0x610030, 0x80000000);
 }
 
 /* If programming a TMDS output on a SOR that can also be configured for
@@ -833,9 +852,11 @@ nv50_display_unk40_dp_set_tmds(struct drm_device *dev, struct dcb_output *dcb)
 
 		if (nv_encoder->dcb->type == DCB_OUTPUT_DP &&
 		    nv_encoder->dcb->or & (1 << or)) {
-			tmp  = nv_rd32(device, NV50_SOR_DP_CTRL(or, link));
+			tmp  = nv_device_rd32(device,
+					      NV50_SOR_DP_CTRL(or, link));
 			tmp &= ~NV50_SOR_DP_CTRL_ENABLED;
-			nv_wr32(device, NV50_SOR_DP_CTRL(or, link), tmp);
+			nv_device_wr32(device, NV50_SOR_DP_CTRL(or, link),
+				       tmp);
 			break;
 		}
 	}
@@ -849,7 +870,7 @@ nv50_display_unk40_handler(struct drm_device *dev)
 	struct nv50_display *disp = nv50_display(dev);
 	struct dcb_output *dcb = disp->irq.dcb;
 	u16 script = disp->irq.script;
-	u32 unk30 = nv_rd32(device, 0x610030), pclk = disp->irq.pclk;
+	u32 unk30 = nv_device_rd32(device, 0x610030), pclk = disp->irq.pclk;
 
 	NV_DEBUG(drm, "0x610030: 0x%08x\n", unk30);
 	disp->irq.dcb = NULL;
@@ -860,9 +881,10 @@ nv50_display_unk40_handler(struct drm_device *dev)
 	nv50_display_unk40_dp_set_tmds(dev, dcb);
 
 ack:
-	nv_wr32(device, NV50_PDISPLAY_INTR_1, NV50_PDISPLAY_INTR_1_CLK_UNK40);
-	nv_wr32(device, 0x610030, 0x80000000);
-	nv_wr32(device, 0x619494, nv_rd32(device, 0x619494) | 8);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_1,
+		       NV50_PDISPLAY_INTR_1_CLK_UNK40);
+	nv_device_wr32(device, 0x610030, 0x80000000);
+	nv_wr32(device, 0x619494, nv_device_rd32(device, 0x619494) | 8);
 }
 
 static void
@@ -873,8 +895,8 @@ nv50_display_bh(unsigned long data)
 	struct nouveau_drm *drm = nouveau_drm(dev);
 
 	for (;;) {
-		uint32_t intr0 = nv_rd32(device, NV50_PDISPLAY_INTR_0);
-		uint32_t intr1 = nv_rd32(device, NV50_PDISPLAY_INTR_1);
+		uint32_t intr0 = nv_device_rd32(device, NV50_PDISPLAY_INTR_0);
+		uint32_t intr1 = nv_device_rd32(device, NV50_PDISPLAY_INTR_1);
 
 		NV_DEBUG(drm, "PDISPLAY_INTR_BH 0x%08x 0x%08x\n", intr0, intr1);
 
@@ -890,7 +912,7 @@ nv50_display_bh(unsigned long data)
 			break;
 	}
 
-	nv_wr32(device, NV03_PMC_INTR_EN_0, 1);
+	nv_device_wr32(device, NV03_PMC_INTR_EN_0, 1);
 }
 
 static void
@@ -898,7 +920,7 @@ nv50_display_error_handler(struct drm_device *dev)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
 	struct nouveau_drm *drm = nouveau_drm(dev);
-	u32 channels = (nv_rd32(device, NV50_PDISPLAY_INTR_0) & 0x001f0000) >> 16;
+	u32 channels = (nv_device_rd32(device, NV50_PDISPLAY_INTR_0) & 0x001f0000) >> 16;
 	u32 addr, data;
 	int chid;
 
@@ -906,14 +928,18 @@ nv50_display_error_handler(struct drm_device *dev)
 		if (!(channels & (1 << chid)))
 			continue;
 
-		nv_wr32(device, NV50_PDISPLAY_INTR_0, 0x00010000 << chid);
-		addr = nv_rd32(device, NV50_PDISPLAY_TRAPPED_ADDR(chid));
-		data = nv_rd32(device, NV50_PDISPLAY_TRAPPED_DATA(chid));
+		nv_device_wr32(device, NV50_PDISPLAY_INTR_0,
+			       0x00010000 << chid);
+		addr = nv_device_rd32(device,
+				      NV50_PDISPLAY_TRAPPED_ADDR(chid));
+		data = nv_device_rd32(device,
+				      NV50_PDISPLAY_TRAPPED_DATA(chid));
 		NV_ERROR(drm, "EvoCh %d Mthd 0x%04x Data 0x%08x "
 			      "(0x%04x 0x%02x)\n", chid,
 			 addr & 0xffc, data, addr >> 16, (addr >> 12) & 0xf);
 
-		nv_wr32(device, NV50_PDISPLAY_TRAPPED_ADDR(chid), 0x90000000);
+		nv_device_wr32(device, NV50_PDISPLAY_TRAPPED_ADDR(chid),
+			       0x90000000);
 	}
 }
 
@@ -925,9 +951,9 @@ nv50_display_intr(struct drm_device *dev)
 	struct nv50_display *disp = nv50_display(dev);
 	uint32_t delayed = 0;
 
-	while (nv_rd32(device, NV50_PMC_INTR_0) & NV50_PMC_INTR_0_DISPLAY) {
-		uint32_t intr0 = nv_rd32(device, NV50_PDISPLAY_INTR_0);
-		uint32_t intr1 = nv_rd32(device, NV50_PDISPLAY_INTR_1);
+	while (nv_device_rd32(device, NV50_PMC_INTR_0) & NV50_PMC_INTR_0_DISPLAY) {
+		uint32_t intr0 = nv_device_rd32(device, NV50_PDISPLAY_INTR_0);
+		uint32_t intr1 = nv_device_rd32(device, NV50_PDISPLAY_INTR_1);
 		uint32_t clock;
 
 		NV_DEBUG(drm, "PDISPLAY_INTR 0x%08x 0x%08x\n", intr0, intr1);
@@ -949,7 +975,7 @@ nv50_display_intr(struct drm_device *dev)
 				  NV50_PDISPLAY_INTR_1_CLK_UNK20 |
 				  NV50_PDISPLAY_INTR_1_CLK_UNK40));
 		if (clock) {
-			nv_wr32(device, NV03_PMC_INTR_EN_0, 0);
+			nv_device_wr32(device, NV03_PMC_INTR_EN_0, 0);
 			tasklet_schedule(&disp->tasklet);
 			delayed |= clock;
 			intr1 &= ~clock;
@@ -957,13 +983,13 @@ nv50_display_intr(struct drm_device *dev)
 
 		if (intr0) {
 			NV_ERROR(drm, "unknown PDISPLAY_INTR_0: 0x%08x\n", intr0);
-			nv_wr32(device, NV50_PDISPLAY_INTR_0, intr0);
+			nv_device_wr32(device, NV50_PDISPLAY_INTR_0, intr0);
 		}
 
 		if (intr1) {
 			NV_ERROR(drm,
 				 "unknown PDISPLAY_INTR_1: 0x%08x\n", intr1);
-			nv_wr32(device, NV50_PDISPLAY_INTR_1, intr1);
+			nv_device_wr32(device, NV50_PDISPLAY_INTR_1, intr1);
 		}
 	}
 }

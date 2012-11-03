@@ -207,7 +207,7 @@ nouveau_abi16_ioctl_getparam(ABI16_IOCTL_ARGS)
 		 * address is the same. User is supposed to know the card
 		 * family anyway... */
 		if (device->chipset >= 0x40) {
-			getparam->value = nv_rd32(device, 0x001540);
+			getparam->value = nv_device_rd32(device, 0x001540);
 			break;
 		}
 		/* FALLTHRU */

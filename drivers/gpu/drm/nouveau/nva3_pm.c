@@ -40,7 +40,7 @@ static u32
 read_vco(struct drm_device *dev, int clk)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 sctl = nv_rd32(device, 0x4120 + (clk * 4));
+	u32 sctl = nv_device_rd32(device, 0x4120 + (clk * 4));
 	if ((sctl & 0x00000030) != 0x00000030)
 		return read_pll(dev, 0x41, 0x00e820);
 	return read_pll(dev, 0x42, 0x00e8a0);
@@ -57,13 +57,13 @@ read_clk(struct drm_device *dev, int clk, bool ignore_en)
 	if (clk >= 0x40) {
 		if (nv_device(drm->device)->chipset == 0xaf) {
 			/* no joke.. seriously.. sigh.. */
-			return nv_rd32(device, 0x00471c) * 1000;
+			return nv_device_rd32(device, 0x00471c) * 1000;
 		}
 
 		return device->crystal;
 	}
 
-	sctl = nv_rd32(device, 0x4120 + (clk * 4));
+	sctl = nv_device_rd32(device, 0x4120 + (clk * 4));
 	if (!ignore_en && !(sctl & 0x00000100))
 		return 0;
 
@@ -87,12 +87,12 @@ static u32
 read_pll(struct drm_device *dev, int clk, u32 pll)
 {
 	struct nouveau_device *device = nouveau_dev(dev);
-	u32 ctrl = nv_rd32(device, pll + 0);
+	u32 ctrl = nv_device_rd32(device, pll + 0);
 	u32 sclk = 0, P = 1, N = 1, M = 1;
 
 	if (!(ctrl & 0x00000008)) {
 		if (ctrl & 0x00000001) {
-			u32 coef = nv_rd32(device, pll + 4);
+			u32 coef = nv_device_rd32(device, pll + 4);
 			M = (coef & 0x000000ff) >> 0;
 			N = (coef & 0x0000ff00) >> 8;
 			P = (coef & 0x003f0000) >> 16;
@@ -183,7 +183,7 @@ calc_clk(struct drm_device *dev, int clk, u32 pll, u32 khz, struct creg *reg)
 
 	ret = nva3_calc_pll(dev, &limits, khz, &N, NULL, &M, &P);
 	if (ret >= 0) {
-		reg->clk = nv_rd32(device, 0x4120 + (clk * 4));
+		reg->clk = nv_device_rd32(device, 0x4120 + (clk * 4));
 		reg->pll = (P << 16) | (N << 8) | M;
 	}
 
@@ -206,22 +206,23 @@ prog_pll(struct drm_device *dev, int clk, u32 pll, struct creg *reg)
 	}
 
 	if (reg->pll) {
-		nv_mask(device, src0, 0x00000101, 0x00000101);
-		nv_wr32(device, coef, reg->pll);
-		nv_mask(device, ctrl, 0x00000015, 0x00000015);
-		nv_mask(device, ctrl, 0x00000010, 0x00000000);
+		nv_device_mask(device, src0, 0x00000101, 0x00000101);
+		nv_device_wr32(device, coef, reg->pll);
+		nv_device_mask(device, ctrl, 0x00000015, 0x00000015);
+		nv_device_mask(device, ctrl, 0x00000010, 0x00000000);
 		nv_wait(device, ctrl, 0x00020000, 0x00020000);
-		nv_mask(device, ctrl, 0x00000010, 0x00000010);
-		nv_mask(device, ctrl, 0x00000008, 0x00000000);
-		nv_mask(device, src1, 0x00000100, 0x00000000);
-		nv_mask(device, src1, 0x00000001, 0x00000000);
+		nv_device_mask(device, ctrl, 0x00000010, 0x00000010);
+		nv_device_mask(device, ctrl, 0x00000008, 0x00000000);
+		nv_device_mask(device, src1, 0x00000100, 0x00000000);
+		nv_device_mask(device, src1, 0x00000001, 0x00000000);
 	} else {
-		nv_mask(device, src1, 0x003f3141, 0x00000101 | reg->clk);
-		nv_mask(device, ctrl, 0x00000018, 0x00000018);
+		nv_device_mask(device, src1, 0x003f3141,
+			       0x00000101 | reg->clk);
+		nv_device_mask(device, ctrl, 0x00000018, 0x00000018);
 		udelay(20);
-		nv_mask(device, ctrl, 0x00000001, 0x00000000);
-		nv_mask(device, src0, 0x00000100, 0x00000000);
-		nv_mask(device, src0, 0x00000001, 0x00000000);
+		nv_device_mask(device, ctrl, 0x00000001, 0x00000000);
+		nv_device_mask(device, src0, 0x00000100, 0x00000000);
+		nv_device_mask(device, src0, 0x00000001, 0x00000000);
 	}
 }
 
@@ -236,7 +237,8 @@ prog_clk(struct drm_device *dev, int clk, struct creg *reg)
 		return;
 	}
 
-	nv_mask(device, 0x004120 + (clk * 4), 0x003f3141, 0x00000101 | reg->clk);
+	nv_device_mask(device, 0x004120 + (clk * 4), 0x003f3141,
+		       0x00000101 | reg->clk);
 }
 
 int
@@ -329,9 +331,9 @@ nva3_pm_grcp_idle(void *data)
 	struct drm_device *dev = data;
 	struct nouveau_device *device = nouveau_dev(dev);
 
-	if (!(nv_rd32(device, 0x400304) & 0x00000001))
+	if (!(nv_device_rd32(device, 0x400304) & 0x00000001))
 		return true;
-	if (nv_rd32(device, 0x400308) == 0x0050001c)
+	if (nv_device_rd32(device, 0x400308) == 0x0050001c)
 		return true;
 	return false;
 }
@@ -340,35 +342,35 @@ static void
 mclk_precharge(struct nouveau_mem_exec_func *exec)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
-	nv_wr32(device, 0x1002d4, 0x00000001);
+	nv_device_wr32(device, 0x1002d4, 0x00000001);
 }
 
 static void
 mclk_refresh(struct nouveau_mem_exec_func *exec)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
-	nv_wr32(device, 0x1002d0, 0x00000001);
+	nv_device_wr32(device, 0x1002d0, 0x00000001);
 }
 
 static void
 mclk_refresh_auto(struct nouveau_mem_exec_func *exec, bool enable)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
-	nv_wr32(device, 0x100210, enable ? 0x80000000 : 0x00000000);
+	nv_device_wr32(device, 0x100210, enable ? 0x80000000 : 0x00000000);
 }
 
 static void
 mclk_refresh_self(struct nouveau_mem_exec_func *exec, bool enable)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
-	nv_wr32(device, 0x1002dc, enable ? 0x00000001 : 0x00000000);
+	nv_device_wr32(device, 0x1002dc, enable ? 0x00000001 : 0x00000000);
 }
 
 static void
 mclk_wait(struct nouveau_mem_exec_func *exec, u32 nsec)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
-	volatile u32 post = nv_rd32(device, 0); (void)post;
+	volatile u32 post = nv_device_rd32(device, 0); (void)post;
 	udelay((nsec + 500) / 1000);
 }
 
@@ -377,9 +379,9 @@ mclk_mrg(struct nouveau_mem_exec_func *exec, int mr)
 {
 	struct nouveau_device *device = nouveau_dev(exec->dev);
 	if (mr <= 1)
-		return nv_rd32(device, 0x1002c0 + ((mr - 0) * 4));
+		return nv_device_rd32(device, 0x1002c0 + ((mr - 0) * 4));
 	if (mr <= 3)
-		return nv_rd32(device, 0x1002e0 + ((mr - 2) * 4));
+		return nv_device_rd32(device, 0x1002e0 + ((mr - 2) * 4));
 	return 0;
 }
 
@@ -390,13 +392,15 @@ mclk_mrs(struct nouveau_mem_exec_func *exec, int mr, u32 data)
 	struct nouveau_fb *pfb = nouveau_fb(device);
 	if (mr <= 1) {
 		if (pfb->ram.ranks > 1)
-			nv_wr32(device, 0x1002c8 + ((mr - 0) * 4), data);
-		nv_wr32(device, 0x1002c0 + ((mr - 0) * 4), data);
+			nv_device_wr32(device, 0x1002c8 + ((mr - 0) * 4),
+				       data);
+		nv_device_wr32(device, 0x1002c0 + ((mr - 0) * 4), data);
 	} else
 	if (mr <= 3) {
 		if (pfb->ram.ranks > 1)
-			nv_wr32(device, 0x1002e8 + ((mr - 2) * 4), data);
-		nv_wr32(device, 0x1002e0 + ((mr - 2) * 4), data);
+			nv_device_wr32(device, 0x1002e8 + ((mr - 2) * 4),
+				       data);
+		nv_device_wr32(device, 0x1002e0 + ((mr - 2) * 4), data);
 	}
 }
 
@@ -407,23 +411,23 @@ mclk_clock_set(struct nouveau_mem_exec_func *exec)
 	struct nva3_pm_state *info = exec->priv;
 	u32 ctrl;
 
-	ctrl = nv_rd32(device, 0x004000);
+	ctrl = nv_device_rd32(device, 0x004000);
 	if (!(ctrl & 0x00000008) && info->mclk.pll) {
-		nv_wr32(device, 0x004000, (ctrl |=  0x00000008));
-		nv_mask(device, 0x1110e0, 0x00088000, 0x00088000);
-		nv_wr32(device, 0x004018, 0x00001000);
-		nv_wr32(device, 0x004000, (ctrl &= ~0x00000001));
-		nv_wr32(device, 0x004004, info->mclk.pll);
-		nv_wr32(device, 0x004000, (ctrl |=  0x00000001));
+		nv_device_wr32(device, 0x004000, (ctrl |= 0x00000008));
+		nv_device_mask(device, 0x1110e0, 0x00088000, 0x00088000);
+		nv_device_wr32(device, 0x004018, 0x00001000);
+		nv_device_wr32(device, 0x004000, (ctrl &= ~0x00000001));
+		nv_device_wr32(device, 0x004004, info->mclk.pll);
+		nv_device_wr32(device, 0x004000, (ctrl |= 0x00000001));
 		udelay(64);
-		nv_wr32(device, 0x004018, 0x00005000 | info->r004018);
+		nv_device_wr32(device, 0x004018, 0x00005000 | info->r004018);
 		udelay(20);
 	} else
 	if (!info->mclk.pll) {
-		nv_mask(device, 0x004168, 0x003f3040, info->mclk.clk);
-		nv_wr32(device, 0x004000, (ctrl |= 0x00000008));
-		nv_mask(device, 0x1110e0, 0x00088000, 0x00088000);
-		nv_wr32(device, 0x004018, 0x0000d000 | info->r004018);
+		nv_device_mask(device, 0x004168, 0x003f3040, info->mclk.clk);
+		nv_device_wr32(device, 0x004000, (ctrl |= 0x00000008));
+		nv_device_mask(device, 0x1110e0, 0x00088000, 0x00088000);
+		nv_device_wr32(device, 0x004018, 0x0000d000 | info->r004018);
 	}
 
 	if (info->rammap) {
@@ -435,22 +439,28 @@ mclk_clock_set(struct nouveau_mem_exec_func *exec)
 				     (info->ramcfg[3] & 0x0f) << 16 |
 				     (info->ramcfg[9] & 0x0f) |
 				     0x80000000;
-			nv_wr32(device, 0x1005a0, unk5a0);
-			nv_wr32(device, 0x1005a4, unk5a4);
-			nv_wr32(device, 0x10f804, unk804);
-			nv_mask(device, 0x10053c, 0x00001000, 0x00000000);
+			nv_device_wr32(device, 0x1005a0, unk5a0);
+			nv_device_wr32(device, 0x1005a4, unk5a4);
+			nv_device_wr32(device, 0x10f804, unk804);
+			nv_device_mask(device, 0x10053c, 0x00001000,
+				       0x00000000);
 		} else {
-			nv_mask(device, 0x10053c, 0x00001000, 0x00001000);
-			nv_mask(device, 0x10f804, 0x80000000, 0x00000000);
-			nv_mask(device, 0x100760, 0x22222222, info->r100760);
-			nv_mask(device, 0x1007a0, 0x22222222, info->r100760);
-			nv_mask(device, 0x1007e0, 0x22222222, info->r100760);
+			nv_device_mask(device, 0x10053c, 0x00001000,
+				       0x00001000);
+			nv_device_mask(device, 0x10f804, 0x80000000,
+				       0x00000000);
+			nv_device_mask(device, 0x100760, 0x22222222,
+				       info->r100760);
+			nv_device_mask(device, 0x1007a0, 0x22222222,
+				       info->r100760);
+			nv_device_mask(device, 0x1007e0, 0x22222222,
+				       info->r100760);
 		}
 	}
 
 	if (info->mclk.pll) {
-		nv_mask(device, 0x1110e0, 0x00088000, 0x00011000);
-		nv_wr32(device, 0x004000, (ctrl &= ~0x00000008));
+		nv_device_mask(device, 0x1110e0, 0x00088000, 0x00011000);
+		nv_device_wr32(device, 0x004000, (ctrl &= ~0x00000008));
 	}
 }
 
@@ -463,33 +473,34 @@ mclk_timing_set(struct nouveau_mem_exec_func *exec)
 	int i;
 
 	for (i = 0; i < 9; i++)
-		nv_wr32(device, 0x100220 + (i * 4), perflvl->timing.reg[i]);
+		nv_device_wr32(device, 0x100220 + (i * 4),
+			       perflvl->timing.reg[i]);
 
 	if (info->ramcfg) {
 		u32 data = (info->ramcfg[2] & 0x08) ? 0x00000000 : 0x00001000;
-		nv_mask(device, 0x100200, 0x00001000, data);
+		nv_device_mask(device, 0x100200, 0x00001000, data);
 	}
 
 	if (info->ramcfg) {
-		u32 unk714 = nv_rd32(device, 0x100714) & ~0xf0000010;
-		u32 unk718 = nv_rd32(device, 0x100718) & ~0x00000100;
-		u32 unk71c = nv_rd32(device, 0x10071c) & ~0x00000100;
+		u32 unk714 = nv_device_rd32(device, 0x100714) & ~0xf0000010;
+		u32 unk718 = nv_device_rd32(device, 0x100718) & ~0x00000100;
+		u32 unk71c = nv_device_rd32(device, 0x10071c) & ~0x00000100;
 		if ( (info->ramcfg[2] & 0x20))
 			unk714 |= 0xf0000000;
 		if (!(info->ramcfg[2] & 0x04))
 			unk714 |= 0x00000010;
-		nv_wr32(device, 0x100714, unk714);
+		nv_device_wr32(device, 0x100714, unk714);
 
 		if (info->ramcfg[2] & 0x01)
 			unk71c |= 0x00000100;
-		nv_wr32(device, 0x10071c, unk71c);
+		nv_device_wr32(device, 0x10071c, unk71c);
 
 		if (info->ramcfg[2] & 0x02)
 			unk718 |= 0x00000100;
-		nv_wr32(device, 0x100718, unk718);
+		nv_device_wr32(device, 0x100718, unk718);
 
 		if (info->ramcfg[2] & 0x10)
-			nv_wr32(device, 0x111100, 0x48000000); /*XXX*/
+			nv_device_wr32(device, 0x111100, 0x48000000); /*XXX*/
 	}
 }
 
@@ -518,17 +529,19 @@ prog_mem(struct drm_device *dev, struct nva3_pm_state *info)
 		info->r100760 = 0x22222222;
 	}
 
-	ctrl = nv_rd32(device, 0x004000);
+	ctrl = nv_device_rd32(device, 0x004000);
 	if (ctrl & 0x00000008) {
 		if (info->mclk.pll) {
-			nv_mask(device, 0x004128, 0x00000101, 0x00000101);
-			nv_wr32(device, 0x004004, info->mclk.pll);
-			nv_wr32(device, 0x004000, (ctrl |= 0x00000001));
-			nv_wr32(device, 0x004000, (ctrl &= 0xffffffef));
+			nv_device_mask(device, 0x004128, 0x00000101,
+				       0x00000101);
+			nv_device_wr32(device, 0x004004, info->mclk.pll);
+			nv_device_wr32(device, 0x004000, (ctrl |= 0x00000001));
+			nv_device_wr32(device, 0x004000, (ctrl &= 0xffffffef));
 			nv_wait(device, 0x004000, 0x00020000, 0x00020000);
-			nv_wr32(device, 0x004000, (ctrl |= 0x00000010));
-			nv_wr32(device, 0x004018, 0x00005000 | info->r004018);
-			nv_wr32(device, 0x004000, (ctrl |= 0x00000004));
+			nv_device_wr32(device, 0x004000, (ctrl |= 0x00000010));
+			nv_device_wr32(device, 0x004018,
+				       0x00005000 | info->r004018);
+			nv_device_wr32(device, 0x004000, (ctrl |= 0x00000004));
 		}
 	} else {
 		u32 ssel = 0x00000101;
@@ -536,44 +549,50 @@ prog_mem(struct drm_device *dev, struct nva3_pm_state *info)
 			ssel |= info->mclk.clk;
 		else
 			ssel |= 0x00080000; /* 324MHz, shouldn't matter... */
-		nv_mask(device, 0x004168, 0x003f3141, ctrl);
+		nv_device_mask(device, 0x004168, 0x003f3141, ctrl);
 	}
 
 	if (info->ramcfg) {
 		if (info->ramcfg[2] & 0x10) {
-			nv_mask(device, 0x111104, 0x00000600, 0x00000000);
+			nv_device_mask(device, 0x111104, 0x00000600,
+				       0x00000000);
 		} else {
-			nv_mask(device, 0x111100, 0x40000000, 0x40000000);
-			nv_mask(device, 0x111104, 0x00000180, 0x00000000);
+			nv_device_mask(device, 0x111100, 0x40000000,
+				       0x40000000);
+			nv_device_mask(device, 0x111104, 0x00000180,
+				       0x00000000);
 		}
 	}
 	if (info->rammap && !(info->rammap[4] & 0x02))
-		nv_mask(device, 0x100200, 0x00000800, 0x00000000);
-	nv_wr32(device, 0x611200, 0x00003300);
+		nv_device_mask(device, 0x100200, 0x00000800, 0x00000000);
+	nv_device_wr32(device, 0x611200, 0x00003300);
 	if (!(info->ramcfg[2] & 0x10))
-		nv_wr32(device, 0x111100, 0x4c020000); /*XXX*/
+		nv_device_wr32(device, 0x111100, 0x4c020000); /*XXX*/
 
 	nouveau_mem_exec(&exec, info->perflvl);
 
-	nv_wr32(device, 0x611200, 0x00003330);
+	nv_device_wr32(device, 0x611200, 0x00003330);
 	if (info->rammap && (info->rammap[4] & 0x02))
-		nv_mask(device, 0x100200, 0x00000800, 0x00000800);
+		nv_device_mask(device, 0x100200, 0x00000800, 0x00000800);
 	if (info->ramcfg) {
 		if (info->ramcfg[2] & 0x10) {
-			nv_mask(device, 0x111104, 0x00000180, 0x00000180);
-			nv_mask(device, 0x111100, 0x40000000, 0x00000000);
+			nv_device_mask(device, 0x111104, 0x00000180,
+				       0x00000180);
+			nv_device_mask(device, 0x111100, 0x40000000,
+				       0x00000000);
 		} else {
-			nv_mask(device, 0x111104, 0x00000600, 0x00000600);
+			nv_device_mask(device, 0x111104, 0x00000600,
+				       0x00000600);
 		}
 	}
 
 	if (info->mclk.pll) {
-		nv_mask(device, 0x004168, 0x00000001, 0x00000000);
-		nv_mask(device, 0x004168, 0x00000100, 0x00000000);
+		nv_device_mask(device, 0x004168, 0x00000001, 0x00000000);
+		nv_device_mask(device, 0x004168, 0x00000100, 0x00000000);
 	} else {
-		nv_mask(device, 0x004000, 0x00000001, 0x00000000);
-		nv_mask(device, 0x004128, 0x00000001, 0x00000000);
-		nv_mask(device, 0x004128, 0x00000100, 0x00000000);
+		nv_device_mask(device, 0x004000, 0x00000001, 0x00000000);
+		nv_device_mask(device, 0x004128, 0x00000001, 0x00000000);
+		nv_device_mask(device, 0x004128, 0x00000100, 0x00000000);
 	}
 }
 
@@ -586,15 +605,15 @@ nva3_pm_clocks_set(struct drm_device *dev, void *pre_state)
 	int ret = -EAGAIN;
 
 	/* prevent any new grctx switches from starting */
-	nv_wr32(device, 0x400324, 0x00000000);
-	nv_wr32(device, 0x400328, 0x0050001c); /* wait flag 0x1c */
+	nv_device_wr32(device, 0x400324, 0x00000000);
+	nv_device_wr32(device, 0x400328, 0x0050001c); /* wait flag 0x1c */
 	/* wait for any pending grctx switches to complete */
 	if (!nv_wait_cb(device, nva3_pm_grcp_idle, dev)) {
 		NV_ERROR(drm, "pm: ctxprog didn't go idle\n");
 		goto cleanup;
 	}
 	/* freeze PFIFO */
-	nv_mask(device, 0x002504, 0x00000001, 0x00000001);
+	nv_device_mask(device, 0x002504, 0x00000001, 0x00000001);
 	if (!nv_wait(device, 0x002504, 0x00000010, 0x00000010)) {
 		NV_ERROR(drm, "pm: fifo didn't go idle\n");
 		goto cleanup;
@@ -612,13 +631,13 @@ nva3_pm_clocks_set(struct drm_device *dev, void *pre_state)
 
 cleanup:
 	/* unfreeze PFIFO */
-	nv_mask(device, 0x002504, 0x00000001, 0x00000000);
+	nv_device_mask(device, 0x002504, 0x00000001, 0x00000000);
 	/* restore ctxprog to normal */
-	nv_wr32(device, 0x400324, 0x00000000);
-	nv_wr32(device, 0x400328, 0x0070009c); /* set flag 0x1c */
+	nv_device_wr32(device, 0x400324, 0x00000000);
+	nv_device_wr32(device, 0x400328, 0x0070009c); /* set flag 0x1c */
 	/* unblock it if necessary */
-	if (nv_rd32(device, 0x400308) == 0x0050001c)
-		nv_mask(device, 0x400824, 0x10000000, 0x10000000);
+	if (nv_device_rd32(device, 0x400308) == 0x0050001c)
+		nv_device_mask(device, 0x400824, 0x10000000, 0x10000000);
 	kfree(info);
 	return ret;
 }

@@ -495,11 +495,11 @@ nouveau_vblank_enable(struct drm_device *dev, int crtc)
 	struct nouveau_device *device = nouveau_dev(dev);
 
 	if (device->card_type >= NV_D0)
-		nv_mask(device, 0x6100c0 + (crtc * 0x800), 1, 1);
+		nv_device_mask(device, 0x6100c0 + (crtc * 0x800), 1, 1);
 	else
 	if (device->card_type >= NV_50)
-		nv_mask(device, NV50_PDISPLAY_INTR_EN_1, 0,
-			NV50_PDISPLAY_INTR_EN_1_VBLANK_CRTC_(crtc));
+		nv_device_mask(device, NV50_PDISPLAY_INTR_EN_1, 0,
+			       NV50_PDISPLAY_INTR_EN_1_VBLANK_CRTC_(crtc));
 	else
 		NVWriteCRTC(dev, crtc, NV_PCRTC_INTR_EN_0,
 			    NV_PCRTC_INTR_0_VBLANK);
@@ -513,11 +513,11 @@ nouveau_vblank_disable(struct drm_device *dev, int crtc)
 	struct nouveau_device *device = nouveau_dev(dev);
 
 	if (device->card_type >= NV_D0)
-		nv_mask(device, 0x6100c0 + (crtc * 0x800), 1, 0);
+		nv_device_mask(device, 0x6100c0 + (crtc * 0x800), 1, 0);
 	else
 	if (device->card_type >= NV_50)
-		nv_mask(device, NV50_PDISPLAY_INTR_EN_1,
-			NV50_PDISPLAY_INTR_EN_1_VBLANK_CRTC_(crtc), 0);
+		nv_device_mask(device, NV50_PDISPLAY_INTR_EN_1,
+			       NV50_PDISPLAY_INTR_EN_1_VBLANK_CRTC_(crtc), 0);
 	else
 		NVWriteCRTC(dev, crtc, NV_PCRTC_INTR_EN_0, 0);
 }

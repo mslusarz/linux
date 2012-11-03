@@ -169,34 +169,36 @@ nv50_evo_channel_init(struct nouveau_channel *evo)
 	u64 pushbuf = evo->push.buffer->bo.offset;
 	u32 tmp;
 
-	tmp = nv_rd32(device, NV50_PDISPLAY_EVO_CTRL(id));
+	tmp = nv_device_rd32(device, NV50_PDISPLAY_EVO_CTRL(id));
 	if ((tmp & 0x009f0000) == 0x00020000)
-		nv_wr32(device, NV50_PDISPLAY_EVO_CTRL(id), tmp | 0x00800000);
+		nv_device_wr32(device, NV50_PDISPLAY_EVO_CTRL(id),
+			       tmp | 0x00800000);
 
-	tmp = nv_rd32(device, NV50_PDISPLAY_EVO_CTRL(id));
+	tmp = nv_device_rd32(device, NV50_PDISPLAY_EVO_CTRL(id));
 	if ((tmp & 0x003f0000) == 0x00030000)
-		nv_wr32(device, NV50_PDISPLAY_EVO_CTRL(id), tmp | 0x00600000);
+		nv_device_wr32(device, NV50_PDISPLAY_EVO_CTRL(id),
+			       tmp | 0x00600000);
 
 	/* initialise fifo */
-	nv_wr32(device, NV50_PDISPLAY_EVO_DMA_CB(id), pushbuf >> 8 |
-		     NV50_PDISPLAY_EVO_DMA_CB_LOCATION_VRAM |
-		     NV50_PDISPLAY_EVO_DMA_CB_VALID);
-	nv_wr32(device, NV50_PDISPLAY_EVO_UNK2(id), 0x00010000);
-	nv_wr32(device, NV50_PDISPLAY_EVO_HASH_TAG(id), id);
-	nv_mask(device, NV50_PDISPLAY_EVO_CTRL(id), NV50_PDISPLAY_EVO_CTRL_DMA,
-		     NV50_PDISPLAY_EVO_CTRL_DMA_ENABLED);
+	nv_device_wr32(device, NV50_PDISPLAY_EVO_DMA_CB(id),
+		       pushbuf >> 8 | NV50_PDISPLAY_EVO_DMA_CB_LOCATION_VRAM | NV50_PDISPLAY_EVO_DMA_CB_VALID);
+	nv_device_wr32(device, NV50_PDISPLAY_EVO_UNK2(id), 0x00010000);
+	nv_device_wr32(device, NV50_PDISPLAY_EVO_HASH_TAG(id), id);
+	nv_device_mask(device, NV50_PDISPLAY_EVO_CTRL(id),
+		       NV50_PDISPLAY_EVO_CTRL_DMA,
+		       NV50_PDISPLAY_EVO_CTRL_DMA_ENABLED);
 
-	nv_wr32(device, NV50_PDISPLAY_USER_PUT(id), 0x00000000);
-	nv_wr32(device, NV50_PDISPLAY_EVO_CTRL(id), 0x01000003 |
-		     NV50_PDISPLAY_EVO_CTRL_DMA_ENABLED);
+	nv_device_wr32(device, NV50_PDISPLAY_USER_PUT(id), 0x00000000);
+	nv_device_wr32(device, NV50_PDISPLAY_EVO_CTRL(id),
+		       0x01000003 | NV50_PDISPLAY_EVO_CTRL_DMA_ENABLED);
 	if (!nv_wait(device, NV50_PDISPLAY_EVO_CTRL(id), 0x80000000, 0x00000000)) {
 		NV_ERROR(drm, "EvoCh %d init timeout: 0x%08x\n", id,
-			 nv_rd32(device, NV50_PDISPLAY_EVO_CTRL(id)));
+			 nv_device_rd32(device, NV50_PDISPLAY_EVO_CTRL(id)));
 		return -EBUSY;
 	}
 
 	/* enable error reporting on the channel */
-	nv_mask(device, 0x610028, 0x00000000, 0x00010001 << id);
+	nv_device_mask(device, 0x610028, 0x00000000, 0x00010001 << id);
 
 	evo->dma.max = (4096/4) - 2;
 	evo->dma.max &= ~7;
@@ -221,13 +223,15 @@ nv50_evo_channel_fini(struct nouveau_channel *evo)
 	struct nouveau_device *device = nv_device(drm->device);
 	int id = evo->handle;
 
-	nv_mask(device, 0x610028, 0x00010001 << id, 0x00000000);
-	nv_mask(device, NV50_PDISPLAY_EVO_CTRL(id), 0x00001010, 0x00001000);
-	nv_wr32(device, NV50_PDISPLAY_INTR_0, (1 << id));
-	nv_mask(device, NV50_PDISPLAY_EVO_CTRL(id), 0x00000003, 0x00000000);
+	nv_device_mask(device, 0x610028, 0x00010001 << id, 0x00000000);
+	nv_device_mask(device, NV50_PDISPLAY_EVO_CTRL(id), 0x00001010,
+		       0x00001000);
+	nv_device_wr32(device, NV50_PDISPLAY_INTR_0, (1 << id));
+	nv_device_mask(device, NV50_PDISPLAY_EVO_CTRL(id), 0x00000003,
+		       0x00000000);
 	if (!nv_wait(device, NV50_PDISPLAY_EVO_CTRL(id), 0x001e0000, 0x00000000)) {
 		NV_ERROR(drm, "EvoCh %d takedown timeout: 0x%08x\n", id,
-			 nv_rd32(device, NV50_PDISPLAY_EVO_CTRL(id)));
+			 nv_device_rd32(device, NV50_PDISPLAY_EVO_CTRL(id)));
 	}
 }
 

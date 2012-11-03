@@ -53,14 +53,14 @@ static void
 hdmi_wr32(struct drm_encoder *encoder, u32 reg, u32 val)
 {
 	struct nouveau_device *device = nouveau_dev(encoder->dev);
-	nv_wr32(device, hdmi_base(encoder) + reg, val);
+	nv_device_wr32(device, hdmi_base(encoder) + reg, val);
 }
 
 static u32
 hdmi_rd32(struct drm_encoder *encoder, u32 reg)
 {
 	struct nouveau_device *device = nouveau_dev(encoder->dev);
-	return nv_rd32(device, hdmi_base(encoder) + reg);
+	return nv_device_rd32(device, hdmi_base(encoder) + reg);
 }
 
 static u32
@@ -79,7 +79,7 @@ nouveau_audio_disconnect(struct drm_encoder *encoder)
 	u32 or = nv_encoder->or * 0x800;
 
 	if (hdmi_sor(encoder))
-		nv_mask(device, 0x61c448 + or, 0x00000003, 0x00000000);
+		nv_device_mask(device, 0x61c448 + or, 0x00000003, 0x00000000);
 }
 
 static void
@@ -99,16 +99,19 @@ nouveau_audio_mode_set(struct drm_encoder *encoder,
 	}
 
 	if (hdmi_sor(encoder)) {
-		nv_mask(device, 0x61c448 + or, 0x00000001, 0x00000001);
+		nv_device_mask(device, 0x61c448 + or, 0x00000001, 0x00000001);
 
 		drm_edid_to_eld(&nv_connector->base, nv_connector->edid);
 		if (nv_connector->base.eld[0]) {
 			u8 *eld = nv_connector->base.eld;
 			for (i = 0; i < eld[2] * 4; i++)
-				nv_wr32(device, 0x61c440 + or, (i << 8) | eld[i]);
+				nv_device_wr32(device, 0x61c440 + or,
+					       (i << 8) | eld[i]);
 			for (i = eld[2] * 4; i < 0x60; i++)
-				nv_wr32(device, 0x61c440 + or, (i << 8) | 0x00);
-			nv_mask(device, 0x61c448 + or, 0x00000002, 0x00000002);
+				nv_device_wr32(device, 0x61c440 + or,
+					       (i << 8) | 0x00);
+			nv_device_mask(device, 0x61c448 + or, 0x00000002,
+				       0x00000002);
 		}
 	}
 }
@@ -239,9 +242,9 @@ nouveau_hdmi_mode_set(struct drm_encoder *encoder,
 	hdmi_mask(encoder, 0x068, 0x00010101, 0x00000000); /* ACR_CTRL, ?? */
 	hdmi_mask(encoder, 0x078, 0x80000000, 0x80000000); /* ACR_0441_ENABLE */
 
-	nv_mask(device, 0x61733c, 0x00100000, 0x00100000); /* RESETF */
-	nv_mask(device, 0x61733c, 0x10000000, 0x10000000); /* LOOKUP_EN */
-	nv_mask(device, 0x61733c, 0x00100000, 0x00000000); /* !RESETF */
+	nv_device_mask(device, 0x61733c, 0x00100000, 0x00100000); /* RESETF */
+	nv_device_mask(device, 0x61733c, 0x10000000, 0x10000000); /* LOOKUP_EN */
+	nv_device_mask(device, 0x61733c, 0x00100000, 0x00000000); /* !RESETF */
 
 	/* value matches nvidia binary driver, and tegra constant */
 	rekey = 56;

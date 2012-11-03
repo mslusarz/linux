@@ -682,8 +682,8 @@ nv40_grctx_init(struct nouveau_device *device, u32 *size)
 
 	nv40_grctx_generate(&ctx);
 
-	nv_wr32(device, 0x400324, 0);
+	nv_device_wr32(device, 0x400324, 0);
 	for (i = 0; i < ctx.ctxprog_len; i++)
-		nv_wr32(device, 0x400328, ctxprog[i]);
+		nv_device_wr32(device, 0x400328, ctxprog[i]);
 	*size = ctx.ctxvals_pos * 4;
 }
