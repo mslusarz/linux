@@ -140,10 +140,10 @@ nv84_crypt_intr(struct nouveau_subdev *subdev)
 	struct nouveau_engine *engine = nv_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nv84_crypt_priv *priv = (void *)subdev;
-	u32 stat = nv_rd32(priv, 0x102130);
-	u32 mthd = nv_rd32(priv, 0x102190);
-	u32 data = nv_rd32(priv, 0x102194);
-	u32 inst = nv_rd32(priv, 0x102188) & 0x7fffffff;
+	u32 stat = nv84_crypt_rd32(priv, 0x102130);
+	u32 mthd = nv84_crypt_rd32(priv, 0x102190);
+	u32 data = nv84_crypt_rd32(priv, 0x102194);
+	u32 inst = nv84_crypt_rd32(priv, 0x102188) & 0x7fffffff;
 	int chid;
 
 	engctx = nouveau_engctx_get(engine, inst);
@@ -156,8 +156,8 @@ nv84_crypt_intr(struct nouveau_subdev *subdev)
 		       chid, (u64)inst << 12, mthd, data);
 	}
 
-	nv_wr32(priv, 0x102130, stat);
-	nv_wr32(priv, 0x10200c, 0x10);
+	nv84_crypt_wr32(priv, 0x102130, stat);
+	nv84_crypt_wr32(priv, 0x10200c, 0x10);
 
 	nv50_fb_trap(nouveau_fb(priv), 1);
 	nouveau_engctx_put(engctx);
@@ -201,9 +201,9 @@ nv84_crypt_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, 0x102130, 0xffffffff);
-	nv_wr32(priv, 0x102140, 0xffffffbf);
-	nv_wr32(priv, 0x10200c, 0x00000010);
+	nv84_crypt_wr32(priv, 0x102130, 0xffffffff);
+	nv84_crypt_wr32(priv, 0x102140, 0xffffffbf);
+	nv84_crypt_wr32(priv, 0x10200c, 0x00000010);
 	return 0;
 }
 

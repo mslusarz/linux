@@ -109,14 +109,14 @@ nv98_crypt_intr(struct nouveau_subdev *subdev)
 	struct nouveau_engine *engine = nv_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nv98_crypt_priv *priv = (void *)subdev;
-	u32 disp = nv_rd32(priv, 0x08701c);
-	u32 stat = nv_rd32(priv, 0x087008) & disp & ~(disp >> 16);
-	u32 inst = nv_rd32(priv, 0x087050) & 0x3fffffff;
-	u32 ssta = nv_rd32(priv, 0x087040) & 0x0000ffff;
-	u32 addr = nv_rd32(priv, 0x087040) >> 16;
+	u32 disp = nv98_crypt_rd32(priv, 0x08701c);
+	u32 stat = nv98_crypt_rd32(priv, 0x087008) & disp & ~(disp >> 16);
+	u32 inst = nv98_crypt_rd32(priv, 0x087050) & 0x3fffffff;
+	u32 ssta = nv98_crypt_rd32(priv, 0x087040) & 0x0000ffff;
+	u32 addr = nv98_crypt_rd32(priv, 0x087040) >> 16;
 	u32 mthd = (addr & 0x07ff) << 2;
 	u32 subc = (addr & 0x3800) >> 11;
-	u32 data = nv_rd32(priv, 0x087044);
+	u32 data = nv98_crypt_rd32(priv, 0x087044);
 	int chid;
 
 	engctx = nouveau_engctx_get(engine, inst);
@@ -127,13 +127,13 @@ nv98_crypt_intr(struct nouveau_subdev *subdev)
 		nouveau_enum_print(nv98_crypt_isr_error_name, ssta);
 		printk("] ch %d [0x%010llx] subc %d mthd 0x%04x data 0x%08x\n",
 		       chid, (u64)inst << 12, subc, mthd, data);
-		nv_wr32(priv, 0x087004, 0x00000040);
+		nv98_crypt_wr32(priv, 0x087004, 0x00000040);
 		stat &= ~0x00000040;
 	}
 
 	if (stat) {
 		nv_error(priv, "unhandled intr 0x%08x\n", stat);
-		nv_wr32(priv, 0x087004, stat);
+		nv98_crypt_wr32(priv, 0x087004, stat);
 	}
 
 	nv50_fb_trap(nouveau_fb(priv), 1);
@@ -180,21 +180,21 @@ nv98_crypt_init(struct nouveau_object *object)
 
 	/* wait for exit interrupt to signal */
 	nv_wait(priv, 0x087008, 0x00000010, 0x00000010);
-	nv_wr32(priv, 0x087004, 0x00000010);
+	nv98_crypt_wr32(priv, 0x087004, 0x00000010);
 
 	/* upload microcode code and data segments */
-	nv_wr32(priv, 0x087ff8, 0x00100000);
+	nv98_crypt_wr32(priv, 0x087ff8, 0x00100000);
 	for (i = 0; i < ARRAY_SIZE(nv98_pcrypt_code); i++)
-		nv_wr32(priv, 0x087ff4, nv98_pcrypt_code[i]);
+		nv98_crypt_wr32(priv, 0x087ff4, nv98_pcrypt_code[i]);
 
-	nv_wr32(priv, 0x087ff8, 0x00000000);
+	nv98_crypt_wr32(priv, 0x087ff8, 0x00000000);
 	for (i = 0; i < ARRAY_SIZE(nv98_pcrypt_data); i++)
-		nv_wr32(priv, 0x087ff4, nv98_pcrypt_data[i]);
+		nv98_crypt_wr32(priv, 0x087ff4, nv98_pcrypt_data[i]);
 
 	/* start it running */
-	nv_wr32(priv, 0x08710c, 0x00000000);
-	nv_wr32(priv, 0x087104, 0x00000000); /* ENTRY */
-	nv_wr32(priv, 0x087100, 0x00000002); /* TRIGGER */
+	nv98_crypt_wr32(priv, 0x08710c, 0x00000000);
+	nv98_crypt_wr32(priv, 0x087104, 0x00000000); /* ENTRY */
+	nv98_crypt_wr32(priv, 0x087100, 0x00000002); /* TRIGGER */
 	return 0;
 }
 
