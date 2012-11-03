@@ -50,9 +50,9 @@ nouveau_ramht_insert(struct nouveau_ramht *ramht, int chid,
 
 	co = ho = nouveau_ramht_hash(ramht, chid, handle);
 	do {
-		if (!nv_ro32(ramht, co + 4)) {
-			nv_wo32(ramht, co + 0, handle);
-			nv_wo32(ramht, co + 4, context);
+		if (!nv_ramht_ro32(ramht, co + 4)) {
+			nv_ramht_wo32(ramht, co + 0, handle);
+			nv_ramht_wo32(ramht, co + 4, context);
 			if (bar)
 				bar->flush(bar);
 			return co;
@@ -70,8 +70,8 @@ void
 nouveau_ramht_remove(struct nouveau_ramht *ramht, int cookie)
 {
 	struct nouveau_bar *bar = nouveau_bar(ramht);
-	nv_wo32(ramht, cookie + 0, 0x00000000);
-	nv_wo32(ramht, cookie + 4, 0x00000000);
+	nv_ramht_wo32(ramht, cookie + 0, 0x00000000);
+	nv_ramht_wo32(ramht, cookie + 4, 0x00000000);
 	if (bar)
 		bar->flush(bar);
 }
