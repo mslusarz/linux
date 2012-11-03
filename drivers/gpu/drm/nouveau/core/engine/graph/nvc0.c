@@ -130,21 +130,23 @@ nvc0_graph_context_ctor(struct nouveau_object *parent,
 	}
 
 	for (i = 0; i < priv->size; i += 4)
-		nv_wo32(chan, i, priv->data[i / 4]);
+		nvc0_grchan_wo32(chan, i, priv->data[i / 4]);
 
 	if (!priv->firmware) {
-		nv_wo32(chan, 0x00, chan->mmio_nr / 2);
-		nv_wo32(chan, 0x04, chan->mmio_vma.offset >> 8);
+		nvc0_grchan_wo32(chan, 0x00, chan->mmio_nr / 2);
+		nvc0_grchan_wo32(chan, 0x04, chan->mmio_vma.offset >> 8);
 	} else {
-		nv_wo32(chan, 0xf4, 0);
-		nv_wo32(chan, 0xf8, 0);
-		nv_wo32(chan, 0x10, chan->mmio_nr / 2);
-		nv_wo32(chan, 0x14, lower_32_bits(chan->mmio_vma.offset));
-		nv_wo32(chan, 0x18, upper_32_bits(chan->mmio_vma.offset));
-		nv_wo32(chan, 0x1c, 1);
-		nv_wo32(chan, 0x20, 0);
-		nv_wo32(chan, 0x28, 0);
-		nv_wo32(chan, 0x2c, 0);
+		nvc0_grchan_wo32(chan, 0xf4, 0);
+		nvc0_grchan_wo32(chan, 0xf8, 0);
+		nvc0_grchan_wo32(chan, 0x10, chan->mmio_nr / 2);
+		nvc0_grchan_wo32(chan, 0x14,
+				 lower_32_bits(chan->mmio_vma.offset));
+		nvc0_grchan_wo32(chan, 0x18,
+				 upper_32_bits(chan->mmio_vma.offset));
+		nvc0_grchan_wo32(chan, 0x1c, 1);
+		nvc0_grchan_wo32(chan, 0x20, 0);
+		nvc0_grchan_wo32(chan, 0x28, 0);
+		nvc0_grchan_wo32(chan, 0x2c, 0);
 	}
 
 	return 0;

@@ -151,7 +151,7 @@ nv40_graph_context_ctor(struct nouveau_object *parent,
 		return ret;
 
 	nv40_grctx_fill(nv_device(priv), nv_gpuobj(chan));
-	nv_wo32(chan, 0x00000, nv_gpuobj(chan)->addr >> 4);
+	nv40_grchan_wo32(chan, 0x00000, nv_gpuobj(chan)->addr >> 4);
 	return 0;
 }
 
