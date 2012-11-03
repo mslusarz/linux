@@ -32,42 +32,42 @@ INHERITS_NV_IBUS(nvc0_ibus, struct nvc0_ibus_priv);
 static void
 nvc0_ibus_intr_hub(struct nvc0_ibus_priv *priv, int i)
 {
-	u32 addr = nv_rd32(priv, 0x122120 + (i * 0x0400));
-	u32 data = nv_rd32(priv, 0x122124 + (i * 0x0400));
-	u32 stat = nv_rd32(priv, 0x122128 + (i * 0x0400));
+	u32 addr = nvc0_ibus_rd32(priv, 0x122120 + (i * 0x0400));
+	u32 data = nvc0_ibus_rd32(priv, 0x122124 + (i * 0x0400));
+	u32 stat = nvc0_ibus_rd32(priv, 0x122128 + (i * 0x0400));
 	nv_error(priv, "HUB%d: 0x%06x 0x%08x (0x%08x)\n", i, addr, data, stat);
-	nv_mask(priv, 0x122128 + (i * 0x0400), 0x00000200, 0x00000000);
+	nvc0_ibus_mask(priv, 0x122128 + (i * 0x0400), 0x00000200, 0x00000000);
 }
 
 static void
 nvc0_ibus_intr_rop(struct nvc0_ibus_priv *priv, int i)
 {
-	u32 addr = nv_rd32(priv, 0x124120 + (i * 0x0400));
-	u32 data = nv_rd32(priv, 0x124124 + (i * 0x0400));
-	u32 stat = nv_rd32(priv, 0x124128 + (i * 0x0400));
+	u32 addr = nvc0_ibus_rd32(priv, 0x124120 + (i * 0x0400));
+	u32 data = nvc0_ibus_rd32(priv, 0x124124 + (i * 0x0400));
+	u32 stat = nvc0_ibus_rd32(priv, 0x124128 + (i * 0x0400));
 	nv_error(priv, "ROP%d: 0x%06x 0x%08x (0x%08x)\n", i, addr, data, stat);
-	nv_mask(priv, 0x124128 + (i * 0x0400), 0x00000200, 0x00000000);
+	nvc0_ibus_mask(priv, 0x124128 + (i * 0x0400), 0x00000200, 0x00000000);
 }
 
 static void
 nvc0_ibus_intr_gpc(struct nvc0_ibus_priv *priv, int i)
 {
-	u32 addr = nv_rd32(priv, 0x128120 + (i * 0x0400));
-	u32 data = nv_rd32(priv, 0x128124 + (i * 0x0400));
-	u32 stat = nv_rd32(priv, 0x128128 + (i * 0x0400));
+	u32 addr = nvc0_ibus_rd32(priv, 0x128120 + (i * 0x0400));
+	u32 data = nvc0_ibus_rd32(priv, 0x128124 + (i * 0x0400));
+	u32 stat = nvc0_ibus_rd32(priv, 0x128128 + (i * 0x0400));
 	nv_error(priv, "GPC%d: 0x%06x 0x%08x (0x%08x)\n", i, addr, data, stat);
-	nv_mask(priv, 0x128128 + (i * 0x0400), 0x00000200, 0x00000000);
+	nvc0_ibus_mask(priv, 0x128128 + (i * 0x0400), 0x00000200, 0x00000000);
 }
 
 static void
 nvc0_ibus_intr(struct nouveau_subdev *subdev)
 {
 	struct nvc0_ibus_priv *priv = (void *)subdev;
-	u32 intr0 = nv_rd32(priv, 0x121c58);
-	u32 intr1 = nv_rd32(priv, 0x121c5c);
-	u32 hubnr = nv_rd32(priv, 0x121c70);
-	u32 ropnr = nv_rd32(priv, 0x121c74);
-	u32 gpcnr = nv_rd32(priv, 0x121c78);
+	u32 intr0 = nvc0_ibus_rd32(priv, 0x121c58);
+	u32 intr1 = nvc0_ibus_rd32(priv, 0x121c5c);
+	u32 hubnr = nvc0_ibus_rd32(priv, 0x121c70);
+	u32 ropnr = nvc0_ibus_rd32(priv, 0x121c74);
+	u32 gpcnr = nvc0_ibus_rd32(priv, 0x121c78);
 	u32 i;
 
 	for (i = 0; (intr0 & 0x0000ff00) && i < hubnr; i++) {
