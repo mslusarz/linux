@@ -88,7 +88,7 @@ nv50_bar_flush(struct nouveau_bar *bar)
 	struct nv50_bar_priv *priv = (void *)bar;
 	unsigned long flags;
 	spin_lock_irqsave(&priv->lock, flags);
-	nv_wr32(priv, 0x00330c, 0x00000001);
+	nv50_bar_wr32(priv, 0x00330c, 0x00000001);
 	if (!nv_wait(priv, 0x00330c, 0x00000002, 0x00000000))
 		nv_warn(priv, "flush timeout\n");
 	spin_unlock_irqrestore(&priv->lock, flags);
@@ -100,7 +100,7 @@ nv84_bar_flush(struct nouveau_bar *bar)
 	struct nv50_bar_priv *priv = (void *)bar;
 	unsigned long flags;
 	spin_lock_irqsave(&priv->lock, flags);
-	nv_wr32(bar, 0x070000, 0x00000001);
+	nv_bar_wr32(bar, 0x070000, 0x00000001);
 	if (!nv_wait(priv, 0x070000, 0x00000002, 0x00000000))
 		nv_warn(priv, "flush timeout\n");
 	spin_unlock_irqrestore(&priv->lock, flags);
@@ -234,14 +234,16 @@ nv50_bar_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_mask(priv, 0x000200, 0x00000100, 0x00000000);
-	nv_mask(priv, 0x000200, 0x00000100, 0x00000100);
+	nv50_bar_mask(priv, 0x000200, 0x00000100, 0x00000000);
+	nv50_bar_mask(priv, 0x000200, 0x00000100, 0x00000100);
 	nv50_vm_flush_engine(nv_subdev(priv), 6);
 
-	nv_wr32(priv, 0x001704, 0x00000000 | priv->mem->addr >> 12);
-	nv_wr32(priv, 0x001704, 0x40000000 | priv->mem->addr >> 12);
-	nv_wr32(priv, 0x001708, 0x80000000 | priv->bar1->node->offset >> 4);
-	nv_wr32(priv, 0x00170c, 0x80000000 | priv->bar3->node->offset >> 4);
+	nv50_bar_wr32(priv, 0x001704, 0x00000000 | priv->mem->addr >> 12);
+	nv50_bar_wr32(priv, 0x001704, 0x40000000 | priv->mem->addr >> 12);
+	nv50_bar_wr32(priv, 0x001708,
+		      0x80000000 | priv->bar1->node->offset >> 4);
+	nv50_bar_wr32(priv, 0x00170c,
+		      0x80000000 | priv->bar3->node->offset >> 4);
 	return 0;
 }
 
