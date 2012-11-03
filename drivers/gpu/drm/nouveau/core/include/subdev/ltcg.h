@@ -7,6 +7,11 @@
 struct nouveau_ltcg {
 	struct nouveau_subdev base;
 };
+INHERITS_NV_SUBDEV(nv_ltcg, struct nouveau_ltcg);
+
+#define INHERITS_NV_LTCG(pfx, type) \
+	NOUVEAU_UPCAST(pfx, ltcg, type, struct nouveau_ltcg); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_ltcg *
 nouveau_ltcg(void *obj)

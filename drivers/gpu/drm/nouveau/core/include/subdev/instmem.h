@@ -12,6 +12,11 @@ struct nouveau_instobj {
 	u64 addr;
 	u32 size;
 };
+INHERITS_NV_OBJECT(nv_iobj, struct nouveau_instobj);
+
+#define INHERITS_NV_INSTOBJ(pfx, type) \
+	NOUVEAU_UPCAST(pfx, iobj, type, struct nouveau_instobj); \
+	INHERITS_NV_OBJECT(pfx, type)
 
 static inline struct nouveau_instobj *
 nv_memobj(void *obj)
@@ -46,6 +51,11 @@ struct nouveau_instmem {
 	int (*alloc)(struct nouveau_instmem *, struct nouveau_object *,
 		     u32 size, u32 align, struct nouveau_object **);
 };
+INHERITS_NV_SUBDEV(nv_imem, struct nouveau_instmem);
+
+#define INHERITS_NV_INSTMEM(pfx, type) \
+	NOUVEAU_UPCAST(pfx, imem, type, struct nouveau_instmem); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_instmem *
 nouveau_instmem(void *obj)

@@ -20,6 +20,11 @@ struct nouveau_clock {
 	int (*pll_prog)(struct nouveau_clock *, u32 reg1,
 			struct nouveau_pll_vals *pv);
 };
+INHERITS_NV_SUBDEV(nv_clock, struct nouveau_clock);
+
+#define INHERITS_NV_CLOCK(pfx, type) \
+	NOUVEAU_UPCAST(pfx, clock, type, struct nouveau_clock); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_clock *
 nouveau_clock(void *obj)

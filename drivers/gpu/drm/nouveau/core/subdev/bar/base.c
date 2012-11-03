@@ -30,6 +30,7 @@ struct nouveau_barobj {
 	struct nouveau_vma vma;
 	void __iomem *iomem;
 };
+INHERITS_NV_OBJECT(nv_barobj, struct nouveau_barobj);
 
 static int
 nouveau_barobj_ctor(struct nouveau_object *parent,

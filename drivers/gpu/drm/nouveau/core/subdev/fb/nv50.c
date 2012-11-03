@@ -33,6 +33,7 @@ struct nv50_fb_priv {
 	struct page *r100c08_page;
 	dma_addr_t r100c08;
 };
+INHERITS_NV_FB(nv50_fb, struct nv50_fb_priv);
 
 static int types[0x80] = {
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

@@ -8,6 +8,11 @@
 struct nouveau_graph_chan {
 	struct nouveau_engctx base;
 };
+INHERITS_NV_ENGCTX(nv_grchan, struct nouveau_graph_chan);
+
+#define INHERITS_NV_GRCHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, grchan, type, struct nouveau_graph_chan); \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_graph_context_create(p,e,c,g,s,a,f,d)                          \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))
@@ -27,6 +32,11 @@ struct nouveau_graph_chan {
 struct nouveau_graph {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_graph, struct nouveau_graph);
+
+#define INHERITS_NV_GRAPH(pfx, type) \
+	NOUVEAU_UPCAST(pfx, graph, type, struct nouveau_graph) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 static inline struct nouveau_graph *
 nouveau_graph(void *obj)

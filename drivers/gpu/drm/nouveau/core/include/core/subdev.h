@@ -16,6 +16,11 @@ struct nouveau_subdev {
 
 	void (*intr)(struct nouveau_subdev *);
 };
+INHERITS_NV_OBJECT(nv_subdev, struct nouveau_subdev);
+
+#define INHERITS_NV_SUBDEV(pfx, type) \
+	NOUVEAU_UPCAST(pfx, subdev, type, struct nouveau_subdev) \
+	INHERITS_NV_OBJECT(pfx, type)
 
 static inline struct nouveau_subdev *
 nv_subdev(void *obj)

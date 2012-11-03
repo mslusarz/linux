@@ -1,6 +1,8 @@
 #ifndef __NOUVEAU_HANDLE_H__
 #define __NOUVEAU_HANDLE_H__
 
+#include <core/namedb.h>
+
 struct nouveau_handle {
 	struct nouveau_namedb *namedb;
 	struct list_head node;
@@ -13,6 +15,7 @@ struct nouveau_handle {
 	struct nouveau_handle *parent;
 	struct nouveau_object *object;
 };
+INHERITS_NV_NAMEDB(nv_handle, struct nouveau_handle);
 
 int  nouveau_handle_create(struct nouveau_object *, u32 parent, u32 handle,
 			   struct nouveau_object *, struct nouveau_handle **);

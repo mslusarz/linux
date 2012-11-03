@@ -40,6 +40,7 @@ struct nv50_bar_priv {
 	struct nouveau_vm *bar3_vm;
 	struct nouveau_gpuobj *bar3;
 };
+INHERITS_NV_BAR(nv50_bar, struct nv50_bar_priv);
 
 static int
 nv50_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,

@@ -38,6 +38,11 @@ struct nouveau_therm {
 	int (*attr_set)(struct nouveau_therm *,
 			enum nouveau_therm_attr_type, int);
 };
+INHERITS_NV_SUBDEV(nv_therm, struct nouveau_therm);
+
+#define INHERITS_NV_THERM(pfx, type) \
+	NOUVEAU_UPCAST(pfx, therm, type, struct nouveau_therm); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_therm *
 nouveau_therm(void *obj)

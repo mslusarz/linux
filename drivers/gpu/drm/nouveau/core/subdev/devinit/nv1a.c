@@ -29,6 +29,7 @@ struct nv1a_devinit_priv {
 	struct nouveau_devinit base;
 	u8 owner;
 };
+INHERITS_NV_DEVINIT(nv1a_devinit, struct nv1a_devinit_priv);
 
 static int
 nv1a_devinit_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

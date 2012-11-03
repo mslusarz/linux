@@ -84,6 +84,7 @@ struct nouveau_device {
 	struct nouveau_oclass *oclass[NVDEV_SUBDEV_NR];
 	struct nouveau_object *subdev[NVDEV_SUBDEV_NR];
 };
+INHERITS_NV_SUBDEV(nv_device, struct nouveau_device);
 
 static inline struct nouveau_device *
 nv_device(void *obj)

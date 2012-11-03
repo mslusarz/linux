@@ -27,6 +27,7 @@
 struct nv98_mc_priv {
 	struct nouveau_mc base;
 };
+INHERITS_NV_MC(nv98_mc, struct nv98_mc_priv);
 
 static const struct nouveau_mc_intr
 nv98_mc_intr[] = {

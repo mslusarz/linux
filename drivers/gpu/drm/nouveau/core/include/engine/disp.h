@@ -17,6 +17,11 @@ struct nouveau_disp {
 		void *data;
 	} vblank;
 };
+INHERITS_NV_ENGINE(nv_disp, struct nouveau_disp);
+
+#define INHERITS_NV_DISP(pfx, type) \
+	NOUVEAU_UPCAST(pfx, disp, type, struct nouveau_disp) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 static inline struct nouveau_disp *
 nouveau_disp(void *obj)

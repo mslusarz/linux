@@ -25,6 +25,11 @@ struct nouveau_parent {
 			      struct nouveau_object *object, u32 name);
 	void (*object_detach)(struct nouveau_object *parent, int cookie);
 };
+INHERITS_NV_OBJECT(nv_parent, struct nouveau_parent);
+
+#define INHERITS_NV_PARENT(pfx, type) \
+	NOUVEAU_UPCAST(pfx, parent, type, struct nouveau_parent) \
+	INHERITS_NV_OBJECT(pfx, type)
 
 static inline struct nouveau_parent *
 nv_parent(void *obj)

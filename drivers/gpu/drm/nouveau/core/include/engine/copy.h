@@ -7,6 +7,11 @@
 struct nouveau_copy_chan {
 	struct nouveau_engctx base;
 };
+INHERITS_NV_ENGCTX(nv_copych, struct nouveau_copy_chan);
+
+#define INHERITS_NV_COPY_CHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, copych, type, struct nouveau_copy_chan) \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_copy_context_create(p,e,c,g,s,a,f,d)                           \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))
@@ -26,6 +31,11 @@ struct nouveau_copy_chan {
 struct nouveau_copy {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_copy, struct nouveau_copy);
+
+#define INHERITS_NV_COPY(pfx, type) \
+	NOUVEAU_UPCAST(pfx, copy, type, struct nouveau_copy); \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_copy_create(p,e,c,y,i,d)                                       \
 	nouveau_engine_create((p), (e), (c), (y), "PCE"#i, "copy"#i, (d))

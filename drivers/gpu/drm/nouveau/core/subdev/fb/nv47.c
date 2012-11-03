@@ -29,6 +29,7 @@
 struct nv47_fb_priv {
 	struct nouveau_fb base;
 };
+INHERITS_NV_FB(nv47_fb, struct nv47_fb_priv);
 
 static int
 nv47_fb_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

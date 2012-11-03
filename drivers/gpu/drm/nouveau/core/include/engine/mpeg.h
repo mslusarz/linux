@@ -7,6 +7,11 @@
 struct nouveau_mpeg_chan {
 	struct nouveau_engctx base;
 };
+INHERITS_NV_ENGCTX(nv_mpegchan, struct nouveau_mpeg_chan);
+
+#define INHERITS_NV_MPEGCHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, mpegchan, type, struct nouveau_mpeg_chan); \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_mpeg_context_create(p,e,c,g,s,a,f,d)                           \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))
@@ -26,6 +31,11 @@ struct nouveau_mpeg_chan {
 struct nouveau_mpeg {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_mpeg, struct nouveau_mpeg);
+
+#define INHERITS_NV_MPEG(pfx, type) \
+	NOUVEAU_UPCAST(pfx, mpeg, type, struct nouveau_mpeg) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_mpeg_create(p,e,c,d)                                           \
 	nouveau_engine_create((p), (e), (c), true, "PMPEG", "mpeg", (d))

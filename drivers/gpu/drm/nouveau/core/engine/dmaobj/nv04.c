@@ -33,10 +33,12 @@
 struct nv04_dmaeng_priv {
 	struct nouveau_dmaeng base;
 };
+INHERITS_NV_DMAENG(nv04_dmaeng, struct nv04_dmaeng_priv);
 
 struct nv04_dmaobj_priv {
 	struct nouveau_dmaobj base;
 };
+INHERITS_NV_DMAOBJ(nv04_dmaobj, struct nv04_dmaobj_priv);
 
 static int
 nv04_dmaobj_bind(struct nouveau_dmaeng *dmaeng,

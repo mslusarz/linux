@@ -48,16 +48,19 @@ struct nvc0_fifo_priv {
 	} user;
 	int spoon_nr;
 };
+INHERITS_NV_FIFO(nvc0_fifo, struct nvc0_fifo_priv);
 
 struct nvc0_fifo_base {
 	struct nouveau_fifo_base base;
 	struct nouveau_gpuobj *pgd;
 	struct nouveau_vm *vm;
 };
+INHERITS_NV_FIFO_BASE(nvc0_fifob, struct nvc0_fifo_base);
 
 struct nvc0_fifo_chan {
 	struct nouveau_fifo_chan base;
 };
+INHERITS_NV_FIFO_CHAN(nvc0_fifoch, struct nvc0_fifo_chan);
 
 /*******************************************************************************
  * FIFO channel objects

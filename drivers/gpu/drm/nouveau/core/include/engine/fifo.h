@@ -14,6 +14,11 @@ struct nouveau_fifo_chan {
 	u16 chid;
 	atomic_t refcnt; /* NV04_NVSW_SET_REF */
 };
+INHERITS_NV_NAMEDB(nv_fifoch, struct nouveau_fifo_chan);
+
+#define INHERITS_NV_FIFO_CHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, fifoch, type, struct nouveau_fifo_chan) \
+	INHERITS_NV_NAMEDB(pfx, type)
 
 static inline struct nouveau_fifo_chan *
 nouveau_fifo_chan(void *obj)
@@ -46,6 +51,11 @@ void _nouveau_fifo_channel_wr32(struct nouveau_object *, u32, u32);
 struct nouveau_fifo_base {
 	struct nouveau_gpuobj base;
 };
+INHERITS_NV_GPUOBJ(nv_fifob, struct nouveau_fifo_base);
+
+#define INHERITS_NV_FIFO_BASE(pfx, type) \
+	NOUVEAU_UPCAST(pfx, fifob, type, struct nouveau_fifo_base); \
+	INHERITS_NV_GPUOBJ(pfx, type)
 
 #define nouveau_fifo_context_create(p,e,c,g,s,a,f,d)                           \
 	nouveau_gpuobj_create((p), (e), (c), 0, (g), (s), (a), (f), (d))
@@ -74,6 +84,11 @@ struct nouveau_fifo {
 	void (*pause)(struct nouveau_fifo *, unsigned long *);
 	void (*start)(struct nouveau_fifo *, unsigned long *);
 };
+INHERITS_NV_ENGINE(nv_fifo, struct nouveau_fifo);
+
+#define INHERITS_NV_FIFO(pfx, type) \
+	NOUVEAU_UPCAST(pfx, fifo, type, struct nouveau_fifo) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 static inline struct nouveau_fifo *
 nouveau_fifo(void *obj)

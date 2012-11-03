@@ -19,6 +19,11 @@ struct nouveau_software_chan {
 	int (*flip)(void *);
 	void *flip_data;
 };
+INHERITS_NV_ENGCTX(nv_swch, struct nouveau_software_chan);
+
+#define INHERITS_NV_SW_CHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, swch, type, struct nouveau_software_chan); \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_software_context_create(p,e,c,d)                               \
 	nouveau_engctx_create((p), (e), (c), (p), 0, 0, 0, (d))
@@ -36,6 +41,11 @@ struct nouveau_software_chan {
 struct nouveau_software {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_sw, struct nouveau_software);
+
+#define INHERITS_NV_SW(pfx, type) \
+	NOUVEAU_UPCAST(pfx, sw, type, struct nouveau_software) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_software_create(p,e,c,d)                                       \
 	nouveau_engine_create((p), (e), (c), true, "SW", "software", (d))

@@ -29,6 +29,7 @@
 struct nv41_fb_priv {
 	struct nouveau_fb base;
 };
+INHERITS_NV_FB(nv41_fb, struct nv41_fb_priv);
 
 int
 nv41_fb_vram_init(struct nouveau_fb *pfb)

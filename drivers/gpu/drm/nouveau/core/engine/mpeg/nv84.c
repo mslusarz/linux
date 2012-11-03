@@ -35,10 +35,12 @@
 struct nv84_mpeg_priv {
 	struct nouveau_mpeg base;
 };
+INHERITS_NV_MPEG(nv84_mpeg, struct nv84_mpeg_priv);
 
 struct nv84_mpeg_chan {
 	struct nouveau_mpeg_chan base;
 };
+INHERITS_NV_MPEGCHAN(nv84_mpegchan, struct nv84_mpeg_chan);
 
 /*******************************************************************************
  * MPEG object classes

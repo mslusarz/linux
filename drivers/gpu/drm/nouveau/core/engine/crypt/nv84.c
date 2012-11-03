@@ -36,10 +36,12 @@
 struct nv84_crypt_priv {
 	struct nouveau_crypt base;
 };
+INHERITS_NV_CRYPT(nv84_crypt, struct nv84_crypt_priv);
 
 struct nv84_crypt_chan {
 	struct nouveau_crypt_chan base;
 };
+INHERITS_NV_CRYPT_CHAN(nv84_cryptch, struct nv84_crypt_chan);
 
 /*******************************************************************************
  * Crypt object classes

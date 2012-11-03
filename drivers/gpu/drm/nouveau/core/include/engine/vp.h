@@ -7,6 +7,11 @@
 struct nouveau_vp_chan {
 	struct nouveau_engctx base;
 };
+INHERITS_NV_ENGCTX(nv_vpch, struct nouveau_vp_chan);
+
+#define INHERITS_NV_VP_CHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, vpch, type, struct nouveau_vp_chan) \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_vp_context_create(p,e,c,g,s,a,f,d)                             \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))
@@ -26,6 +31,11 @@ struct nouveau_vp_chan {
 struct nouveau_vp {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_vp, struct nouveau_vp);
+
+#define INHERITS_NV_VP(pfx, type) \
+	NOUVEAU_UPCAST(pfx, vp, type, struct nouveau_vp) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_vp_create(p,e,c,d)                                             \
 	nouveau_engine_create((p), (e), (c), true, "PVP", "vp", (d))

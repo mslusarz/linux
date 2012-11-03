@@ -6,6 +6,7 @@ struct nv50_fifo_priv {
 	struct nouveau_gpuobj *playlist[2];
 	int cur_playlist;
 };
+INHERITS_NV_FIFO(nv50_fifo, struct nv50_fifo_priv);
 
 struct nv50_fifo_base {
 	struct nouveau_fifo_base base;
@@ -15,12 +16,14 @@ struct nv50_fifo_base {
 	struct nouveau_gpuobj *pgd;
 	struct nouveau_vm *vm;
 };
+INHERITS_NV_FIFO_BASE(nv50_fifob, struct nv50_fifo_base);
 
 struct nv50_fifo_chan {
 	struct nouveau_fifo_chan base;
 	u32 subc[8];
 	struct nouveau_ramht *ramht;
 };
+INHERITS_NV_FIFO_CHAN(nv50_fifoch, struct nv50_fifo_chan);
 
 void nv50_fifo_playlist_update(struct nv50_fifo_priv *);
 

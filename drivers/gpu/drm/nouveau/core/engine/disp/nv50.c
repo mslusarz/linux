@@ -28,6 +28,7 @@
 struct nv50_disp_priv {
 	struct nouveau_disp base;
 };
+INHERITS_NV_DISP(nv50_disp, struct nv50_disp_priv);
 
 static struct nouveau_oclass
 nv50_disp_sclass[] = {

@@ -29,6 +29,7 @@
 struct nv10_gpio_priv {
 	struct nouveau_gpio base;
 };
+INHERITS_NV_GPIO(nv10_gpio, struct nv10_gpio_priv);
 
 static int
 nv10_gpio_sense(struct nouveau_gpio *gpio, int line)

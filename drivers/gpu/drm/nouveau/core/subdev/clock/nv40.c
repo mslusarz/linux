@@ -27,6 +27,7 @@
 struct nv40_clock_priv {
 	struct nouveau_clock base;
 };
+INHERITS_NV_CLOCK(nv40_clock, struct nv40_clock_priv);
 
 static int
 nv40_clock_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

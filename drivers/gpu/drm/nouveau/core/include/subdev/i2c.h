@@ -33,6 +33,11 @@ struct nouveau_i2c {
 				      struct i2c_board_info *));
 	struct list_head ports;
 };
+INHERITS_NV_SUBDEV(nv_i2c, struct nouveau_i2c);
+
+#define INHERITS_NV_I2C(pfx, type) \
+	NOUVEAU_UPCAST(pfx, i2c, type, struct nouveau_i2c); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_i2c *
 nouveau_i2c(void *obj)

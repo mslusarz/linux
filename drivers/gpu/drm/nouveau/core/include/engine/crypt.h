@@ -7,6 +7,11 @@
 struct nouveau_crypt_chan {
 	struct nouveau_engctx base;
 };
+INHERITS_NV_ENGCTX(nv_cryptch, struct nouveau_crypt_chan);
+
+#define INHERITS_NV_CRYPT_CHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, cryptch, type, struct nouveau_crypt_chan) \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_crypt_context_create(p,e,c,g,s,a,f,d)                          \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))
@@ -26,6 +31,11 @@ struct nouveau_crypt_chan {
 struct nouveau_crypt {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_crypt, struct nouveau_crypt);
+
+#define INHERITS_NV_CRYPT(pfx, type) \
+	NOUVEAU_UPCAST(pfx, crypt, type, struct nouveau_crypt) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_crypt_create(p,e,c,d)                                          \
 	nouveau_engine_create((p), (e), (c), true, "PCRYPT", "crypt", (d))

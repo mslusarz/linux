@@ -36,10 +36,12 @@
 struct nv40_mpeg_priv {
 	struct nouveau_mpeg base;
 };
+INHERITS_NV_MPEG(nv40_mpeg, struct nv40_mpeg_priv);
 
 struct nv40_mpeg_chan {
 	struct nouveau_mpeg_chan base;
 };
+INHERITS_NV_MPEGCHAN(nv40_mpegchan, struct nv40_mpeg_chan);
 
 /*******************************************************************************
  * PMPEG context

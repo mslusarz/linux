@@ -10,6 +10,11 @@ struct nouveau_namedb {
 	rwlock_t lock;
 	struct list_head list;
 };
+INHERITS_NV_PARENT(nv_namedb, struct nouveau_namedb);
+
+#define INHERITS_NV_NAMEDB(pfx, type) \
+	NOUVEAU_UPCAST(pfx, namedb, type, struct nouveau_namedb) \
+	INHERITS_NV_PARENT(pfx, type)
 
 static inline struct nouveau_namedb *
 nv_namedb(void *obj)

@@ -356,13 +356,14 @@ struct nv04_graph_priv {
 	struct nv04_graph_chan *chan[16];
 	spinlock_t lock;
 };
+INHERITS_NV_GRAPH(nv04_graph, struct nv04_graph_priv);
 
 struct nv04_graph_chan {
 	struct nouveau_object base;
 	int chid;
 	u32 nv04[ARRAY_SIZE(nv04_graph_ctx_regs)];
 };
-
+INHERITS_NV_OBJECT(nv04_grchan, struct nv04_graph_chan);
 
 static inline struct nv04_graph_priv *
 nv04_graph_priv(struct nv04_graph_chan *chan)

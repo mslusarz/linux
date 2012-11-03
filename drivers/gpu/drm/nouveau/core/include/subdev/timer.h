@@ -28,6 +28,11 @@ struct nouveau_timer {
 	u64  (*read)(struct nouveau_timer *);
 	void (*alarm)(struct nouveau_timer *, u64 time, struct nouveau_alarm *);
 };
+INHERITS_NV_SUBDEV(nv_timer, struct nouveau_timer);
+
+#define INHERITS_NV_TIMER(pfx, type) \
+	NOUVEAU_UPCAST(pfx, timer, type, struct nouveau_timer); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_timer *
 nouveau_timer(void *obj)

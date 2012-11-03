@@ -27,6 +27,9 @@ struct nouveau_object {
 #endif
 };
 
+#define INHERITS_NV_OBJECT(pfx, type) \
+	NOUVEAU_UPCAST(pfx, object, type, struct nouveau_object)
+
 static inline struct nouveau_object *
 nv_object(void *obj)
 {
@@ -184,5 +187,12 @@ nv_strncmp(void *obj, u32 addr, u32 len, const char *str)
 	}
 	return true;
 }
+
+#define NOUVEAU_UPCAST(pfx, uptype_short, downtype, uptype)	\
+static inline uptype *						\
+pfx##_to_##uptype_short(downtype *o)				\
+{								\
+	return (uptype *)o;					\
+}								\
 
 #endif

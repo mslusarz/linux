@@ -95,6 +95,11 @@ struct nouveau_fb {
 			     struct nouveau_fb_tile *);
 	} tile;
 };
+INHERITS_NV_SUBDEV(nv_fb, struct nouveau_fb);
+
+#define INHERITS_NV_FB(pfx, type) \
+	NOUVEAU_UPCAST(pfx, fb, type, struct nouveau_fb); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_fb *
 nouveau_fb(void *obj)

@@ -7,6 +7,7 @@ struct nouveau_ramht {
 	struct nouveau_gpuobj base;
 	int bits;
 };
+INHERITS_NV_GPUOBJ(nv_ramht, struct nouveau_ramht);
 
 int  nouveau_ramht_insert(struct nouveau_ramht *, int chid,
 			  u32 handle, u32 context);

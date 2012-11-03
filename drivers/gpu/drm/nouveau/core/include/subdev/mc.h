@@ -13,6 +13,11 @@ struct nouveau_mc {
 	struct nouveau_subdev base;
 	const struct nouveau_mc_intr *intr_map;
 };
+INHERITS_NV_SUBDEV(nv_mc, struct nouveau_mc);
+
+#define INHERITS_NV_MC(pfx, type) \
+	NOUVEAU_UPCAST(pfx, mc, type, struct nouveau_mc); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_mc *
 nouveau_mc(void *obj)

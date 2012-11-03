@@ -18,6 +18,11 @@ struct nouveau_engine {
 	void (*tile_prog)(struct nouveau_engine *, int region);
 	int  (*tlb_flush)(struct nouveau_engine *);
 };
+INHERITS_NV_SUBDEV(nv_engine, struct nouveau_engine);
+
+#define INHERITS_NV_ENGINE(pfx, type) \
+	NOUVEAU_UPCAST(pfx, engine, type, struct nouveau_engine); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_engine *
 nv_engine(void *obj)

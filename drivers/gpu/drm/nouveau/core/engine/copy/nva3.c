@@ -38,10 +38,12 @@
 struct nva3_copy_priv {
 	struct nouveau_copy base;
 };
+INHERITS_NV_COPY(nva3_copy, struct nva3_copy_priv);
 
 struct nva3_copy_chan {
 	struct nouveau_copy_chan base;
 };
+INHERITS_NV_COPY_CHAN(nva3_copych, struct nva3_copy_chan);
 
 /*******************************************************************************
  * Copy object classes

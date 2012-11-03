@@ -35,10 +35,12 @@
 struct nv50_software_priv {
 	struct nouveau_software base;
 };
+INHERITS_NV_SW(nv50_sw, struct nv50_software_priv);
 
 struct nv50_software_chan {
 	struct nouveau_software_chan base;
 };
+INHERITS_NV_SW_CHAN(nv50_swch, struct nv50_software_chan);
 
 /*******************************************************************************
  * software object classes

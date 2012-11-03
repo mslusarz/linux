@@ -32,11 +32,13 @@ struct nv50_instmem_priv {
 	spinlock_t lock;
 	u64 addr;
 };
+INHERITS_NV_INSTMEM(nv50_imem, struct nv50_instmem_priv);
 
 struct nv50_instobj_priv {
 	struct nouveau_instobj base;
 	struct nouveau_mem *mem;
 };
+INHERITS_NV_INSTOBJ(nv50_iobj, struct nv50_instobj_priv);
 
 static int
 nv50_instobj_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

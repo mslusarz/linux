@@ -35,10 +35,12 @@
 struct nvc0_copy_priv {
 	struct nouveau_copy base;
 };
+INHERITS_NV_COPY(nvc0_copy, struct nvc0_copy_priv);
 
 struct nvc0_copy_chan {
 	struct nouveau_copy_chan base;
 };
+INHERITS_NV_COPY_CHAN(nvc0_copych, struct nvc0_copy_chan);
 
 /*******************************************************************************
  * Copy object classes

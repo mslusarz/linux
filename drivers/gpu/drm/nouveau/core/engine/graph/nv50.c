@@ -42,10 +42,12 @@ struct nv50_graph_priv {
 	spinlock_t lock;
 	u32 size;
 };
+INHERITS_NV_GRAPH(nv50_graph, struct nv50_graph_priv);
 
 struct nv50_graph_chan {
 	struct nouveau_graph_chan base;
 };
+INHERITS_NV_GRCHAN(nv50_grchan, struct nv50_graph_chan);
 
 /*******************************************************************************
  * Graphics object classes

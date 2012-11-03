@@ -11,6 +11,11 @@ struct nouveau_client {
 	u32 debug;
 	struct nouveau_vm *vm;
 };
+INHERITS_NV_NAMEDB(nv_client, struct nouveau_client);
+
+#define INHERITS_NV_CLIENT(pfx, type) \
+	NOUVEAU_UPCAST(pfx, client, type, struct nouveau_client) \
+	INHERITS_NV_NAMEDB(pfx, type)
 
 static inline struct nouveau_client *
 nv_client(void *obj)

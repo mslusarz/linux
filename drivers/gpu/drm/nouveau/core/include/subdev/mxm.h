@@ -11,6 +11,7 @@ struct nouveau_mxm {
 	u32 action;
 	u8 *mxms;
 };
+INHERITS_NV_SUBDEV(nv_mxm, struct nouveau_mxm);
 
 static inline struct nouveau_mxm *
 nouveau_mxm(void *obj)

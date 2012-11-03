@@ -27,6 +27,7 @@
 struct nvd0_gpio_priv {
 	struct nouveau_gpio base;
 };
+INHERITS_NV_GPIO(nvd0_gpio, struct nvd0_gpio_priv);
 
 static void
 nvd0_gpio_reset(struct nouveau_gpio *gpio)

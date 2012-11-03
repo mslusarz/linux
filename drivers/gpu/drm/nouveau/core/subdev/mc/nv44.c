@@ -27,6 +27,7 @@
 struct nv44_mc_priv {
 	struct nouveau_mc base;
 };
+INHERITS_NV_MC(nv44_mc, struct nv44_mc_priv);
 
 static int
 nv44_mc_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

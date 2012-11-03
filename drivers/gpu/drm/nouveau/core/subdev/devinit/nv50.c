@@ -28,6 +28,7 @@
 struct nv50_devinit_priv {
 	struct nouveau_devinit base;
 };
+INHERITS_NV_DEVINIT(nv50_devinit, struct nv50_devinit_priv);
 
 static int
 nv50_devinit_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

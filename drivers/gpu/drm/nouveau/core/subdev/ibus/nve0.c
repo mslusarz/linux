@@ -27,6 +27,7 @@
 struct nve0_ibus_priv {
 	struct nouveau_ibus base;
 };
+INHERITS_NV_IBUS(nve0_ibus, struct nve0_ibus_priv);
 
 static void
 nve0_ibus_intr_hub(struct nve0_ibus_priv *priv, int i)

@@ -37,6 +37,7 @@ struct nv04_timer_priv {
 	struct list_head alarms;
 	spinlock_t lock;
 };
+INHERITS_NV_TIMER(nv04_timer, struct nv04_timer_priv);
 
 static u64
 nv04_timer_read(struct nouveau_timer *ptimer)

@@ -31,6 +31,7 @@
 struct nv04_clock_priv {
 	struct nouveau_clock base;
 };
+INHERITS_NV_CLOCK(nv04_clock, struct nv04_clock_priv);
 
 static int
 powerctrl_1_shift(int chip_version, int reg)

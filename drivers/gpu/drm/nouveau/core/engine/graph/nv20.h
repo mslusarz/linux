@@ -10,11 +10,13 @@ struct nv20_graph_priv {
 	struct nouveau_graph base;
 	struct nouveau_gpuobj *ctxtab;
 };
+INHERITS_NV_GRAPH(nv20_graph, struct nv20_graph_priv);
 
 struct nv20_graph_chan {
 	struct nouveau_graph_chan base;
 	int chid;
 };
+INHERITS_NV_GRCHAN(nv20_grchan, struct nv20_graph_chan);
 
 extern struct nouveau_oclass nv25_graph_sclass[];
 int  nv20_graph_context_init(struct nouveau_object *);

@@ -22,6 +22,11 @@ struct nouveau_bar {
 	void (*unmap)(struct nouveau_bar *, struct nouveau_vma *);
 	void (*flush)(struct nouveau_bar *);
 };
+INHERITS_NV_SUBDEV(nv_bar, struct nouveau_bar);
+
+#define INHERITS_NV_BAR(pfx, type) \
+	NOUVEAU_UPCAST(pfx, bar, type, struct nouveau_bar); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_bar *
 nouveau_bar(void *obj)

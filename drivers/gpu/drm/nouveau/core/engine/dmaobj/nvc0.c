@@ -30,10 +30,12 @@
 struct nvc0_dmaeng_priv {
 	struct nouveau_dmaeng base;
 };
+INHERITS_NV_DMAENG(nvc0_dmaeng, struct nvc0_dmaeng_priv);
 
 struct nvc0_dmaobj_priv {
 	struct nouveau_dmaobj base;
 };
+INHERITS_NV_DMAOBJ(nvc0_dmaobj, struct nvc0_dmaobj_priv);
 
 static int
 nvc0_dmaobj_ctor(struct nouveau_object *parent, struct nouveau_object *engine,

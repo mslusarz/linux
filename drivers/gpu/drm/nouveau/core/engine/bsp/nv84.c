@@ -31,10 +31,12 @@
 struct nv84_bsp_priv {
 	struct nouveau_bsp base;
 };
+INHERITS_NV_BSP(nv84_bsp, struct nv84_bsp_priv);
 
 struct nv84_bsp_chan {
 	struct nouveau_bsp_chan base;
 };
+INHERITS_NV_BSP_CHAN(nv84_bspch, struct nv84_bsp_chan);
 
 /*******************************************************************************
  * BSP object classes

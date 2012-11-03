@@ -40,10 +40,12 @@ struct nv40_graph_priv {
 	struct nouveau_graph base;
 	u32 size;
 };
+INHERITS_NV_GRAPH(nv40_graph, struct nv40_graph_priv);
 
 struct nv40_graph_chan {
 	struct nouveau_graph_chan base;
 };
+INHERITS_NV_GRCHAN(nv40_grchan, struct nv40_graph_chan);
 
 /*******************************************************************************
  * Graphics object classes

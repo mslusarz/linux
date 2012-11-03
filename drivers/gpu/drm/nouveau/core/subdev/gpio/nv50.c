@@ -27,6 +27,7 @@
 struct nv50_gpio_priv {
 	struct nouveau_gpio base;
 };
+INHERITS_NV_GPIO(nv50_gpio, struct nv50_gpio_priv);
 
 static void
 nv50_gpio_reset(struct nouveau_gpio *gpio)

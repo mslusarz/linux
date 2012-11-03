@@ -394,6 +394,7 @@ struct nv10_graph_priv {
 	struct nv10_graph_chan *chan[32];
 	spinlock_t lock;
 };
+INHERITS_NV_GRAPH(nv10_graph, struct nv10_graph_priv);
 
 struct nv10_graph_chan {
 	struct nouveau_object base;
@@ -403,7 +404,7 @@ struct nv10_graph_chan {
 	struct pipe_state pipe_state;
 	u32 lma_window[4];
 };
-
+INHERITS_NV_OBJECT(nv10_grchan, struct nv10_graph_chan);
 
 static inline struct nv10_graph_priv *
 nv10_graph_priv(struct nv10_graph_chan *chan)

@@ -87,6 +87,11 @@ struct nouveau_vmmgr {
 	void (*unmap)(struct nouveau_gpuobj *pgt, u32 pte, u32 cnt);
 	void (*flush)(struct nouveau_vm *);
 };
+INHERITS_NV_SUBDEV(nv_vmmgr, struct nouveau_vmmgr);
+
+#define INHERITS_NV_VMMGR(pfx, type) \
+	NOUVEAU_UPCAST(pfx, vmmgr, type, struct nouveau_vmmgr); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_vmmgr *
 nouveau_vmmgr(void *obj)

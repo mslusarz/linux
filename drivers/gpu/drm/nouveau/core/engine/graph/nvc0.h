@@ -89,6 +89,7 @@ struct nvc0_graph_priv {
 
 	u8 magic_not_rop_nr;
 };
+INHERITS_NV_GRAPH(nvc0_graph, struct nvc0_graph_priv);
 
 struct nvc0_graph_chan {
 	struct nouveau_graph_chan base;
@@ -101,6 +102,7 @@ struct nvc0_graph_chan {
 		struct nouveau_vma vma;
 	} data[4];
 };
+INHERITS_NV_GRCHAN(nvc0_grchan, struct nvc0_graph_chan);
 
 static inline u32
 nvc0_graph_class(void *obj)

@@ -13,6 +13,11 @@ struct nouveau_dmaobj {
 	u64 start;
 	u64 limit;
 };
+INHERITS_NV_OBJECT(nv_dmaobj, struct nouveau_dmaobj);
+
+#define INHERITS_NV_DMAOBJ(pfx, type) \
+	NOUVEAU_UPCAST(pfx, dmaobj, type, struct nouveau_dmaobj); \
+	INHERITS_NV_OBJECT(pfx, type)
 
 #define nouveau_dmaobj_create(p,e,c,a,s,d)                                     \
 	nouveau_dmaobj_create_((p), (e), (c), (a), (s), sizeof(**d), (void **)d)
@@ -36,6 +41,11 @@ struct nouveau_dmaeng {
 	int (*bind)(struct nouveau_dmaeng *, struct nouveau_object *parent,
 		    struct nouveau_dmaobj *, struct nouveau_gpuobj **);
 };
+INHERITS_NV_ENGINE(nv_dmaeng, struct nouveau_dmaeng);
+
+#define INHERITS_NV_DMAENG(pfx, type) \
+	NOUVEAU_UPCAST(pfx, dmaeng, type, struct nouveau_dmaeng) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_dmaeng_create(p,e,c,d)                                         \
 	nouveau_engine_create((p), (e), (c), true, "DMAOBJ", "dmaobj", (d))

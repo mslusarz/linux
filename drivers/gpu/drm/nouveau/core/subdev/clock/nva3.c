@@ -31,6 +31,7 @@
 struct nva3_clock_priv {
 	struct nouveau_clock base;
 };
+INHERITS_NV_CLOCK(nva3_clock, struct nva3_clock_priv);
 
 static int
 nva3_clock_pll_set(struct nouveau_clock *clk, u32 type, u32 freq)

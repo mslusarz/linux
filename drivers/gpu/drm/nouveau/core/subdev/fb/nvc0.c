@@ -30,6 +30,7 @@ struct nvc0_fb_priv {
 	struct page *r100c10_page;
 	dma_addr_t r100c10;
 };
+INHERITS_NV_FB(nvc0_fb, struct nvc0_fb_priv);
 
 /* 0 = unsupported
  * 1 = non-compressed

@@ -19,6 +19,7 @@ struct nouveau_bios {
 		u8 micro;
 	} version;
 };
+INHERITS_NV_SUBDEV(nv_bios, struct nouveau_bios);
 
 static inline struct nouveau_bios *
 nouveau_bios(void *obj)

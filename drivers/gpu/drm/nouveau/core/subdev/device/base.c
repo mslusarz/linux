@@ -58,6 +58,7 @@ struct nouveau_devobj {
 	struct nouveau_object *subdev[NVDEV_SUBDEV_NR];
 	bool created;
 };
+INHERITS_NV_PARENT(nv_devobj, struct nouveau_devobj);
 
 static const u64 disable_map[] = {
 	[NVDEV_SUBDEV_VBIOS]	= NV_DEVICE_DISABLE_VBIOS,

@@ -31,10 +31,12 @@
 struct nv98_ppp_priv {
 	struct nouveau_ppp base;
 };
+INHERITS_NV_PPP(nv98_ppp, struct nv98_ppp_priv);
 
 struct nv98_ppp_chan {
 	struct nouveau_ppp_chan base;
 };
+INHERITS_NV_PPP_CHAN(nv98_pppch, struct nv98_ppp_chan);
 
 /*******************************************************************************
  * PPP object classes

@@ -31,10 +31,12 @@
 struct nv84_vp_priv {
 	struct nouveau_vp base;
 };
+INHERITS_NV_VP(nv84_vp, struct nv84_vp_priv);
 
 struct nv84_vp_chan {
 	struct nouveau_vp_chan base;
 };
+INHERITS_NV_VP_CHAN(nv84_vpch, struct nv84_vp_chan);
 
 /*******************************************************************************
  * VP object classes

@@ -38,6 +38,7 @@ struct nvc0_bar_priv {
 		struct nouveau_vm *vm;
 	} bar[2];
 };
+INHERITS_NV_BAR(nvc0_bar, struct nvc0_bar_priv);
 
 static int
 nvc0_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,

@@ -147,16 +147,19 @@ struct nv04_fifo_priv {
 	struct nouveau_gpuobj *ramro;
 	struct nouveau_gpuobj *ramfc;
 };
+INHERITS_NV_FIFO(nv04_fifo, struct nv04_fifo_priv);
 
 struct nv04_fifo_base {
 	struct nouveau_fifo_base base;
 };
+INHERITS_NV_FIFO_BASE(nv04_fifob, struct nv04_fifo_base);
 
 struct nv04_fifo_chan {
 	struct nouveau_fifo_chan base;
 	u32 subc[8];
 	u32 ramfc;
 };
+INHERITS_NV_FIFO_CHAN(nv04_fifoch, struct nv04_fifo_chan);
 
 int  nv04_fifo_object_attach(struct nouveau_object *,
 			     struct nouveau_object *, u32);

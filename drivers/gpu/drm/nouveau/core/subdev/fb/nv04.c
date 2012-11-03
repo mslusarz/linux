@@ -45,6 +45,7 @@
 struct nv04_fb_priv {
 	struct nouveau_fb base;
 };
+INHERITS_NV_FB(nv04_fb, struct nv04_fb_priv);
 
 bool
 nv04_fb_memtype_valid(struct nouveau_fb *pfb, u32 tile_flags)

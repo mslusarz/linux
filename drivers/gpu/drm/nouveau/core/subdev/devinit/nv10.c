@@ -33,6 +33,7 @@ struct nv10_devinit_priv {
 	struct nouveau_devinit base;
 	u8 owner;
 };
+INHERITS_NV_DEVINIT(nv10_devinit, struct nv10_devinit_priv);
 
 static void
 nv10_devinit_meminit(struct nouveau_devinit *devinit)

@@ -51,6 +51,11 @@ struct nouveau_cli {
 	struct mutex mutex;
 	void *abi16;
 };
+INHERITS_NV_CLIENT(nv_cli, struct nouveau_cli);
+
+#define INHERITS_NV_CLI(pfx, type) \
+	NOUVEAU_UPCAST(pfx, cli, type, struct nouveau_cli) \
+	INHERITS_NV_CLIENT(pfx, type)
 
 static inline struct nouveau_cli *
 nouveau_cli(struct drm_file *fpriv)
@@ -116,6 +121,7 @@ struct nouveau_drm {
 	/* power management */
 	struct nouveau_pm *pm;
 };
+INHERITS_NV_CLI(nv_drm, struct nouveau_drm);
 
 static inline struct nouveau_drm *
 nouveau_drm(struct drm_device *dev)

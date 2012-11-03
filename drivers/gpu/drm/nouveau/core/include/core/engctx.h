@@ -16,6 +16,11 @@ struct nouveau_engctx {
 	unsigned long save;
 	u64 addr;
 };
+INHERITS_NV_GPUOBJ(nv_engctx, struct nouveau_engctx);
+
+#define INHERITS_NV_ENGCTX(pfx, type) \
+	NOUVEAU_UPCAST(pfx, engctx, type, struct nouveau_engctx); \
+	INHERITS_NV_GPUOBJ(pfx, type)
 
 static inline struct nouveau_engctx *
 nv_engctx(void *obj)

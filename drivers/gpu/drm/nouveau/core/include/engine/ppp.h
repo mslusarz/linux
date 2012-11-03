@@ -7,6 +7,11 @@
 struct nouveau_ppp_chan {
 	struct nouveau_engctx base;
 };
+INHERITS_NV_ENGCTX(nv_pppch, struct nouveau_ppp_chan);
+
+#define INHERITS_NV_PPP_CHAN(pfx, type) \
+	NOUVEAU_UPCAST(pfx, pppch, type, struct nouveau_ppp_chan) \
+	INHERITS_NV_ENGCTX(pfx, type)
 
 #define nouveau_ppp_context_create(p,e,c,g,s,a,f,d)                            \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))
@@ -26,6 +31,11 @@ struct nouveau_ppp_chan {
 struct nouveau_ppp {
 	struct nouveau_engine base;
 };
+INHERITS_NV_ENGINE(nv_ppp, struct nouveau_ppp);
+
+#define INHERITS_NV_PPP(pfx, type) \
+	NOUVEAU_UPCAST(pfx, ppp, type, struct nouveau_ppp) \
+	INHERITS_NV_ENGINE(pfx, type)
 
 #define nouveau_ppp_create(p,e,c,d)                                            \
 	nouveau_engine_create((p), (e), (c), true, "PPPP", "ppp", (d))

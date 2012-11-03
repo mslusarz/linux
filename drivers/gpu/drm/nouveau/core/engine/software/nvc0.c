@@ -32,10 +32,12 @@
 struct nvc0_software_priv {
 	struct nouveau_software base;
 };
+INHERITS_NV_SW(nvc0_sw, struct nvc0_software_priv);
 
 struct nvc0_software_chan {
 	struct nouveau_software_chan base;
 };
+INHERITS_NV_SW_CHAN(nvc0_swch, struct nvc0_software_chan);
 
 /*******************************************************************************
  * software object classes

@@ -39,10 +39,12 @@ struct nv31_mpeg_priv {
 	struct nouveau_mpeg base;
 	atomic_t refcount;
 };
+INHERITS_NV_MPEG(nv31_mpeg, struct nv31_mpeg_priv);
 
 struct nv31_mpeg_chan {
 	struct nouveau_object base;
 };
+INHERITS_NV_OBJECT(nv31_mpegchan, struct nv31_mpeg_chan);
 
 /*******************************************************************************
  * MPEG object classes

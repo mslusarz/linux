@@ -23,6 +23,11 @@ struct nouveau_gpuobj {
 	u64 addr;
 	u32 size;
 };
+INHERITS_NV_OBJECT(nv_gpuobj, struct nouveau_gpuobj);
+
+#define INHERITS_NV_GPUOBJ(pfx, type) \
+	NOUVEAU_UPCAST(pfx, gpuobj, type, struct nouveau_gpuobj); \
+	INHERITS_NV_OBJECT(pfx, type)
 
 static inline struct nouveau_gpuobj *
 nv_gpuobj(void *obj)

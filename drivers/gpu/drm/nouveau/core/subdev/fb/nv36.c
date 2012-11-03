@@ -29,6 +29,7 @@
 struct nv36_fb_priv {
 	struct nouveau_fb base;
 };
+INHERITS_NV_FB(nv36_fb, struct nv36_fb_priv);
 
 static void
 nv36_fb_tile_comp(struct nouveau_fb *pfb, int i, u32 size, u32 flags,

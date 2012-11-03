@@ -33,6 +33,11 @@ struct nouveau_gpio {
 	void (*isr_del)(struct nouveau_gpio *, int idx, u8 tag, u8 line,
 			void (*)(void *, int state), void *data);
 };
+INHERITS_NV_SUBDEV(nv_gpio, struct nouveau_gpio);
+
+#define INHERITS_NV_GPIO(pfx, type) \
+	NOUVEAU_UPCAST(pfx, gpio, type, struct nouveau_gpio); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_gpio *
 nouveau_gpio(void *obj)

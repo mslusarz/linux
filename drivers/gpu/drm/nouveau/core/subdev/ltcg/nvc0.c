@@ -28,6 +28,7 @@ struct nvc0_ltcg_priv {
 	struct nouveau_ltcg base;
 	u32 subp_nr;
 };
+INHERITS_NV_LTCG(nvc0_ltcg, struct nvc0_ltcg_priv);
 
 static void
 nvc0_ltcg_subp_isr(struct nvc0_ltcg_priv *priv, int unit, int subp)

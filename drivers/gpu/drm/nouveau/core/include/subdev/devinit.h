@@ -9,6 +9,11 @@ struct nouveau_devinit {
 	bool post;
 	void (*meminit)(struct nouveau_devinit *);
 };
+INHERITS_NV_SUBDEV(nv_devinit, struct nouveau_devinit);
+
+#define INHERITS_NV_DEVINIT(pfx, type) \
+	NOUVEAU_UPCAST(pfx, devinit, type, struct nouveau_devinit); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_devinit *
 nouveau_devinit(void *obj)

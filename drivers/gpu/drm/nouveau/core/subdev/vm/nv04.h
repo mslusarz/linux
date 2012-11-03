@@ -9,6 +9,7 @@ struct nv04_vmmgr_priv {
 	dma_addr_t null;
 	void *nullp;
 };
+INHERITS_NV_VMMGR(nv04_vmmgr, struct nv04_vmmgr_priv);
 
 static inline struct nv04_vmmgr_priv *
 nv04_vmmgr(void *obj)

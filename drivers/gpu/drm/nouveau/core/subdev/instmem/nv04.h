@@ -19,6 +19,7 @@ struct nv04_instmem_priv {
 	struct nouveau_gpuobj *ramro;
 	struct nouveau_gpuobj *ramfc;
 };
+INHERITS_NV_INSTMEM(nv04_imem, struct nv04_instmem_priv);
 
 static inline struct nv04_instmem_priv *
 nv04_instmem(void *obj)
@@ -30,6 +31,7 @@ struct nv04_instobj_priv {
 	struct nouveau_instobj base;
 	struct nouveau_mm_node *mem;
 };
+INHERITS_NV_INSTOBJ(nv04_iobj, struct nv04_instobj_priv);
 
 void nv04_instmem_dtor(struct nouveau_object *);
 

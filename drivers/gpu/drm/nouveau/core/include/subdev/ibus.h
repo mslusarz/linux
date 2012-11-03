@@ -7,6 +7,11 @@
 struct nouveau_ibus {
 	struct nouveau_subdev base;
 };
+INHERITS_NV_SUBDEV(nv_ibus, struct nouveau_ibus);
+
+#define INHERITS_NV_IBUS(pfx, type) \
+	NOUVEAU_UPCAST(pfx, ibus, type, struct nouveau_ibus); \
+	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_ibus *
 nouveau_ibus(void *obj)
