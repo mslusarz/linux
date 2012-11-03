@@ -90,22 +90,24 @@ nv31_mpeg_mthd_dma(struct nouveau_object *object, u32 mthd, void *arg, u32 len)
 
 	if (mthd == 0x0190) {
 		/* DMA_CMD */
-		nv_mask(priv, 0x00b300, 0x00030000, (dma0 & 0x00030000));
-		nv_wr32(priv, 0x00b334, base);
-		nv_wr32(priv, 0x00b324, size);
+		nv31_mpeg_mask(priv, 0x00b300, 0x00030000,
+			       (dma0 & 0x00030000));
+		nv31_mpeg_wr32(priv, 0x00b334, base);
+		nv31_mpeg_wr32(priv, 0x00b324, size);
 	} else
 	if (mthd == 0x01a0) {
 		/* DMA_DATA */
-		nv_mask(priv, 0x00b300, 0x000c0000, (dma0 & 0x00030000) << 2);
-		nv_wr32(priv, 0x00b360, base);
-		nv_wr32(priv, 0x00b364, size);
+		nv31_mpeg_mask(priv, 0x00b300, 0x000c0000,
+			       (dma0 & 0x00030000) << 2);
+		nv31_mpeg_wr32(priv, 0x00b360, base);
+		nv31_mpeg_wr32(priv, 0x00b364, size);
 	} else {
 		/* DMA_IMAGE, VRAM only */
 		if (dma0 & 0x000c0000)
 			return -EINVAL;
 
-		nv_wr32(priv, 0x00b370, base);
-		nv_wr32(priv, 0x00b374, size);
+		nv31_mpeg_wr32(priv, 0x00b370, base);
+		nv31_mpeg_wr32(priv, 0x00b374, size);
 	}
 
 	return 0;
@@ -190,9 +192,9 @@ nv31_mpeg_tile_prog(struct nouveau_engine *engine, int i)
 	struct nouveau_fb_tile *tile = &nouveau_fb(engine)->tile.region[i];
 	struct nv31_mpeg_priv *priv = (void *)engine;
 
-	nv_wr32(priv, 0x00b008 + (i * 0x10), tile->pitch);
-	nv_wr32(priv, 0x00b004 + (i * 0x10), tile->limit);
-	nv_wr32(priv, 0x00b000 + (i * 0x10), tile->addr);
+	nv31_mpeg_wr32(priv, 0x00b008 + (i * 0x10), tile->pitch);
+	nv31_mpeg_wr32(priv, 0x00b004 + (i * 0x10), tile->limit);
+	nv31_mpeg_wr32(priv, 0x00b000 + (i * 0x10), tile->addr);
 }
 
 void
@@ -203,11 +205,11 @@ nv31_mpeg_intr(struct nouveau_subdev *subdev)
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle;
 	struct nv31_mpeg_priv *priv = (void *)subdev;
-	u32 inst = nv_rd32(priv, 0x00b318) & 0x000fffff;
-	u32 stat = nv_rd32(priv, 0x00b100);
-	u32 type = nv_rd32(priv, 0x00b230);
-	u32 mthd = nv_rd32(priv, 0x00b234);
-	u32 data = nv_rd32(priv, 0x00b238);
+	u32 inst = nv31_mpeg_rd32(priv, 0x00b318) & 0x000fffff;
+	u32 stat = nv31_mpeg_rd32(priv, 0x00b100);
+	u32 type = nv31_mpeg_rd32(priv, 0x00b230);
+	u32 mthd = nv31_mpeg_rd32(priv, 0x00b234);
+	u32 data = nv31_mpeg_rd32(priv, 0x00b238);
 	u32 show = stat;
 	int chid;
 
@@ -217,7 +219,7 @@ nv31_mpeg_intr(struct nouveau_subdev *subdev)
 	if (stat & 0x01000000) {
 		/* happens on initial binding of the object */
 		if (type == 0x00000020 && mthd == 0x0000) {
-			nv_mask(priv, 0x00b308, 0x00000000, 0x00000000);
+			nv31_mpeg_mask(priv, 0x00b308, 0x00000000, 0x00000000);
 			show &= ~0x01000000;
 		}
 
@@ -229,8 +231,8 @@ nv31_mpeg_intr(struct nouveau_subdev *subdev)
 		}
 	}
 
-	nv_wr32(priv, 0x00b100, stat);
-	nv_wr32(priv, 0x00b230, 0x00000001);
+	nv31_mpeg_wr32(priv, 0x00b100, stat);
+	nv31_mpeg_wr32(priv, 0x00b230, 0x00000001);
 
 	if (show) {
 		nv_error(priv, "ch %d [0x%08x] 0x%08x 0x%08x 0x%08x 0x%08x\n",
@@ -274,24 +276,26 @@ nv31_mpeg_init(struct nouveau_object *object)
 		return ret;
 
 	/* VPE init */
-	nv_wr32(priv, 0x00b0e0, 0x00000020); /* nvidia: rd 0x01, wr 0x20 */
-	nv_wr32(priv, 0x00b0e8, 0x00000020); /* nvidia: rd 0x01, wr 0x20 */
+	nv31_mpeg_wr32(priv, 0x00b0e0, 0x00000020); /* nvidia: rd 0x01, wr 0x20 */
+	nv31_mpeg_wr32(priv, 0x00b0e8, 0x00000020); /* nvidia: rd 0x01, wr 0x20 */
 
 	for (i = 0; i < pfb->tile.regions; i++)
 		engine->tile_prog(engine, i);
 
 	/* PMPEG init */
-	nv_wr32(priv, 0x00b32c, 0x00000000);
-	nv_wr32(priv, 0x00b314, 0x00000100);
-	nv_wr32(priv, 0x00b220, nv44_graph_class(priv) ? 0x00000044 : 0x00000031);
-	nv_wr32(priv, 0x00b300, 0x02001ec1);
-	nv_mask(priv, 0x00b32c, 0x00000001, 0x00000001);
+	nv31_mpeg_wr32(priv, 0x00b32c, 0x00000000);
+	nv31_mpeg_wr32(priv, 0x00b314, 0x00000100);
+	nv31_mpeg_wr32(priv, 0x00b220,
+		       nv44_graph_class(priv) ? 0x00000044 : 0x00000031);
+	nv31_mpeg_wr32(priv, 0x00b300, 0x02001ec1);
+	nv31_mpeg_mask(priv, 0x00b32c, 0x00000001, 0x00000001);
 
-	nv_wr32(priv, 0x00b100, 0xffffffff);
-	nv_wr32(priv, 0x00b140, 0xffffffff);
+	nv31_mpeg_wr32(priv, 0x00b100, 0xffffffff);
+	nv31_mpeg_wr32(priv, 0x00b140, 0xffffffff);
 
 	if (!nv_wait(priv, 0x00b200, 0x00000001, 0x00000000)) {
-		nv_error(priv, "timeout 0x%08x\n", nv_rd32(priv, 0x00b200));
+		nv_error(priv, "timeout 0x%08x\n", nv31_mpeg_rd32(priv,
+								  0x00b200));
 		return -EBUSY;
 	}
 

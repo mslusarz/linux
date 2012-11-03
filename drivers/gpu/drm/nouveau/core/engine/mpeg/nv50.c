@@ -138,16 +138,16 @@ void
 nv50_mpeg_intr(struct nouveau_subdev *subdev)
 {
 	struct nv50_mpeg_priv *priv = (void *)subdev;
-	u32 stat = nv_rd32(priv, 0x00b100);
-	u32 type = nv_rd32(priv, 0x00b230);
-	u32 mthd = nv_rd32(priv, 0x00b234);
-	u32 data = nv_rd32(priv, 0x00b238);
+	u32 stat = nv50_mpeg_rd32(priv, 0x00b100);
+	u32 type = nv50_mpeg_rd32(priv, 0x00b230);
+	u32 mthd = nv50_mpeg_rd32(priv, 0x00b234);
+	u32 data = nv50_mpeg_rd32(priv, 0x00b238);
 	u32 show = stat;
 
 	if (stat & 0x01000000) {
 		/* happens on initial binding of the object */
 		if (type == 0x00000020 && mthd == 0x0000) {
-			nv_wr32(priv, 0x00b308, 0x00000100);
+			nv50_mpeg_wr32(priv, 0x00b308, 0x00000100);
 			show &= ~0x01000000;
 		}
 	}
@@ -157,8 +157,8 @@ nv50_mpeg_intr(struct nouveau_subdev *subdev)
 			stat, type, mthd, data);
 	}
 
-	nv_wr32(priv, 0x00b100, stat);
-	nv_wr32(priv, 0x00b230, 0x00000001);
+	nv50_mpeg_wr32(priv, 0x00b100, stat);
+	nv50_mpeg_wr32(priv, 0x00b230, 0x00000001);
 	nv50_fb_trap(nouveau_fb(priv), 1);
 }
 
@@ -167,13 +167,13 @@ nv50_vpe_intr(struct nouveau_subdev *subdev)
 {
 	struct nv50_mpeg_priv *priv = (void *)subdev;
 
-	if (nv_rd32(priv, 0x00b100))
+	if (nv50_mpeg_rd32(priv, 0x00b100))
 		nv50_mpeg_intr(subdev);
 
-	if (nv_rd32(priv, 0x00b800)) {
-		u32 stat = nv_rd32(priv, 0x00b800);
+	if (nv50_mpeg_rd32(priv, 0x00b800)) {
+		u32 stat = nv50_mpeg_rd32(priv, 0x00b800);
 		nv_info(priv, "PMSRCH: 0x%08x\n", stat);
-		nv_wr32(priv, 0xb800, stat);
+		nv50_mpeg_wr32(priv, 0xb800, stat);
 	}
 }
 
@@ -208,22 +208,23 @@ nv50_mpeg_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, 0x00b32c, 0x00000000);
-	nv_wr32(priv, 0x00b314, 0x00000100);
-	nv_wr32(priv, 0x00b0e0, 0x0000001a);
+	nv50_mpeg_wr32(priv, 0x00b32c, 0x00000000);
+	nv50_mpeg_wr32(priv, 0x00b314, 0x00000100);
+	nv50_mpeg_wr32(priv, 0x00b0e0, 0x0000001a);
 
-	nv_wr32(priv, 0x00b220, 0x00000044);
-	nv_wr32(priv, 0x00b300, 0x00801ec1);
-	nv_wr32(priv, 0x00b390, 0x00000000);
-	nv_wr32(priv, 0x00b394, 0x00000000);
-	nv_wr32(priv, 0x00b398, 0x00000000);
-	nv_mask(priv, 0x00b32c, 0x00000001, 0x00000001);
+	nv50_mpeg_wr32(priv, 0x00b220, 0x00000044);
+	nv50_mpeg_wr32(priv, 0x00b300, 0x00801ec1);
+	nv50_mpeg_wr32(priv, 0x00b390, 0x00000000);
+	nv50_mpeg_wr32(priv, 0x00b394, 0x00000000);
+	nv50_mpeg_wr32(priv, 0x00b398, 0x00000000);
+	nv50_mpeg_mask(priv, 0x00b32c, 0x00000001, 0x00000001);
 
-	nv_wr32(priv, 0x00b100, 0xffffffff);
-	nv_wr32(priv, 0x00b140, 0xffffffff);
+	nv50_mpeg_wr32(priv, 0x00b100, 0xffffffff);
+	nv50_mpeg_wr32(priv, 0x00b140, 0xffffffff);
 
 	if (!nv_wait(priv, 0x00b200, 0x00000001, 0x00000000)) {
-		nv_error(priv, "timeout 0x%08x\n", nv_rd32(priv, 0x00b200));
+		nv_error(priv, "timeout 0x%08x\n", nv50_mpeg_rd32(priv,
+								  0x00b200));
 		return -EBUSY;
 	}
 

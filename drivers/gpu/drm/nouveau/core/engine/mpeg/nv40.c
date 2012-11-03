@@ -74,10 +74,10 @@ nv40_mpeg_context_fini(struct nouveau_object *object, bool suspend)
 	struct nv40_mpeg_chan *chan = (void *)object;
 	u32 inst = 0x80000000 | nv_gpuobj(chan)->addr >> 4;
 
-	nv_mask(priv, 0x00b32c, 0x00000001, 0x00000000);
-	if (nv_rd32(priv, 0x00b318) == inst)
-		nv_mask(priv, 0x00b318, 0x80000000, 0x00000000);
-	nv_mask(priv, 0x00b32c, 0x00000001, 0x00000001);
+	nv40_mpeg_mask(priv, 0x00b32c, 0x00000001, 0x00000000);
+	if (nv40_mpeg_rd32(priv, 0x00b318) == inst)
+		nv40_mpeg_mask(priv, 0x00b318, 0x80000000, 0x00000000);
+	nv40_mpeg_mask(priv, 0x00b32c, 0x00000001, 0x00000001);
 	return 0;
 }
 
@@ -104,12 +104,12 @@ nv40_mpeg_intr(struct nouveau_subdev *subdev)
 	struct nv40_mpeg_priv *priv = (void *)subdev;
 	u32 stat;
 
-	if ((stat = nv_rd32(priv, 0x00b100)))
+	if ((stat = nv40_mpeg_rd32(priv, 0x00b100)))
 		nv31_mpeg_intr(subdev);
 
-	if ((stat = nv_rd32(priv, 0x00b800))) {
+	if ((stat = nv40_mpeg_rd32(priv, 0x00b800))) {
 		nv_error(priv, "PMSRCH 0x%08x\n", stat);
-		nv_wr32(priv, 0x00b800, stat);
+		nv40_mpeg_wr32(priv, 0x00b800, stat);
 	}
 }
 
