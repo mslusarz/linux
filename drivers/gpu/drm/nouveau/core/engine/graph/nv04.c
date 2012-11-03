@@ -577,7 +577,7 @@ nv04_graph_mthd_bind_class(struct nouveau_object *object, u32 *args, u32 size)
 {
 	struct nouveau_instmem *imem = nouveau_instmem(object);
 	u32 inst = *(u32 *)args << 4;
-	return nv_ro32(imem, inst);
+	return nv_imem_ro32(imem, inst);
 }
 
 static int
