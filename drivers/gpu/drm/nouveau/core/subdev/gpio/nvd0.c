@@ -51,9 +51,10 @@ nvd0_gpio_reset(struct nouveau_gpio *gpio)
 
 		gpio->set(gpio, 0, func, line, defs);
 
-		nv_mask(priv, 0x00d610 + (line * 4), 0xff, unk0);
+		nvd0_gpio_mask(priv, 0x00d610 + (line * 4), 0xff, unk0);
 		if (unk1--)
-			nv_mask(priv, 0x00d740 + (unk1 * 4), 0xff, line);
+			nvd0_gpio_mask(priv, 0x00d740 + (unk1 * 4), 0xff,
+				       line);
 	}
 }
 
@@ -61,15 +62,15 @@ static int
 nvd0_gpio_drive(struct nouveau_gpio *gpio, int line, int dir, int out)
 {
 	u32 data = ((dir ^ 1) << 13) | (out << 12);
-	nv_mask(gpio, 0x00d610 + (line * 4), 0x00003000, data);
-	nv_mask(gpio, 0x00d604, 0x00000001, 0x00000001); /* update? */
+	nv_gpio_mask(gpio, 0x00d610 + (line * 4), 0x00003000, data);
+	nv_gpio_mask(gpio, 0x00d604, 0x00000001, 0x00000001); /* update? */
 	return 0;
 }
 
 static int
 nvd0_gpio_sense(struct nouveau_gpio *gpio, int line)
 {
-	return !!(nv_rd32(gpio, 0x00d610 + (line * 4)) & 0x00004000);
+	return !!(nv_gpio_rd32(gpio, 0x00d610 + (line * 4)) & 0x00004000);
 }
 
 static int
