@@ -415,7 +415,7 @@ init_ram_restrict(struct nvbios_init *init)
 	u32 strap = (init_rd32(init, 0x101000) & 0x0000003c) >> 2;
 	u16 table = init_ram_restrict_table(init);
 	if (table)
-		return nv_ro08(init->bios, table + strap);
+		return nv_bios_ro08(init->bios, table + strap);
 	return 0x00;
 }
 
@@ -544,7 +544,7 @@ init_tmds_reg(struct nvbios_init *init, u8 tmds)
 static void
 init_reserved(struct nvbios_init *init)
 {
-	u8 opcode = nv_ro08(init->bios, init->offset);
+	u8 opcode = nv_bios_ro08(init->bios, init->offset);
 	trace("RESERVED\t0x%02x\n", opcode);
 	init->offset += 1;
 }
@@ -2065,7 +2065,7 @@ nvbios_exec(struct nvbios_init *init)
 {
 	init->nested++;
 	while (init->offset) {
-		u8 opcode = nv_ro08(init->bios, init->offset);
+		u8 opcode = nv_bios_ro08(init->bios, init->offset);
 		if (opcode >= init_opcode_nr || !init_opcode[opcode].exec) {
 			error("unknown opcode 0x%02x\n", opcode);
 			return -EINVAL;

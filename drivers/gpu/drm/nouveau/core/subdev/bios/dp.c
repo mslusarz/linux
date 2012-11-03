@@ -55,7 +55,7 @@ dp_outp(struct nouveau_bios *bios, u8 idx, u8 *ver, u8 *len)
 	u8  hdr, cnt;
 	u16 table = dp_table(bios, ver, &hdr, &cnt, len);
 	if (table && idx < cnt)
-		return nv_ro16(bios, table + hdr + (idx * *len));
+		return nv_bios_ro16(bios, table + hdr + (idx * *len));
 	return 0xffff;
 }
 

@@ -64,7 +64,8 @@ dcb_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 		}
 	} else
 	if (*ver >= 0x15) {
-		if (!nv_strncmp(bios, dcb - 7, 7, "DEV_REC")) {
+		if (!nv_strncmp(nv_bios_to_object(bios), dcb - 7, 7,
+				"DEV_REC")) {
 			u16 i2c = nv_bios_ro16(bios, dcb + 2);
 			*hdr = 4;
 			*cnt = (i2c - dcb) / 10;

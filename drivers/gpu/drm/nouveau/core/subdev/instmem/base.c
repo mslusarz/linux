@@ -91,7 +91,7 @@ nouveau_instmem_init(struct nouveau_instmem *imem)
 	list_for_each_entry(iobj, &imem->list, head) {
 		if (iobj->suspend) {
 			for (i = 0; i < iobj->size; i += 4)
-				nv_wo32(iobj, i, iobj->suspend[i / 4]);
+				nv_wo32(&iobj->base, i, iobj->suspend[i / 4]);
 			vfree(iobj->suspend);
 			iobj->suspend = NULL;
 		}
@@ -111,7 +111,8 @@ nouveau_instmem_fini(struct nouveau_instmem *imem, bool suspend)
 			iobj->suspend = vmalloc(iobj->size);
 			if (iobj->suspend) {
 				for (i = 0; i < iobj->size; i += 4)
-					iobj->suspend[i / 4] = nv_ro32(iobj, i);
+					iobj->suspend[i / 4] =
+							nv_ro32(&iobj->base, i);
 			} else
 				return -ENOMEM;
 		}
