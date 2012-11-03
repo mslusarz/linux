@@ -176,23 +176,23 @@ nv17_fifo_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, NV04_PFIFO_DELAY_0, 0x000000ff);
-	nv_wr32(priv, NV04_PFIFO_DMA_TIMESLICE, 0x0101ffff);
+	nv04_fifo_wr32(priv, NV04_PFIFO_DELAY_0, 0x000000ff);
+	nv04_fifo_wr32(priv, NV04_PFIFO_DMA_TIMESLICE, 0x0101ffff);
 
-	nv_wr32(priv, NV03_PFIFO_RAMHT, (0x03 << 24) /* search 128 */ |
-				       ((priv->ramht->bits - 9) << 16) |
-				        (priv->ramht->base.addr >> 8));
-	nv_wr32(priv, NV03_PFIFO_RAMRO, priv->ramro->addr >> 8);
-	nv_wr32(priv, NV03_PFIFO_RAMFC, priv->ramfc->addr >> 8 | 0x00010000);
+	nv04_fifo_wr32(priv, NV03_PFIFO_RAMHT,
+		       (0x03 << 24) | ((priv->ramht->bits - 9) << 16) | (priv->ramht->base.addr >> 8));
+	nv04_fifo_wr32(priv, NV03_PFIFO_RAMRO, priv->ramro->addr >> 8);
+	nv04_fifo_wr32(priv, NV03_PFIFO_RAMFC,
+		       priv->ramfc->addr >> 8 | 0x00010000);
 
-	nv_wr32(priv, NV03_PFIFO_CACHE1_PUSH1, priv->base.max);
+	nv04_fifo_wr32(priv, NV03_PFIFO_CACHE1_PUSH1, priv->base.max);
 
-	nv_wr32(priv, NV03_PFIFO_INTR_0, 0xffffffff);
-	nv_wr32(priv, NV03_PFIFO_INTR_EN_0, 0xffffffff);
+	nv04_fifo_wr32(priv, NV03_PFIFO_INTR_0, 0xffffffff);
+	nv04_fifo_wr32(priv, NV03_PFIFO_INTR_EN_0, 0xffffffff);
 
-	nv_wr32(priv, NV03_PFIFO_CACHE1_PUSH0, 1);
-	nv_wr32(priv, NV04_PFIFO_CACHE1_PULL0, 1);
-	nv_wr32(priv, NV03_PFIFO_CACHES, 1);
+	nv04_fifo_wr32(priv, NV03_PFIFO_CACHE1_PUSH0, 1);
+	nv04_fifo_wr32(priv, NV04_PFIFO_CACHE1_PULL0, 1);
+	nv04_fifo_wr32(priv, NV03_PFIFO_CACHES, 1);
 	return 0;
 }
 

@@ -111,7 +111,7 @@ nve0_fifo_playlist_update(struct nve0_fifo_priv *priv, u32 engine)
 	engn->cur_playlist = !engn->cur_playlist;
 
 	for (i = 0, p = 0; i < priv->base.max; i++) {
-		u32 ctrl = nv_rd32(priv, 0x800004 + (i * 8)) & 0x001f0001;
+		u32 ctrl = nve0_fifo_rd32(priv, 0x800004 + (i * 8)) & 0x001f0001;
 		if (ctrl != match)
 			continue;
 		nv_wo32(cur, p + 0, i);
@@ -120,8 +120,8 @@ nve0_fifo_playlist_update(struct nve0_fifo_priv *priv, u32 engine)
 	}
 	bar->flush(bar);
 
-	nv_wr32(priv, 0x002270, cur->addr >> 12);
-	nv_wr32(priv, 0x002274, (engine << 20) | (p >> 3));
+	nve0_fifo_wr32(priv, 0x002270, cur->addr >> 12);
+	nve0_fifo_wr32(priv, 0x002274, (engine << 20) | (p >> 3));
 	if (!nv_wait(priv, 0x002284 + (engine * 4), 0x00100000, 0x00000000))
 		nv_error(priv, "playlist %d update timeout\n", engine);
 }
@@ -183,7 +183,7 @@ nve0_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 	nv_wo32(base, addr + 0x04, 0x00000000);
 	bar->flush(bar);
 
-	nv_wr32(priv, 0x002634, chan->base.chid);
+	nve0_fifo_wr32(priv, 0x002634, chan->base.chid);
 	if (!nv_wait(priv, 0x002634, 0xffffffff, chan->base.chid)) {
 		nv_error(priv, "channel %d kick timeout\n", chan->base.chid);
 		if (suspend)
@@ -272,11 +272,13 @@ nve0_fifo_chan_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_mask(priv, 0x800004 + (chid * 8), 0x000f0000, chan->engine << 16);
-	nv_wr32(priv, 0x800000 + (chid * 8), 0x80000000 | base->addr >> 12);
-	nv_mask(priv, 0x800004 + (chid * 8), 0x00000400, 0x00000400);
+	nve0_fifo_mask(priv, 0x800004 + (chid * 8), 0x000f0000,
+		       chan->engine << 16);
+	nve0_fifo_wr32(priv, 0x800000 + (chid * 8),
+		       0x80000000 | base->addr >> 12);
+	nve0_fifo_mask(priv, 0x800004 + (chid * 8), 0x00000400, 0x00000400);
 	nve0_fifo_playlist_update(priv, chan->engine);
-	nv_mask(priv, 0x800004 + (chid * 8), 0x00000400, 0x00000400);
+	nve0_fifo_mask(priv, 0x800004 + (chid * 8), 0x00000400, 0x00000400);
 	return 0;
 }
 
@@ -287,9 +289,9 @@ nve0_fifo_chan_fini(struct nouveau_object *object, bool suspend)
 	struct nve0_fifo_chan *chan = (void *)object;
 	u32 chid = chan->base.chid;
 
-	nv_mask(priv, 0x800004 + (chid * 8), 0x00000800, 0x00000800);
+	nve0_fifo_mask(priv, 0x800004 + (chid * 8), 0x00000800, 0x00000800);
 	nve0_fifo_playlist_update(priv, chan->engine);
-	nv_wr32(priv, 0x800000 + (chid * 8), 0x00000000);
+	nve0_fifo_wr32(priv, 0x800000 + (chid * 8), 0x00000000);
 
 	return nouveau_fifo_channel_fini(&chan->base, suspend);
 }
@@ -405,10 +407,10 @@ static const struct nouveau_bitfield nve0_fifo_subfifo_intr[] = {
 static void
 nve0_fifo_isr_vm_fault(struct nve0_fifo_priv *priv, int unit)
 {
-	u32 inst = nv_rd32(priv, 0x2800 + (unit * 0x10));
-	u32 valo = nv_rd32(priv, 0x2804 + (unit * 0x10));
-	u32 vahi = nv_rd32(priv, 0x2808 + (unit * 0x10));
-	u32 stat = nv_rd32(priv, 0x280c + (unit * 0x10));
+	u32 inst = nve0_fifo_rd32(priv, 0x2800 + (unit * 0x10));
+	u32 valo = nve0_fifo_rd32(priv, 0x2804 + (unit * 0x10));
+	u32 vahi = nve0_fifo_rd32(priv, 0x2808 + (unit * 0x10));
+	u32 stat = nve0_fifo_rd32(priv, 0x280c + (unit * 0x10));
 	u32 client = (stat & 0x00001f00) >> 8;
 
 	nv_error(priv, "PFIFO: %s fault at 0x%010llx [", (stat & 0x00000080) ?
@@ -455,10 +457,10 @@ out:
 static void
 nve0_fifo_isr_subfifo_intr(struct nve0_fifo_priv *priv, int unit)
 {
-	u32 stat = nv_rd32(priv, 0x040108 + (unit * 0x2000));
-	u32 addr = nv_rd32(priv, 0x0400c0 + (unit * 0x2000));
-	u32 data = nv_rd32(priv, 0x0400c4 + (unit * 0x2000));
-	u32 chid = nv_rd32(priv, 0x040120 + (unit * 0x2000)) & 0xfff;
+	u32 stat = nve0_fifo_rd32(priv, 0x040108 + (unit * 0x2000));
+	u32 addr = nve0_fifo_rd32(priv, 0x0400c0 + (unit * 0x2000));
+	u32 data = nve0_fifo_rd32(priv, 0x0400c4 + (unit * 0x2000));
+	u32 chid = nve0_fifo_rd32(priv, 0x040120 + (unit * 0x2000)) & 0xfff;
 	u32 subc = (addr & 0x00070000) >> 16;
 	u32 mthd = (addr & 0x00003ffc);
 	u32 show = stat;
@@ -484,25 +486,25 @@ nve0_fifo_isr_subfifo_intr(struct nve0_fifo_priv *priv, int unit)
 			 unit, chid, subc, mthd, data);
 	}
 
-	nv_wr32(priv, 0x0400c0 + (unit * 0x2000), 0x80600008);
-	nv_wr32(priv, 0x040108 + (unit * 0x2000), stat);
+	nve0_fifo_wr32(priv, 0x0400c0 + (unit * 0x2000), 0x80600008);
+	nve0_fifo_wr32(priv, 0x040108 + (unit * 0x2000), stat);
 }
 
 static void
 nve0_fifo_intr(struct nouveau_subdev *subdev)
 {
 	struct nve0_fifo_priv *priv = (void *)subdev;
-	u32 mask = nv_rd32(priv, 0x002140);
-	u32 stat = nv_rd32(priv, 0x002100) & mask;
+	u32 mask = nve0_fifo_rd32(priv, 0x002140);
+	u32 stat = nve0_fifo_rd32(priv, 0x002100) & mask;
 
 	if (stat & 0x00000100) {
 		nv_warn(priv, "unknown status 0x00000100\n");
-		nv_wr32(priv, 0x002100, 0x00000100);
+		nve0_fifo_wr32(priv, 0x002100, 0x00000100);
 		stat &= ~0x00000100;
 	}
 
 	if (stat & 0x10000000) {
-		u32 units = nv_rd32(priv, 0x00259c);
+		u32 units = nve0_fifo_rd32(priv, 0x00259c);
 		u32 u = units;
 
 		while (u) {
@@ -511,12 +513,12 @@ nve0_fifo_intr(struct nouveau_subdev *subdev)
 			u &= ~(1 << i);
 		}
 
-		nv_wr32(priv, 0x00259c, units);
+		nve0_fifo_wr32(priv, 0x00259c, units);
 		stat &= ~0x10000000;
 	}
 
 	if (stat & 0x20000000) {
-		u32 units = nv_rd32(priv, 0x0025a0);
+		u32 units = nve0_fifo_rd32(priv, 0x0025a0);
 		u32 u = units;
 
 		while (u) {
@@ -525,20 +527,20 @@ nve0_fifo_intr(struct nouveau_subdev *subdev)
 			u &= ~(1 << i);
 		}
 
-		nv_wr32(priv, 0x0025a0, units);
+		nve0_fifo_wr32(priv, 0x0025a0, units);
 		stat &= ~0x20000000;
 	}
 
 	if (stat & 0x40000000) {
 		nv_warn(priv, "unknown status 0x40000000\n");
-		nv_mask(priv, 0x002a00, 0x00000000, 0x00000000);
+		nve0_fifo_mask(priv, 0x002a00, 0x00000000, 0x00000000);
 		stat &= ~0x40000000;
 	}
 
 	if (stat) {
 		nv_fatal(priv, "unhandled status 0x%08x\n", stat);
-		nv_wr32(priv, 0x002100, stat);
-		nv_wr32(priv, 0x002140, 0);
+		nve0_fifo_wr32(priv, 0x002100, stat);
+		nve0_fifo_wr32(priv, 0x002140, 0);
 	}
 }
 
@@ -600,22 +602,24 @@ nve0_fifo_init(struct nouveau_object *object)
 		return ret;
 
 	/* enable all available PSUBFIFOs */
-	nv_wr32(priv, 0x000204, 0xffffffff);
-	priv->spoon_nr = hweight32(nv_rd32(priv, 0x000204));
+	nve0_fifo_wr32(priv, 0x000204, 0xffffffff);
+	priv->spoon_nr = hweight32(nve0_fifo_rd32(priv, 0x000204));
 	nv_debug(priv, "%d subfifo(s)\n", priv->spoon_nr);
 
 	/* PSUBFIFO[n] */
 	for (i = 0; i < priv->spoon_nr; i++) {
-		nv_mask(priv, 0x04013c + (i * 0x2000), 0x10000100, 0x00000000);
-		nv_wr32(priv, 0x040108 + (i * 0x2000), 0xffffffff); /* INTR */
-		nv_wr32(priv, 0x04010c + (i * 0x2000), 0xfffffeff); /* INTREN */
+		nve0_fifo_mask(priv, 0x04013c + (i * 0x2000), 0x10000100,
+			       0x00000000);
+		nve0_fifo_wr32(priv, 0x040108 + (i * 0x2000), 0xffffffff); /* INTR */
+		nve0_fifo_wr32(priv, 0x04010c + (i * 0x2000), 0xfffffeff); /* INTREN */
 	}
 
-	nv_wr32(priv, 0x002254, 0x10000000 | priv->user.bar.offset >> 12);
+	nve0_fifo_wr32(priv, 0x002254,
+		       0x10000000 | priv->user.bar.offset >> 12);
 
-	nv_wr32(priv, 0x002a00, 0xffffffff);
-	nv_wr32(priv, 0x002100, 0xffffffff);
-	nv_wr32(priv, 0x002140, 0xbfffffff);
+	nve0_fifo_wr32(priv, 0x002a00, 0xffffffff);
+	nve0_fifo_wr32(priv, 0x002100, 0xffffffff);
+	nve0_fifo_wr32(priv, 0x002140, 0xbfffffff);
 	return 0;
 }
 

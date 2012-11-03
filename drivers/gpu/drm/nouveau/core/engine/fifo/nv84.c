@@ -103,10 +103,10 @@ nv84_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 	nv_wo32(base->eng, addr + 0x14, 0x00000000);
 	bar->flush(bar);
 
-	save = nv_mask(priv, 0x002520, 0x0000003f, 1 << engn);
-	nv_wr32(priv, 0x0032fc, nv_gpuobj(base)->addr >> 12);
+	save = nv50_fifo_mask(priv, 0x002520, 0x0000003f, 1 << engn);
+	nv50_fifo_wr32(priv, 0x0032fc, nv_gpuobj(base)->addr >> 12);
 	done = nv_wait_ne(priv, 0x0032fc, 0xffffffff, 0xffffffff);
-	nv_wr32(priv, 0x002520, save);
+	nv50_fifo_wr32(priv, 0x002520, save);
 	if (!done) {
 		nv_error(priv, "channel %d unload timeout\n", chan->base.chid);
 		if (suspend)
@@ -283,7 +283,8 @@ nv84_fifo_chan_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, 0x002600 + (chid * 4), 0x80000000 | ramfc->addr >> 8);
+	nv50_fifo_wr32(priv, 0x002600 + (chid * 4),
+		       0x80000000 | ramfc->addr >> 8);
 	nv50_fifo_playlist_update(priv);
 	return 0;
 }
