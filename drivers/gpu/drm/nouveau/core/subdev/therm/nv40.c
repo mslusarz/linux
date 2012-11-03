@@ -32,12 +32,12 @@ nv40_sensor_setup(struct nouveau_therm *therm)
 
 	/* enable ADC readout and disable the ALARM threshold */
 	if (device->chipset >= 0x46) {
-		nv_mask(therm, 0x15b8, 0x80000000, 0);
-		nv_wr32(therm, 0x15b0, 0x80003fff);
-		return nv_rd32(therm, 0x15b4) & 0x3fff;
+		nv_therm_mask(therm, 0x15b8, 0x80000000, 0);
+		nv_therm_wr32(therm, 0x15b0, 0x80003fff);
+		return nv_therm_rd32(therm, 0x15b4) & 0x3fff;
 	} else {
-		nv_wr32(therm, 0x15b0, 0xff);
-		return nv_rd32(therm, 0x15b4) & 0xff;
+		nv_therm_wr32(therm, 0x15b0, 0xff);
+		return nv_therm_rd32(therm, 0x15b4) & 0xff;
 	}
 }
 
@@ -50,11 +50,11 @@ nv40_temp_get(struct nouveau_therm *therm)
 	int core_temp;
 
 	if (device->chipset >= 0x46) {
-		nv_wr32(therm, 0x15b0, 0x80003fff);
-		core_temp = nv_rd32(therm, 0x15b4) & 0x3fff;
+		nv_therm_wr32(therm, 0x15b0, 0x80003fff);
+		core_temp = nv_therm_rd32(therm, 0x15b4) & 0x3fff;
 	} else {
-		nv_wr32(therm, 0x15b0, 0xff);
-		core_temp = nv_rd32(therm, 0x15b4) & 0xff;
+		nv_therm_wr32(therm, 0x15b0, 0xff);
+		core_temp = nv_therm_rd32(therm, 0x15b4) & 0xff;
 	}
 
 	/* Setup the sensor if the temperature is 0 */
@@ -79,7 +79,7 @@ int
 nv40_fan_pwm_get(struct nouveau_therm *therm, int line, u32 *divs, u32 *duty)
 {
 	if (line == 2) {
-		u32 reg = nv_rd32(therm, 0x0010f0);
+		u32 reg = nv_therm_rd32(therm, 0x0010f0);
 		if (reg & 0x80000000) {
 			*duty = (reg & 0x7fff0000) >> 16;
 			*divs = (reg & 0x00007fff);
@@ -87,9 +87,9 @@ nv40_fan_pwm_get(struct nouveau_therm *therm, int line, u32 *divs, u32 *duty)
 		}
 	} else
 	if (line == 9) {
-		u32 reg = nv_rd32(therm, 0x0015f4);
+		u32 reg = nv_therm_rd32(therm, 0x0015f4);
 		if (reg & 0x80000000) {
-			*divs = nv_rd32(therm, 0x0015f8);
+			*divs = nv_therm_rd32(therm, 0x0015f8);
 			*duty = (reg & 0x7fffffff);
 			return 0;
 		}
@@ -105,11 +105,12 @@ int
 nv40_fan_pwm_set(struct nouveau_therm *therm, int line, u32 divs, u32 duty)
 {
 	if (line == 2) {
-		nv_wr32(therm, 0x0010f0, 0x80000000 | (duty << 16) | divs);
+		nv_therm_wr32(therm, 0x0010f0,
+			      0x80000000 | (duty << 16) | divs);
 	} else
 	if (line == 9) {
-		nv_wr32(therm, 0x0015f8, divs);
-		nv_wr32(therm, 0x0015f4, duty | 0x80000000);
+		nv_therm_wr32(therm, 0x0015f8, divs);
+		nv_therm_wr32(therm, 0x0015f4, duty | 0x80000000);
 	} else {
 		nv_error(therm, "unknown pwm ctrl for gpio %d\n", line);
 		return -ENODEV;

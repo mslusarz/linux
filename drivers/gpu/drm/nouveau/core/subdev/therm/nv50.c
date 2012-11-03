@@ -57,9 +57,9 @@ nv50_fan_pwm_get(struct nouveau_therm *therm, int line, u32 *divs, u32 *duty)
 	if (ret)
 		return ret;
 
-	if (nv_rd32(therm, ctrl) & (1 << line)) {
-		*divs = nv_rd32(therm, 0x00e114 + (id * 8));
-		*duty = nv_rd32(therm, 0x00e118 + (id * 8));
+	if (nv_therm_rd32(therm, ctrl) & (1 << line)) {
+		*divs = nv_therm_rd32(therm, 0x00e114 + (id * 8));
+		*duty = nv_therm_rd32(therm, 0x00e118 + (id * 8));
 		return 0;
 	}
 
@@ -73,9 +73,9 @@ nv50_fan_pwm_set(struct nouveau_therm *therm, int line, u32 divs, u32 duty)
 	if (ret)
 		return ret;
 
-	nv_mask(therm, ctrl, 0x00010001 << line, 0x00000001 << line);
-	nv_wr32(therm, 0x00e114 + (id * 8), divs);
-	nv_wr32(therm, 0x00e118 + (id * 8), duty | 0x80000000);
+	nv_therm_mask(therm, ctrl, 0x00010001 << line, 0x00000001 << line);
+	nv_therm_wr32(therm, 0x00e114 + (id * 8), divs);
+	nv_therm_wr32(therm, 0x00e118 + (id * 8), duty | 0x80000000);
 	return 0;
 }
 
@@ -88,8 +88,8 @@ nv50_fan_pwm_clock(struct nouveau_therm *therm)
 
 	/* determine the PWM source clock */
 	if (chipset > 0x50 && chipset < 0x94) {
-		u8 pwm_div = nv_rd32(therm, 0x410c);
-		if (nv_rd32(therm, 0xc040) & 0x800000) {
+		u8 pwm_div = nv_therm_rd32(therm, 0x410c);
+		if (nv_therm_rd32(therm, 0xc040) & 0x800000) {
 			/* Use the HOST clock (100 MHz)
 			* Where does this constant(2.4) comes from? */
 			pwm_clock = (100000000 >> pwm_div) * 10 / 24;
@@ -108,7 +108,7 @@ nv50_fan_pwm_clock(struct nouveau_therm *therm)
 int
 nv50_temp_get(struct nouveau_therm *therm)
 {
-	return nv_rd32(therm, 0x20400);
+	return nv_therm_rd32(therm, 0x20400);
 }
 
 static int
