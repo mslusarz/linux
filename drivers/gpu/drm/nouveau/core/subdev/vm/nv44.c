@@ -143,11 +143,12 @@ static void
 nv44_vm_flush(struct nouveau_vm *vm)
 {
 	struct nv04_vmmgr_priv *priv = (void *)vm->vmm;
-	nv_wr32(priv, 0x100814, priv->base.limit - NV44_GART_PAGE);
-	nv_wr32(priv, 0x100808, 0x00000020);
+	nv04_vmmgr_wr32(priv, 0x100814, priv->base.limit - NV44_GART_PAGE);
+	nv04_vmmgr_wr32(priv, 0x100808, 0x00000020);
 	if (!nv_wait(priv, 0x100808, 0x00000001, 0x00000001))
-		nv_error(priv, "timeout: 0x%08x\n", nv_rd32(priv, 0x100808));
-	nv_wr32(priv, 0x100808, 0x00000000);
+		nv_error(priv, "timeout: 0x%08x\n", nv04_vmmgr_rd32(priv,
+								    0x100808));
+	nv04_vmmgr_wr32(priv, 0x100808, 0x00000000);
 }
 
 /*******************************************************************************
@@ -223,17 +224,17 @@ nv44_vmmgr_init(struct nouveau_object *object)
 	 * allocated on 512KiB alignment, and not exceed a total size
 	 * of 512KiB for this to work correctly
 	 */
-	addr  = nv_rd32(priv, 0x10020c);
+	addr  = nv04_vmmgr_rd32(priv, 0x10020c);
 	addr -= ((gart->addr >> 19) + 1) << 19;
 
-	nv_wr32(priv, 0x100850, 0x80000000);
-	nv_wr32(priv, 0x100818, priv->null);
-	nv_wr32(priv, 0x100804, NV44_GART_SIZE);
-	nv_wr32(priv, 0x100850, 0x00008000);
-	nv_mask(priv, 0x10008c, 0x00000200, 0x00000200);
-	nv_wr32(priv, 0x100820, 0x00000000);
-	nv_wr32(priv, 0x10082c, 0x00000001);
-	nv_wr32(priv, 0x100800, addr | 0x00000010);
+	nv04_vmmgr_wr32(priv, 0x100850, 0x80000000);
+	nv04_vmmgr_wr32(priv, 0x100818, priv->null);
+	nv04_vmmgr_wr32(priv, 0x100804, NV44_GART_SIZE);
+	nv04_vmmgr_wr32(priv, 0x100850, 0x00008000);
+	nv04_vmmgr_mask(priv, 0x10008c, 0x00000200, 0x00000200);
+	nv04_vmmgr_wr32(priv, 0x100820, 0x00000000);
+	nv04_vmmgr_wr32(priv, 0x10082c, 0x00000001);
+	nv04_vmmgr_wr32(priv, 0x100800, addr | 0x00000010);
 	return 0;
 }
 

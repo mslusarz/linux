@@ -70,12 +70,12 @@ nv41_vm_flush(struct nouveau_vm *vm)
 	struct nv04_vmmgr_priv *priv = (void *)vm->vmm;
 
 	mutex_lock(&nv_subdev(priv)->mutex);
-	nv_wr32(priv, 0x100810, 0x00000022);
+	nv04_vmmgr_wr32(priv, 0x100810, 0x00000022);
 	if (!nv_wait(priv, 0x100810, 0x00000020, 0x00000020)) {
 		nv_warn(priv, "flush timeout, 0x%08x\n",
-			nv_rd32(priv, 0x100810));
+			nv04_vmmgr_rd32(priv, 0x100810));
 	}
-	nv_wr32(priv, 0x100810, 0x00000000);
+	nv04_vmmgr_wr32(priv, 0x100810, 0x00000000);
 	mutex_unlock(&nv_subdev(priv)->mutex);
 }
 
@@ -141,9 +141,9 @@ nv41_vmmgr_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, 0x100800, dma->addr | 0x00000002);
-	nv_mask(priv, 0x10008c, 0x00000100, 0x00000100);
-	nv_wr32(priv, 0x100820, 0x00000000);
+	nv04_vmmgr_wr32(priv, 0x100800, dma->addr | 0x00000002);
+	nv04_vmmgr_mask(priv, 0x10008c, 0x00000100, 0x00000100);
+	nv04_vmmgr_wr32(priv, 0x100820, 0x00000000);
 	return 0;
 }
 
