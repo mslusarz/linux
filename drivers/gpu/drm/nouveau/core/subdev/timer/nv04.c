@@ -46,9 +46,9 @@ nv04_timer_read(struct nouveau_timer *ptimer)
 	u32 hi, lo;
 
 	do {
-		hi = nv_rd32(priv, NV04_PTIMER_TIME_1);
-		lo = nv_rd32(priv, NV04_PTIMER_TIME_0);
-	} while (hi != nv_rd32(priv, NV04_PTIMER_TIME_1));
+		hi = nv04_timer_rd32(priv, NV04_PTIMER_TIME_1);
+		lo = nv04_timer_rd32(priv, NV04_PTIMER_TIME_0);
+	} while (hi != nv04_timer_rd32(priv, NV04_PTIMER_TIME_1));
 
 	return ((u64)hi << 32 | lo);
 }
@@ -71,10 +71,10 @@ nv04_timer_alarm_trigger(struct nouveau_timer *ptimer)
 	/* reschedule interrupt for next alarm time */
 	if (!list_empty(&priv->alarms)) {
 		alarm = list_first_entry(&priv->alarms, typeof(*alarm), head);
-		nv_wr32(priv, NV04_PTIMER_ALARM_0, alarm->timestamp);
-		nv_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000001);
+		nv04_timer_wr32(priv, NV04_PTIMER_ALARM_0, alarm->timestamp);
+		nv04_timer_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000001);
 	} else {
-		nv_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000000);
+		nv04_timer_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000000);
 	}
 	spin_unlock_irqrestore(&priv->lock, flags);
 
@@ -112,17 +112,17 @@ static void
 nv04_timer_intr(struct nouveau_subdev *subdev)
 {
 	struct nv04_timer_priv *priv = (void *)subdev;
-	u32 stat = nv_rd32(priv, NV04_PTIMER_INTR_0);
+	u32 stat = nv04_timer_rd32(priv, NV04_PTIMER_INTR_0);
 
 	if (stat & 0x00000001) {
 		nv04_timer_alarm_trigger(&priv->base);
-		nv_wr32(priv, NV04_PTIMER_INTR_0, 0x00000001);
+		nv04_timer_wr32(priv, NV04_PTIMER_INTR_0, 0x00000001);
 		stat &= ~0x00000001;
 	}
 
 	if (stat) {
 		nv_error(priv, "unknown stat 0x%08x\n", stat);
-		nv_wr32(priv, NV04_PTIMER_INTR_0, stat);
+		nv04_timer_wr32(priv, NV04_PTIMER_INTR_0, stat);
 	}
 }
 
@@ -188,15 +188,15 @@ nv04_timer_init(struct nouveau_object *object)
 			m++;
 		}
 
-		nv_wr32(priv, 0x009220, m - 1);
+		nv04_timer_wr32(priv, 0x009220, m - 1);
 	}
 
 	if (!n) {
 		nv_warn(priv, "unknown input clock freq\n");
-		if (!nv_rd32(priv, NV04_PTIMER_NUMERATOR) ||
-		    !nv_rd32(priv, NV04_PTIMER_DENOMINATOR)) {
-			nv_wr32(priv, NV04_PTIMER_NUMERATOR, 1);
-			nv_wr32(priv, NV04_PTIMER_DENOMINATOR, 1);
+		if (!nv04_timer_rd32(priv, NV04_PTIMER_NUMERATOR) ||
+		    !nv04_timer_rd32(priv, NV04_PTIMER_DENOMINATOR)) {
+			nv04_timer_wr32(priv, NV04_PTIMER_NUMERATOR, 1);
+			nv04_timer_wr32(priv, NV04_PTIMER_DENOMINATOR, 1);
 		}
 		return 0;
 	}
@@ -223,10 +223,10 @@ nv04_timer_init(struct nouveau_object *object)
 	nv_debug(priv, "denominator     : 0x%08x\n", d);
 	nv_debug(priv, "timer frequency : %dHz\n", (f * m) * d / n);
 
-	nv_wr32(priv, NV04_PTIMER_NUMERATOR, n);
-	nv_wr32(priv, NV04_PTIMER_DENOMINATOR, d);
-	nv_wr32(priv, NV04_PTIMER_INTR_0, 0xffffffff);
-	nv_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000000);
+	nv04_timer_wr32(priv, NV04_PTIMER_NUMERATOR, n);
+	nv04_timer_wr32(priv, NV04_PTIMER_DENOMINATOR, d);
+	nv04_timer_wr32(priv, NV04_PTIMER_INTR_0, 0xffffffff);
+	nv04_timer_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000000);
 	return 0;
 }
 
@@ -234,7 +234,7 @@ static int
 nv04_timer_fini(struct nouveau_object *object, bool suspend)
 {
 	struct nv04_timer_priv *priv = (void *)object;
-	nv_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000000);
+	nv04_timer_wr32(priv, NV04_PTIMER_INTR_EN_0, 0x00000000);
 	return nouveau_timer_fini(&priv->base, suspend);
 }
 
