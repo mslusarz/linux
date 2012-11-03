@@ -53,9 +53,10 @@ nvc0_clock_pll_set(struct nouveau_clock *clk, u32 type, u32 freq)
 	switch (info.type) {
 	case PLL_VPLL0:
 	case PLL_VPLL1:
-		nv_mask(priv, info.reg + 0x0c, 0x00000000, 0x00000100);
-		nv_wr32(priv, info.reg + 0x04, (P << 16) | (N << 8) | M);
-		nv_wr32(priv, info.reg + 0x10, fN << 16);
+		nvc0_clock_mask(priv, info.reg + 0x0c, 0x00000000, 0x00000100);
+		nvc0_clock_wr32(priv, info.reg + 0x04,
+				(P << 16) | (N << 8) | M);
+		nvc0_clock_wr32(priv, info.reg + 0x10, fN << 16);
 		break;
 	default:
 		nv_warn(priv, "0x%08x/%dKhz unimplemented\n", type, freq);

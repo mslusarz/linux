@@ -57,20 +57,20 @@ nv50_clock_pll_set(struct nouveau_clock *clk, u32 type, u32 freq)
 	switch (info.type) {
 	case PLL_VPLL0:
 	case PLL_VPLL1:
-		nv_wr32(priv, info.reg + 0, 0x10000611);
-		nv_mask(priv, info.reg + 4, 0x00ff00ff, (M1 << 16) | N1);
-		nv_mask(priv, info.reg + 8, 0x7fff00ff, (P  << 28) |
-							(M2 << 16) | N2);
+		nv50_clock_wr32(priv, info.reg + 0, 0x10000611);
+		nv50_clock_mask(priv, info.reg + 4, 0x00ff00ff,
+				(M1 << 16) | N1);
+		nv50_clock_mask(priv, info.reg + 8, 0x7fff00ff,
+				(P << 28) | (M2 << 16) | N2);
 		break;
 	case PLL_MEMORY:
-		nv_mask(priv, info.reg + 0, 0x01ff0000, (P << 22) |
-						        (info.bias_p << 19) |
-							(P << 16));
-		nv_wr32(priv, info.reg + 4, (N1 << 8) | M1);
+		nv50_clock_mask(priv, info.reg + 0, 0x01ff0000,
+				(P << 22) | (info.bias_p << 19) | (P << 16));
+		nv50_clock_wr32(priv, info.reg + 4, (N1 << 8) | M1);
 		break;
 	default:
-		nv_mask(priv, info.reg + 0, 0x00070000, (P << 16));
-		nv_wr32(priv, info.reg + 4, (N1 << 8) | M1);
+		nv50_clock_mask(priv, info.reg + 0, 0x00070000, (P << 16));
+		nv50_clock_wr32(priv, info.reg + 4, (N1 << 8) | M1);
 		break;
 	}
 
