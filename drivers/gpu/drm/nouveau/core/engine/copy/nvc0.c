@@ -121,15 +121,15 @@ nvc0_copy_intr(struct nouveau_subdev *subdev)
 	struct nouveau_object *engctx;
 	int idx = nv_engidx(nv_object(subdev)) - NVDEV_ENGINE_COPY0;
 	struct nvc0_copy_priv *priv = (void *)subdev;
-	u32 disp = nv_rd32(priv, 0x10401c + (idx * 0x1000));
-	u32 intr = nv_rd32(priv, 0x104008 + (idx * 0x1000));
+	u32 disp = nvc0_copy_rd32(priv, 0x10401c + (idx * 0x1000));
+	u32 intr = nvc0_copy_rd32(priv, 0x104008 + (idx * 0x1000));
 	u32 stat = intr & disp & ~(disp >> 16);
-	u64 inst = nv_rd32(priv, 0x104050 + (idx * 0x1000)) & 0x0fffffff;
-	u32 ssta = nv_rd32(priv, 0x104040 + (idx * 0x1000)) & 0x0000ffff;
-	u32 addr = nv_rd32(priv, 0x104040 + (idx * 0x1000)) >> 16;
+	u64 inst = nvc0_copy_rd32(priv, 0x104050 + (idx * 0x1000)) & 0x0fffffff;
+	u32 ssta = nvc0_copy_rd32(priv, 0x104040 + (idx * 0x1000)) & 0x0000ffff;
+	u32 addr = nvc0_copy_rd32(priv, 0x104040 + (idx * 0x1000)) >> 16;
 	u32 mthd = (addr & 0x07ff) << 2;
 	u32 subc = (addr & 0x3800) >> 11;
-	u32 data = nv_rd32(priv, 0x104044 + (idx * 0x1000));
+	u32 data = nvc0_copy_rd32(priv, 0x104044 + (idx * 0x1000));
 	int chid;
 
 	engctx = nouveau_engctx_get(engine, inst);
@@ -140,13 +140,13 @@ nvc0_copy_intr(struct nouveau_subdev *subdev)
 		nouveau_enum_print(nvc0_copy_isr_error_name, ssta);
 		printk("] ch %d [0x%010llx] subc %d mthd 0x%04x data 0x%08x\n",
 		       chid, (u64)inst << 12, subc, mthd, data);
-		nv_wr32(priv, 0x104004 + (idx * 0x1000), 0x00000040);
+		nvc0_copy_wr32(priv, 0x104004 + (idx * 0x1000), 0x00000040);
 		stat &= ~0x00000040;
 	}
 
 	if (stat) {
 		nv_error(priv, "unhandled intr 0x%08x\n", stat);
-		nv_wr32(priv, 0x104004 + (idx * 0x1000), stat);
+		nvc0_copy_wr32(priv, 0x104004 + (idx * 0x1000), stat);
 	}
 
 	nouveau_engctx_put(engctx);
@@ -210,25 +210,28 @@ nvc0_copy_init(struct nouveau_object *object)
 		return ret;
 
 	/* disable all interrupts */
-	nv_wr32(priv, 0x104014 + (idx * 0x1000), 0xffffffff);
+	nvc0_copy_wr32(priv, 0x104014 + (idx * 0x1000), 0xffffffff);
 
 	/* upload ucode */
-	nv_wr32(priv, 0x1041c0 + (idx * 0x1000), 0x01000000);
+	nvc0_copy_wr32(priv, 0x1041c0 + (idx * 0x1000), 0x01000000);
 	for (i = 0; i < sizeof(nvc0_pcopy_data) / 4; i++)
-		nv_wr32(priv, 0x1041c4 + (idx * 0x1000), nvc0_pcopy_data[i]);
+		nvc0_copy_wr32(priv, 0x1041c4 + (idx * 0x1000),
+			       nvc0_pcopy_data[i]);
 
-	nv_wr32(priv, 0x104180 + (idx * 0x1000), 0x01000000);
+	nvc0_copy_wr32(priv, 0x104180 + (idx * 0x1000), 0x01000000);
 	for (i = 0; i < sizeof(nvc0_pcopy_code) / 4; i++) {
 		if ((i & 0x3f) == 0)
-			nv_wr32(priv, 0x104188 + (idx * 0x1000), i >> 6);
-		nv_wr32(priv, 0x104184 + (idx * 0x1000), nvc0_pcopy_code[i]);
+			nvc0_copy_wr32(priv, 0x104188 + (idx * 0x1000),
+				       i >> 6);
+		nvc0_copy_wr32(priv, 0x104184 + (idx * 0x1000),
+			       nvc0_pcopy_code[i]);
 	}
 
 	/* start it running */
-	nv_wr32(priv, 0x104084 + (idx * 0x1000), idx);
-	nv_wr32(priv, 0x10410c + (idx * 0x1000), 0x00000000);
-	nv_wr32(priv, 0x104104 + (idx * 0x1000), 0x00000000); /* ENTRY */
-	nv_wr32(priv, 0x104100 + (idx * 0x1000), 0x00000002); /* TRIGGER */
+	nvc0_copy_wr32(priv, 0x104084 + (idx * 0x1000), idx);
+	nvc0_copy_wr32(priv, 0x10410c + (idx * 0x1000), 0x00000000);
+	nvc0_copy_wr32(priv, 0x104104 + (idx * 0x1000), 0x00000000); /* ENTRY */
+	nvc0_copy_wr32(priv, 0x104100 + (idx * 0x1000), 0x00000002); /* TRIGGER */
 	return 0;
 }
 
@@ -238,8 +241,9 @@ nvc0_copy_fini(struct nouveau_object *object, bool suspend)
 	int idx = nv_engidx(object) - NVDEV_ENGINE_COPY0;
 	struct nvc0_copy_priv *priv = (void *)object;
 
-	nv_mask(priv, 0x104048 + (idx * 0x1000), 0x00000003, 0x00000000);
-	nv_wr32(priv, 0x104014 + (idx * 0x1000), 0xffffffff);
+	nvc0_copy_mask(priv, 0x104048 + (idx * 0x1000), 0x00000003,
+		       0x00000000);
+	nvc0_copy_wr32(priv, 0x104014 + (idx * 0x1000), 0xffffffff);
 
 	return nouveau_copy_fini(&priv->base, suspend);
 }
