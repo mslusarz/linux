@@ -119,8 +119,9 @@ nvc0_fifo_context_attach(struct nouveau_object *parent,
 		nv_engctx(ectx)->addr = nv_gpuobj(base)->addr >> 12;
 	}
 
-	nv_wo32(base, addr + 0x00, lower_32_bits(ectx->vma.offset) | 4);
-	nv_wo32(base, addr + 0x04, upper_32_bits(ectx->vma.offset));
+	nvc0_fifob_wo32(base, addr + 0x00,
+			lower_32_bits(ectx->vma.offset) | 4);
+	nvc0_fifob_wo32(base, addr + 0x04, upper_32_bits(ectx->vma.offset));
 	bar->flush(bar);
 	return 0;
 }
@@ -144,8 +145,8 @@ nvc0_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 		return -EINVAL;
 	}
 
-	nv_wo32(base, addr + 0x00, 0x00000000);
-	nv_wo32(base, addr + 0x04, 0x00000000);
+	nvc0_fifob_wo32(base, addr + 0x00, 0x00000000);
+	nvc0_fifob_wo32(base, addr + 0x04, 0x00000000);
 	bar->flush(bar);
 
 	nvc0_fifo_wr32(priv, 0x002634, chan->base.chid);
@@ -196,22 +197,24 @@ nvc0_fifo_chan_ctor(struct nouveau_object *parent,
 	for (i = 0; i < 0x1000; i += 4)
 		nv_gpuobj_wo32(priv->user.mem, usermem + i, 0x00000000);
 
-	nv_wo32(base, 0x08, lower_32_bits(priv->user.mem->addr + usermem));
-	nv_wo32(base, 0x0c, upper_32_bits(priv->user.mem->addr + usermem));
-	nv_wo32(base, 0x10, 0x0000face);
-	nv_wo32(base, 0x30, 0xfffff902);
-	nv_wo32(base, 0x48, lower_32_bits(ioffset));
-	nv_wo32(base, 0x4c, upper_32_bits(ioffset) | (ilength << 16));
-	nv_wo32(base, 0x54, 0x00000002);
-	nv_wo32(base, 0x84, 0x20400000);
-	nv_wo32(base, 0x94, 0x30000001);
-	nv_wo32(base, 0x9c, 0x00000100);
-	nv_wo32(base, 0xa4, 0x1f1f1f1f);
-	nv_wo32(base, 0xa8, 0x1f1f1f1f);
-	nv_wo32(base, 0xac, 0x0000001f);
-	nv_wo32(base, 0xb8, 0xf8000000);
-	nv_wo32(base, 0xf8, 0x10003080); /* 0x002310 */
-	nv_wo32(base, 0xfc, 0x10000010); /* 0x002350 */
+	nvc0_fifob_wo32(base, 0x08,
+			lower_32_bits(priv->user.mem->addr + usermem));
+	nvc0_fifob_wo32(base, 0x0c,
+			upper_32_bits(priv->user.mem->addr + usermem));
+	nvc0_fifob_wo32(base, 0x10, 0x0000face);
+	nvc0_fifob_wo32(base, 0x30, 0xfffff902);
+	nvc0_fifob_wo32(base, 0x48, lower_32_bits(ioffset));
+	nvc0_fifob_wo32(base, 0x4c, upper_32_bits(ioffset) | (ilength << 16));
+	nvc0_fifob_wo32(base, 0x54, 0x00000002);
+	nvc0_fifob_wo32(base, 0x84, 0x20400000);
+	nvc0_fifob_wo32(base, 0x94, 0x30000001);
+	nvc0_fifob_wo32(base, 0x9c, 0x00000100);
+	nvc0_fifob_wo32(base, 0xa4, 0x1f1f1f1f);
+	nvc0_fifob_wo32(base, 0xa8, 0x1f1f1f1f);
+	nvc0_fifob_wo32(base, 0xac, 0x0000001f);
+	nvc0_fifob_wo32(base, 0xb8, 0xf8000000);
+	nvc0_fifob_wo32(base, 0xf8, 0x10003080); /* 0x002310 */
+	nvc0_fifob_wo32(base, 0xfc, 0x10000010); /* 0x002350 */
 	bar->flush(bar);
 	return 0;
 }
@@ -290,10 +293,10 @@ nvc0_fifo_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_wo32(base, 0x0200, lower_32_bits(base->pgd->addr));
-	nv_wo32(base, 0x0204, upper_32_bits(base->pgd->addr));
-	nv_wo32(base, 0x0208, 0xffffffff);
-	nv_wo32(base, 0x020c, 0x000000ff);
+	nvc0_fifob_wo32(base, 0x0200, lower_32_bits(base->pgd->addr));
+	nvc0_fifob_wo32(base, 0x0204, upper_32_bits(base->pgd->addr));
+	nvc0_fifob_wo32(base, 0x0208, 0xffffffff);
+	nvc0_fifob_wo32(base, 0x020c, 0x000000ff);
 
 	ret = nouveau_vm_ref(nouveau_client(parent)->vm, &base->vm, base->pgd);
 	if (ret)
