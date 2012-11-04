@@ -137,7 +137,7 @@ static void
 nv84_crypt_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nv84_crypt_priv *priv = (void *)subdev;
 	u32 stat = nv84_crypt_rd32(priv, 0x102130);
@@ -185,9 +185,9 @@ nv84_crypt_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv84_crypt_to_subdev(priv)->unit = 0x00004000;
 	nv84_crypt_to_subdev(priv)->intr = nv84_crypt_intr;
-	nv_engine(priv)->cclass = &nv84_crypt_cclass;
-	nv_engine(priv)->sclass = nv84_crypt_sclass;
-	nv_engine(priv)->tlb_flush = nv84_crypt_tlb_flush;
+	nv84_crypt_to_engine(priv)->cclass = &nv84_crypt_cclass;
+	nv84_crypt_to_engine(priv)->sclass = nv84_crypt_sclass;
+	nv84_crypt_to_engine(priv)->tlb_flush = nv84_crypt_tlb_flush;
 	return 0;
 }
 

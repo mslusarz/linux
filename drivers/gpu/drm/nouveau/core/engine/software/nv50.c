@@ -183,8 +183,8 @@ nv50_software_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_engine(priv)->cclass = &nv50_software_cclass;
-	nv_engine(priv)->sclass = nv50_software_sclass;
+	nv50_sw_to_engine(priv)->cclass = &nv50_software_cclass;
+	nv50_sw_to_engine(priv)->sclass = nv50_software_sclass;
 	nv50_sw_to_subdev(priv)->intr = nv04_software_intr;
 	return 0;
 }

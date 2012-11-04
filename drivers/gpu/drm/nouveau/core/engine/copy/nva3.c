@@ -106,7 +106,7 @@ static void
 nva3_copy_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nva3_copy_priv *priv = (void *)subdev;
 	u32 dispatch = nva3_copy_rd32(priv, 0x10401c);
@@ -163,9 +163,9 @@ nva3_copy_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nva3_copy_to_subdev(priv)->unit = 0x00802000;
 	nva3_copy_to_subdev(priv)->intr = nva3_copy_intr;
-	nv_engine(priv)->cclass = &nva3_copy_cclass;
-	nv_engine(priv)->sclass = nva3_copy_sclass;
-	nv_engine(priv)->tlb_flush = nva3_copy_tlb_flush;
+	nva3_copy_to_engine(priv)->cclass = &nva3_copy_cclass;
+	nva3_copy_to_engine(priv)->sclass = nva3_copy_sclass;
+	nva3_copy_to_engine(priv)->tlb_flush = nva3_copy_tlb_flush;
 	return 0;
 }
 

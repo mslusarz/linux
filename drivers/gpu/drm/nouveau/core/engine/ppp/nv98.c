@@ -133,8 +133,8 @@ nv98_ppp_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv98_ppp_to_subdev(priv)->unit = 0x00400002;
 	nv98_ppp_to_subdev(priv)->intr = nv98_ppp_intr;
-	nv_engine(priv)->cclass = &nv98_ppp_cclass;
-	nv_engine(priv)->sclass = nv98_ppp_sclass;
+	nv98_ppp_to_engine(priv)->cclass = &nv98_ppp_cclass;
+	nv98_ppp_to_engine(priv)->sclass = nv98_ppp_sclass;
 	return 0;
 }
 

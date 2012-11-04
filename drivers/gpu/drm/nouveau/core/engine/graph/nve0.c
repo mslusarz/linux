@@ -129,7 +129,7 @@ static void
 nve0_graph_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle;
 	struct nvc0_graph_priv *priv = (void *)subdev;
@@ -214,8 +214,8 @@ nve0_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nvc0_graph_to_subdev(priv)->unit = 0x18001000;
 	nvc0_graph_to_subdev(priv)->intr = nve0_graph_intr;
-	nv_engine(priv)->cclass = &nve0_graph_cclass;
-	nv_engine(priv)->sclass = nve0_graph_sclass;
+	nvc0_graph_to_engine(priv)->cclass = &nve0_graph_cclass;
+	nvc0_graph_to_engine(priv)->sclass = nve0_graph_sclass;
 
 	if (nouveau_boolopt(device->cfgopt, "NvGrUseFW", false)) {
 		nv_info(priv, "using external firmware\n");

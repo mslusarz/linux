@@ -1329,8 +1329,8 @@ nv04_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv04_graph_to_subdev(priv)->unit = 0x00001000;
 	nv04_graph_to_subdev(priv)->intr = nv04_graph_intr;
-	nv_engine(priv)->cclass = &nv04_graph_cclass;
-	nv_engine(priv)->sclass = nv04_graph_sclass;
+	nv04_graph_to_engine(priv)->cclass = &nv04_graph_cclass;
+	nv04_graph_to_engine(priv)->sclass = nv04_graph_sclass;
 	spin_lock_init(&priv->lock);
 	return 0;
 }

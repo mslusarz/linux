@@ -88,9 +88,9 @@ nv84_mpeg_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv84_mpeg_to_subdev(priv)->unit = 0x00000002;
 	nv84_mpeg_to_subdev(priv)->intr = nv50_mpeg_intr;
-	nv_engine(priv)->cclass = &nv84_mpeg_cclass;
-	nv_engine(priv)->sclass = nv84_mpeg_sclass;
-	nv_engine(priv)->tlb_flush = nv50_mpeg_tlb_flush;
+	nv84_mpeg_to_engine(priv)->cclass = &nv84_mpeg_cclass;
+	nv84_mpeg_to_engine(priv)->sclass = nv84_mpeg_sclass;
+	nv84_mpeg_to_engine(priv)->tlb_flush = nv50_mpeg_tlb_flush;
 	return 0;
 }
 

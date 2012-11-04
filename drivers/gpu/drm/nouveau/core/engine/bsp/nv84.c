@@ -133,8 +133,8 @@ nv84_bsp_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv84_bsp_to_subdev(priv)->unit = 0x04008000;
 	nv84_bsp_to_subdev(priv)->intr = nv84_bsp_intr;
-	nv_engine(priv)->cclass = &nv84_bsp_cclass;
-	nv_engine(priv)->sclass = nv84_bsp_sclass;
+	nv84_bsp_to_engine(priv)->cclass = &nv84_bsp_cclass;
+	nv84_bsp_to_engine(priv)->sclass = nv84_bsp_sclass;
 	return 0;
 }
 

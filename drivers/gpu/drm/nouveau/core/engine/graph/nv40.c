@@ -289,7 +289,7 @@ static void
 nv40_graph_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle = NULL;
 	struct nv40_graph_priv *priv = (void *)subdev;
@@ -355,12 +355,12 @@ nv40_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv40_graph_to_subdev(priv)->unit = 0x00001000;
 	nv40_graph_to_subdev(priv)->intr = nv40_graph_intr;
-	nv_engine(priv)->cclass = &nv40_graph_cclass;
+	nv40_graph_to_engine(priv)->cclass = &nv40_graph_cclass;
 	if (nv44_graph_class(priv))
-		nv_engine(priv)->sclass = nv44_graph_sclass;
+		nv40_graph_to_engine(priv)->sclass = nv44_graph_sclass;
 	else
-		nv_engine(priv)->sclass = nv40_graph_sclass;
-	nv_engine(priv)->tile_prog = nv40_graph_tile_prog;
+		nv40_graph_to_engine(priv)->sclass = nv40_graph_sclass;
+	nv40_graph_to_engine(priv)->tile_prog = nv40_graph_tile_prog;
 	return 0;
 }
 

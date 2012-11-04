@@ -107,7 +107,7 @@ nv50_disp_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_engine(priv)->sclass = nv50_disp_sclass;
+	nv50_disp_to_engine(priv)->sclass = nv50_disp_sclass;
 	nv50_disp_to_subdev(priv)->intr = nv50_disp_intr;
 
 	INIT_LIST_HEAD(&priv->base.vblank.list);

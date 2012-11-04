@@ -692,7 +692,7 @@ static void
 nv50_graph_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle = NULL;
 	struct nv50_graph_priv *priv = (void *)subdev;
@@ -763,11 +763,11 @@ nv50_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv50_graph_to_subdev(priv)->unit = 0x00201000;
 	nv50_graph_to_subdev(priv)->intr = nv50_graph_intr;
-	nv_engine(priv)->cclass = &nv50_graph_cclass;
+	nv50_graph_to_engine(priv)->cclass = &nv50_graph_cclass;
 
 	switch (nv_device(priv)->chipset) {
 	case 0x50:
-		nv_engine(priv)->sclass = nv50_graph_sclass;
+		nv50_graph_to_engine(priv)->sclass = nv50_graph_sclass;
 		break;
 	case 0x84:
 	case 0x86:
@@ -775,29 +775,29 @@ nv50_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	case 0x94:
 	case 0x96:
 	case 0x98:
-		nv_engine(priv)->sclass = nv84_graph_sclass;
+		nv50_graph_to_engine(priv)->sclass = nv84_graph_sclass;
 		break;
 	case 0xa0:
 	case 0xaa:
 	case 0xac:
-		nv_engine(priv)->sclass = nva0_graph_sclass;
+		nv50_graph_to_engine(priv)->sclass = nva0_graph_sclass;
 		break;
 	case 0xa3:
 	case 0xa5:
 	case 0xa8:
-		nv_engine(priv)->sclass = nva3_graph_sclass;
+		nv50_graph_to_engine(priv)->sclass = nva3_graph_sclass;
 		break;
 	case 0xaf:
-		nv_engine(priv)->sclass = nvaf_graph_sclass;
+		nv50_graph_to_engine(priv)->sclass = nvaf_graph_sclass;
 		break;
 
 	};
 
 	if (nv_device(priv)->chipset == 0x50 ||
 	    nv_device(priv)->chipset == 0xac)
-		nv_engine(priv)->tlb_flush = nv50_graph_tlb_flush;
+		nv50_graph_to_engine(priv)->tlb_flush = nv50_graph_tlb_flush;
 	else
-		nv_engine(priv)->tlb_flush = nv84_graph_tlb_flush;
+		nv50_graph_to_engine(priv)->tlb_flush = nv84_graph_tlb_flush;
 
 	spin_lock_init(&priv->lock);
 	return 0;

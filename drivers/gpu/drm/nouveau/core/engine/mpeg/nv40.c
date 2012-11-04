@@ -128,9 +128,9 @@ nv40_mpeg_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv40_mpeg_to_subdev(priv)->unit = 0x00000002;
 	nv40_mpeg_to_subdev(priv)->intr = nv40_mpeg_intr;
-	nv_engine(priv)->cclass = &nv40_mpeg_cclass;
-	nv_engine(priv)->sclass = nv31_mpeg_sclass;
-	nv_engine(priv)->tile_prog = nv31_mpeg_tile_prog;
+	nv40_mpeg_to_engine(priv)->cclass = &nv40_mpeg_cclass;
+	nv40_mpeg_to_engine(priv)->sclass = nv31_mpeg_sclass;
+	nv40_mpeg_to_engine(priv)->tile_prog = nv31_mpeg_tile_prog;
 	return 0;
 }
 

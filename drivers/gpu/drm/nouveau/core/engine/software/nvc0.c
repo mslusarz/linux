@@ -165,8 +165,8 @@ nvc0_software_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_engine(priv)->cclass = &nvc0_software_cclass;
-	nv_engine(priv)->sclass = nvc0_software_sclass;
+	nvc0_sw_to_engine(priv)->cclass = &nvc0_software_cclass;
+	nvc0_sw_to_engine(priv)->sclass = nvc0_software_sclass;
 	nvc0_sw_to_subdev(priv)->intr = nv04_software_intr;
 	return 0;
 }

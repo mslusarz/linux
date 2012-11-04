@@ -1231,18 +1231,18 @@ nv10_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv10_graph_to_subdev(priv)->unit = 0x00001000;
 	nv10_graph_to_subdev(priv)->intr = nv10_graph_intr;
-	nv_engine(priv)->cclass = &nv10_graph_cclass;
+	nv10_graph_to_engine(priv)->cclass = &nv10_graph_cclass;
 
 	if (nv_device(priv)->chipset <= 0x10)
-		nv_engine(priv)->sclass = nv10_graph_sclass;
+		nv10_graph_to_engine(priv)->sclass = nv10_graph_sclass;
 	else
 	if (nv_device(priv)->chipset <  0x17 ||
 	    nv_device(priv)->chipset == 0x1a)
-		nv_engine(priv)->sclass = nv15_graph_sclass;
+		nv10_graph_to_engine(priv)->sclass = nv15_graph_sclass;
 	else
-		nv_engine(priv)->sclass = nv17_graph_sclass;
+		nv10_graph_to_engine(priv)->sclass = nv17_graph_sclass;
 
-	nv_engine(priv)->tile_prog = nv10_graph_tile_prog;
+	nv10_graph_to_engine(priv)->tile_prog = nv10_graph_tile_prog;
 	spin_lock_init(&priv->lock);
 	return 0;
 }

@@ -201,7 +201,7 @@ void
 nv31_mpeg_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle;
 	struct nv31_mpeg_priv *priv = (void *)subdev;
@@ -257,9 +257,9 @@ nv31_mpeg_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv31_mpeg_to_subdev(priv)->unit = 0x00000002;
 	nv31_mpeg_to_subdev(priv)->intr = nv31_mpeg_intr;
-	nv_engine(priv)->cclass = &nv31_mpeg_cclass;
-	nv_engine(priv)->sclass = nv31_mpeg_sclass;
-	nv_engine(priv)->tile_prog = nv31_mpeg_tile_prog;
+	nv31_mpeg_to_engine(priv)->cclass = &nv31_mpeg_cclass;
+	nv31_mpeg_to_engine(priv)->sclass = nv31_mpeg_sclass;
+	nv31_mpeg_to_engine(priv)->tile_prog = nv31_mpeg_tile_prog;
 	return 0;
 }
 

@@ -582,8 +582,8 @@ nvc0_fifo_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nvc0_fifo_to_subdev(priv)->unit = 0x00000100;
 	nvc0_fifo_to_subdev(priv)->intr = nvc0_fifo_intr;
-	nv_engine(priv)->cclass = &nvc0_fifo_cclass;
-	nv_engine(priv)->sclass = nvc0_fifo_sclass;
+	nvc0_fifo_to_engine(priv)->cclass = &nvc0_fifo_cclass;
+	nvc0_fifo_to_engine(priv)->sclass = nvc0_fifo_sclass;
 	return 0;
 }
 

@@ -196,7 +196,7 @@ nv20_graph_tile_prog(struct nouveau_engine *engine, int i)
 void
 nv20_graph_intr(struct nouveau_subdev *subdev)
 {
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	struct nouveau_handle *handle;
 	struct nv20_graph_priv *priv = (void *)subdev;
@@ -259,9 +259,9 @@ nv20_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv20_graph_to_subdev(priv)->unit = 0x00001000;
 	nv20_graph_to_subdev(priv)->intr = nv20_graph_intr;
-	nv_engine(priv)->cclass = &nv20_graph_cclass;
-	nv_engine(priv)->sclass = nv20_graph_sclass;
-	nv_engine(priv)->tile_prog = nv20_graph_tile_prog;
+	nv20_graph_to_engine(priv)->cclass = &nv20_graph_cclass;
+	nv20_graph_to_engine(priv)->sclass = nv20_graph_sclass;
+	nv20_graph_to_engine(priv)->tile_prog = nv20_graph_tile_prog;
 	return 0;
 }
 

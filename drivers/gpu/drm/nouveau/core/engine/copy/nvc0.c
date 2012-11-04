@@ -117,7 +117,7 @@ static void
 nvc0_copy_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_fifo *pfifo = nouveau_fifo(subdev);
-	struct nouveau_engine *engine = nv_engine(subdev);
+	struct nouveau_engine *engine = __nv_subdev_to_engine(subdev);
 	struct nouveau_object *engctx;
 	int idx = nv_engidx(nv_object(subdev)) - NVDEV_ENGINE_COPY0;
 	struct nvc0_copy_priv *priv = (void *)subdev;
@@ -170,8 +170,8 @@ nvc0_copy0_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nvc0_copy_to_subdev(priv)->unit = 0x00000040;
 	nvc0_copy_to_subdev(priv)->intr = nvc0_copy_intr;
-	nv_engine(priv)->cclass = &nvc0_copy0_cclass;
-	nv_engine(priv)->sclass = nvc0_copy0_sclass;
+	nvc0_copy_to_engine(priv)->cclass = &nvc0_copy0_cclass;
+	nvc0_copy_to_engine(priv)->sclass = nvc0_copy0_sclass;
 	return 0;
 }
 
@@ -193,8 +193,8 @@ nvc0_copy1_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nvc0_copy_to_subdev(priv)->unit = 0x00000080;
 	nvc0_copy_to_subdev(priv)->intr = nvc0_copy_intr;
-	nv_engine(priv)->cclass = &nvc0_copy1_cclass;
-	nv_engine(priv)->sclass = nvc0_copy1_sclass;
+	nvc0_copy_to_engine(priv)->cclass = &nvc0_copy1_cclass;
+	nvc0_copy_to_engine(priv)->sclass = nvc0_copy1_sclass;
 	return 0;
 }
 

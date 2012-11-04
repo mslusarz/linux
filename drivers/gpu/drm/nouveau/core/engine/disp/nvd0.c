@@ -103,7 +103,7 @@ nvd0_disp_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_engine(priv)->sclass = nvd0_disp_sclass;
+	nvd0_disp_to_engine(priv)->sclass = nvd0_disp_sclass;
 	nvd0_disp_to_subdev(priv)->intr = nvd0_disp_intr;
 
 	INIT_LIST_HEAD(&priv->base.vblank.list);

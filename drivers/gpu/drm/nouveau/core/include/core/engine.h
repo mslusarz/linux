@@ -25,13 +25,20 @@ INHERITS_NV_SUBDEV(nv_engine, struct nouveau_engine);
 	INHERITS_NV_SUBDEV(pfx, type)
 
 static inline struct nouveau_engine *
-nv_engine(void *obj)
+nv_engine(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!nv_iclass(obj, NV_ENGINE_CLASS)))
 		nv_assert("BAD CAST -> NvEngine, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_engine *)obj;
+}
+
+/* This is NOT safe. You need to be sure it's an engine. */
+static inline struct nouveau_engine *
+__nv_subdev_to_engine(struct nouveau_subdev *obj)
+{
+	return nv_engine(nv_subdev_to_object(obj));
 }
 
 static inline int

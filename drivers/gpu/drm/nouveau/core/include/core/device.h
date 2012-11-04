@@ -121,7 +121,7 @@ nouveau_engine(void *obj, int sub)
 {
 	struct nouveau_subdev *subdev = nouveau_subdev(obj, sub);
 	if (subdev && nv_iclass(subdev, NV_ENGINE_CLASS))
-		return nv_engine(subdev);
+		return __nv_subdev_to_engine(subdev);
 	return NULL;
 }
 

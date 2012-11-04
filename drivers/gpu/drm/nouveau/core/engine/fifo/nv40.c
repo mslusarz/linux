@@ -277,8 +277,8 @@ nv40_fifo_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	nv04_fifo_to_subdev(priv)->unit = 0x00000100;
 	nv04_fifo_to_subdev(priv)->intr = nv04_fifo_intr;
-	nv_engine(priv)->cclass = &nv40_fifo_cclass;
-	nv_engine(priv)->sclass = nv40_fifo_sclass;
+	nv04_fifo_to_engine(priv)->cclass = &nv40_fifo_cclass;
+	nv04_fifo_to_engine(priv)->sclass = nv40_fifo_sclass;
 	priv->base.pause = nv04_fifo_pause;
 	priv->base.start = nv04_fifo_start;
 	priv->ramfc_desc = nv40_ramfc;
