@@ -131,8 +131,8 @@ nv84_vp_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x01020000;
-	nv_subdev(priv)->intr = nv84_vp_intr;
+	nv84_vp_to_subdev(priv)->unit = 0x01020000;
+	nv84_vp_to_subdev(priv)->intr = nv84_vp_intr;
 	nv_engine(priv)->cclass = &nv84_vp_cclass;
 	nv_engine(priv)->sclass = nv84_vp_sclass;
 	return 0;

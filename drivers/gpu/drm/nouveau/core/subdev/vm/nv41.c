@@ -69,14 +69,14 @@ nv41_vm_flush(struct nouveau_vm *vm)
 {
 	struct nv04_vmmgr_priv *priv = (void *)vm->vmm;
 
-	mutex_lock(&nv_subdev(priv)->mutex);
+	mutex_lock(&nv04_vmmgr_to_subdev(priv)->mutex);
 	nv04_vmmgr_wr32(priv, 0x100810, 0x00000022);
 	if (!nv_wait(priv, 0x100810, 0x00000020, 0x00000020)) {
 		nv_warn(priv, "flush timeout, 0x%08x\n",
 			nv04_vmmgr_rd32(priv, 0x100810));
 	}
 	nv04_vmmgr_wr32(priv, 0x100810, 0x00000000);
-	mutex_unlock(&nv_subdev(priv)->mutex);
+	mutex_unlock(&nv04_vmmgr_to_subdev(priv)->mutex);
 }
 
 /*******************************************************************************

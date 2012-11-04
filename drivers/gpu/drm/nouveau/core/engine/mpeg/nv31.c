@@ -255,8 +255,8 @@ nv31_mpeg_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00000002;
-	nv_subdev(priv)->intr = nv31_mpeg_intr;
+	nv31_mpeg_to_subdev(priv)->unit = 0x00000002;
+	nv31_mpeg_to_subdev(priv)->intr = nv31_mpeg_intr;
 	nv_engine(priv)->cclass = &nv31_mpeg_cclass;
 	nv_engine(priv)->sclass = nv31_mpeg_sclass;
 	nv_engine(priv)->tile_prog = nv31_mpeg_tile_prog;

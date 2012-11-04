@@ -160,8 +160,8 @@ nv98_crypt_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00004000;
-	nv_subdev(priv)->intr = nv98_crypt_intr;
+	nv98_crypt_to_subdev(priv)->unit = 0x00004000;
+	nv98_crypt_to_subdev(priv)->intr = nv98_crypt_intr;
 	nv_engine(priv)->cclass = &nv98_crypt_cclass;
 	nv_engine(priv)->sclass = nv98_crypt_sclass;
 	nv_engine(priv)->tlb_flush = nv98_crypt_tlb_flush;

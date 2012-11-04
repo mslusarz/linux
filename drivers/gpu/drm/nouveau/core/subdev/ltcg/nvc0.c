@@ -78,7 +78,7 @@ nvc0_ltcg_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	priv->subp_nr = nvc0_ltcg_rd32(priv, 0x17e8dc) >> 24;
 	nvc0_ltcg_mask(priv, 0x17e820, 0x00100000, 0x00000000); /* INTR_EN &= ~0x10 */
 
-	nv_subdev(priv)->intr = nvc0_ltcg_intr;
+	nvc0_ltcg_to_subdev(priv)->intr = nvc0_ltcg_intr;
 	return 0;
 }
 

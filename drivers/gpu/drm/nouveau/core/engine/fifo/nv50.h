@@ -1,6 +1,8 @@
 #ifndef __NV50_FIFO_H__
 #define __NV50_FIFO_H__
 
+#include <engine/fifo.h>
+
 struct nv50_fifo_priv {
 	struct nouveau_fifo base;
 	struct nouveau_gpuobj *playlist[2];

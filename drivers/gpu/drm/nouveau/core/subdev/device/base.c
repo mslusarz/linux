@@ -225,9 +225,9 @@ nouveau_devobj_ctor(struct nouveau_object *parent,
 	}
 
 	if (!(args->disable & NV_DEVICE_DISABLE_MMIO) &&
-	    !nv_subdev(device)->mmio) {
-		nv_subdev(device)->mmio  = ioremap(mmio_base, mmio_size);
-		if (!nv_subdev(device)->mmio) {
+	    !nv_device_to_subdev(device)->mmio) {
+		nv_device_to_subdev(device)->mmio  = ioremap(mmio_base, mmio_size);
+		if (!nv_device_to_subdev(device)->mmio) {
 			nv_error(device, "unable to map device registers\n");
 			return -ENOMEM;
 		}
@@ -465,7 +465,8 @@ nouveau_device_create_(struct pci_dev *pdev, u64 name, const char *sname,
 	device->dbgopt = dbg;
 	device->name = sname;
 
-	nv_subdev(device)->debug = nouveau_dbgopt(device->dbgopt, "DEVICE");
+	nv_device_to_subdev(device)->debug =
+			nouveau_dbgopt(device->dbgopt, "DEVICE");
 	list_add(&device->head, &nv_devices);
 done:
 	mutex_unlock(&nv_devices_mutex);

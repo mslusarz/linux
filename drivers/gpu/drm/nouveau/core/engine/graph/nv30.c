@@ -148,8 +148,8 @@ nv30_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00001000;
-	nv_subdev(priv)->intr = nv20_graph_intr;
+	nv20_graph_to_subdev(priv)->unit = 0x00001000;
+	nv20_graph_to_subdev(priv)->intr = nv20_graph_intr;
 	nv_engine(priv)->cclass = &nv30_graph_cclass;
 	nv_engine(priv)->sclass = nv30_graph_sclass;
 	nv_engine(priv)->tile_prog = nv20_graph_tile_prog;

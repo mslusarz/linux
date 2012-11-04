@@ -136,9 +136,10 @@ static void
 nvc0_vm_flush(struct nouveau_vm *vm)
 {
 	struct nouveau_vm_pgd *vpgd;
+	struct nouveau_subdev *subdev = nv_vmmgr_to_subdev(vm->vmm);
 
 	list_for_each_entry(vpgd, &vm->pgd_list, head) {
-		nvc0_vm_flush_engine(nv_subdev(vm->vmm), vpgd->obj->addr, 1);
+		nvc0_vm_flush_engine(subdev, vpgd->obj->addr, 1);
 	}
 }
 

@@ -75,7 +75,7 @@ nv04_disp_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 		return ret;
 
 	nv_engine(priv)->sclass = nv04_disp_sclass;
-	nv_subdev(priv)->intr = nv04_disp_intr;
+	nv04_disp_to_subdev(priv)->intr = nv04_disp_intr;
 	return 0;
 }
 

@@ -212,8 +212,8 @@ nve0_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x18001000;
-	nv_subdev(priv)->intr = nve0_graph_intr;
+	nvc0_graph_to_subdev(priv)->unit = 0x18001000;
+	nvc0_graph_to_subdev(priv)->intr = nve0_graph_intr;
 	nv_engine(priv)->cclass = &nve0_graph_cclass;
 	nv_engine(priv)->sclass = nve0_graph_sclass;
 

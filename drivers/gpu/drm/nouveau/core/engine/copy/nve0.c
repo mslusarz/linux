@@ -107,7 +107,7 @@ nve0_copy0_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00000040;
+	nve0_copy_to_subdev(priv)->unit = 0x00000040;
 	nv_engine(priv)->cclass = &nve0_copy_cclass;
 	nv_engine(priv)->sclass = nve0_copy_sclass;
 	return 0;
@@ -129,7 +129,7 @@ nve0_copy1_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00000080;
+	nve0_copy_to_subdev(priv)->unit = 0x00000080;
 	nv_engine(priv)->cclass = &nve0_copy_cclass;
 	nv_engine(priv)->sclass = nve0_copy_sclass;
 	return 0;

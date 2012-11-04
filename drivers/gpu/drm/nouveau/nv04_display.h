@@ -170,7 +170,7 @@ nouveau_bios_run_init_table(struct drm_device *dev, u16 table,
 	struct nouveau_device *device = nouveau_dev(dev);
 	struct nouveau_bios *bios = nouveau_bios(device);
 	struct nvbios_init init = {
-		.subdev = nv_subdev(bios),
+		.subdev = nv_bios_to_subdev(bios),
 		.bios = bios,
 		.offset = table,
 		.outp = outp,

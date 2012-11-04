@@ -570,8 +570,8 @@ nve0_fifo_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00000100;
-	nv_subdev(priv)->intr = nve0_fifo_intr;
+	nve0_fifo_to_subdev(priv)->unit = 0x00000100;
+	nve0_fifo_to_subdev(priv)->intr = nve0_fifo_intr;
 	nv_engine(priv)->cclass = &nve0_fifo_cclass;
 	nv_engine(priv)->sclass = nve0_fifo_sclass;
 	return 0;

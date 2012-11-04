@@ -24,13 +24,13 @@ INHERITS_NV_OBJECT(nv_subdev, struct nouveau_subdev);
 	NOUVEAU_SUBDEV_HELPERS(pfx, type)
 
 static inline struct nouveau_subdev *
-nv_subdev(void *obj)
+nv_subdev(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!nv_iclass(obj, NV_SUBDEV_CLASS)))
 		nv_assert("BAD CAST -> NvSubDev, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_subdev *)obj;
 }
 
 static inline int

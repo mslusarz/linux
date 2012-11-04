@@ -155,8 +155,8 @@ nv17_fifo_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	nouveau_gpuobj_ref(imem->ramro, &priv->ramro);
 	nouveau_gpuobj_ref(imem->ramfc, &priv->ramfc);
 
-	nv_subdev(priv)->unit = 0x00000100;
-	nv_subdev(priv)->intr = nv04_fifo_intr;
+	nv04_fifo_to_subdev(priv)->unit = 0x00000100;
+	nv04_fifo_to_subdev(priv)->intr = nv04_fifo_intr;
 	nv_engine(priv)->cclass = &nv17_fifo_cclass;
 	nv_engine(priv)->sclass = nv17_fifo_sclass;
 	priv->base.pause = nv04_fifo_pause;

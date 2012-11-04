@@ -52,7 +52,7 @@ nvc0_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 		return ret;
 
 	nouveau_vm_map(vma, mem);
-	nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[0].pgd->addr, 5);
+	nvc0_vm_flush_engine(nv_bar_to_subdev(bar), priv->bar[0].pgd->addr, 5);
 	return 0;
 }
 
@@ -69,7 +69,7 @@ nvc0_bar_umap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 		return ret;
 
 	nouveau_vm_map(vma, mem);
-	nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[1].pgd->addr, 5);
+	nvc0_vm_flush_engine(nv_bar_to_subdev(bar), priv->bar[1].pgd->addr, 5);
 	return 0;
 }
 
@@ -80,7 +80,7 @@ nvc0_bar_unmap(struct nouveau_bar *bar, struct nouveau_vma *vma)
 	int i = !(vma->vm == priv->bar[0].vm);
 
 	nouveau_vm_unmap(vma);
-	nvc0_vm_flush_engine(nv_subdev(bar), priv->bar[i].pgd->addr, 5);
+	nvc0_vm_flush_engine(nv_bar_to_subdev(bar), priv->bar[i].pgd->addr, 5);
 	nouveau_vm_put(vma);
 }
 

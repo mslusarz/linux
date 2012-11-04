@@ -1229,8 +1229,8 @@ nv10_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00001000;
-	nv_subdev(priv)->intr = nv10_graph_intr;
+	nv10_graph_to_subdev(priv)->unit = 0x00001000;
+	nv10_graph_to_subdev(priv)->intr = nv10_graph_intr;
 	nv_engine(priv)->cclass = &nv10_graph_cclass;
 
 	if (nv_device(priv)->chipset <= 0x10)

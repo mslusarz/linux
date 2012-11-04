@@ -183,8 +183,8 @@ nv84_crypt_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00004000;
-	nv_subdev(priv)->intr = nv84_crypt_intr;
+	nv84_crypt_to_subdev(priv)->unit = 0x00004000;
+	nv84_crypt_to_subdev(priv)->intr = nv84_crypt_intr;
 	nv_engine(priv)->cclass = &nv84_crypt_cclass;
 	nv_engine(priv)->sclass = nv84_crypt_sclass;
 	nv_engine(priv)->tlb_flush = nv84_crypt_tlb_flush;

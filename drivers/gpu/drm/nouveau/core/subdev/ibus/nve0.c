@@ -108,7 +108,7 @@ nve0_ibus_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->intr = nve0_ibus_intr;
+	nve0_ibus_to_subdev(priv)->intr = nve0_ibus_intr;
 	return 0;
 }
 

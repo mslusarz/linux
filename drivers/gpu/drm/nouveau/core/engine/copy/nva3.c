@@ -161,8 +161,8 @@ nva3_copy_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00802000;
-	nv_subdev(priv)->intr = nva3_copy_intr;
+	nva3_copy_to_subdev(priv)->unit = 0x00802000;
+	nva3_copy_to_subdev(priv)->intr = nva3_copy_intr;
 	nv_engine(priv)->cclass = &nva3_copy_cclass;
 	nv_engine(priv)->sclass = nva3_copy_sclass;
 	nv_engine(priv)->tlb_flush = nva3_copy_tlb_flush;

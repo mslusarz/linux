@@ -54,7 +54,7 @@ nv50_bar_kmap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 		return ret;
 
 	nouveau_vm_map(vma, mem);
-	nv50_vm_flush_engine(nv_subdev(bar), 6);
+	nv50_vm_flush_engine(nv_bar_to_subdev(bar), 6);
 	return 0;
 }
 
@@ -70,7 +70,7 @@ nv50_bar_umap(struct nouveau_bar *bar, struct nouveau_mem *mem,
 		return ret;
 
 	nouveau_vm_map(vma, mem);
-	nv50_vm_flush_engine(nv_subdev(bar), 6);
+	nv50_vm_flush_engine(nv_bar_to_subdev(bar), 6);
 	return 0;
 }
 
@@ -78,7 +78,7 @@ static void
 nv50_bar_unmap(struct nouveau_bar *bar, struct nouveau_vma *vma)
 {
 	nouveau_vm_unmap(vma);
-	nv50_vm_flush_engine(nv_subdev(bar), 6);
+	nv50_vm_flush_engine(nv_bar_to_subdev(bar), 6);
 	nouveau_vm_put(vma);
 }
 
@@ -236,7 +236,7 @@ nv50_bar_init(struct nouveau_object *object)
 
 	nv50_bar_mask(priv, 0x000200, 0x00000100, 0x00000000);
 	nv50_bar_mask(priv, 0x000200, 0x00000100, 0x00000100);
-	nv50_vm_flush_engine(nv_subdev(priv), 6);
+	nv50_vm_flush_engine(nv50_bar_to_subdev(priv), 6);
 
 	nv50_bar_wr32(priv, 0x001704, 0x00000000 | priv->mem->addr >> 12);
 	nv50_bar_wr32(priv, 0x001704, 0x40000000 | priv->mem->addr >> 12);

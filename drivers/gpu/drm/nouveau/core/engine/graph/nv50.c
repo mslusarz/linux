@@ -761,8 +761,8 @@ nv50_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	if (ret)
 		return ret;
 
-	nv_subdev(priv)->unit = 0x00201000;
-	nv_subdev(priv)->intr = nv50_graph_intr;
+	nv50_graph_to_subdev(priv)->unit = 0x00201000;
+	nv50_graph_to_subdev(priv)->intr = nv50_graph_intr;
 	nv_engine(priv)->cclass = &nv50_graph_cclass;
 
 	switch (nv_device(priv)->chipset) {

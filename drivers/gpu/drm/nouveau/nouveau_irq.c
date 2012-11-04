@@ -59,7 +59,7 @@ nouveau_irq_handler(DRM_IRQ_ARGS)
 	if (stat == 0 || stat == ~0)
 		return IRQ_NONE;
 
-	nv_subdev(pmc)->intr(nv_subdev(pmc));
+	nv_mc_to_subdev(pmc)->intr(nv_mc_to_subdev(pmc));
 
 	if (dev->mode_config.num_crtc) {
 		if (device->card_type >= NV_D0) {

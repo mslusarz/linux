@@ -87,9 +87,9 @@ nv04_fifo_object_attach(struct nouveau_object *parent,
 	context |= 0x80000000; /* valid */
 	context |= chid << 24;
 
-	mutex_lock(&nv_subdev(priv)->mutex);
+	mutex_lock(&nv04_fifo_to_subdev(priv)->mutex);
 	ret = nouveau_ramht_insert(priv->ramht, chid, handle, context);
-	mutex_unlock(&nv_subdev(priv)->mutex);
+	mutex_unlock(&nv04_fifo_to_subdev(priv)->mutex);
 	return ret;
 }
 
@@ -97,9 +97,9 @@ void
 nv04_fifo_object_detach(struct nouveau_object *parent, int cookie)
 {
 	struct nv04_fifo_priv *priv = (void *)parent->engine;
-	mutex_lock(&nv_subdev(priv)->mutex);
+	mutex_lock(&nv04_fifo_to_subdev(priv)->mutex);
 	nouveau_ramht_remove(priv->ramht, cookie);
-	mutex_unlock(&nv_subdev(priv)->mutex);
+	mutex_unlock(&nv04_fifo_to_subdev(priv)->mutex);
 }
 
 int
@@ -577,8 +577,8 @@ nv04_fifo_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	nouveau_gpuobj_ref(imem->ramro, &priv->ramro);
 	nouveau_gpuobj_ref(imem->ramfc, &priv->ramfc);
 
-	nv_subdev(priv)->unit = 0x00000100;
-	nv_subdev(priv)->intr = nv04_fifo_intr;
+	nv04_fifo_to_subdev(priv)->unit = 0x00000100;
+	nv04_fifo_to_subdev(priv)->intr = nv04_fifo_intr;
 	nv_engine(priv)->cclass = &nv04_fifo_cclass;
 	nv_engine(priv)->sclass = nv04_fifo_sclass;
 	priv->base.pause = nv04_fifo_pause;
