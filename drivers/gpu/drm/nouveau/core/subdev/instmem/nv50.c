@@ -89,10 +89,10 @@ nv50_instobj_rd32(struct nouveau_object *object, u32 offset)
 
 	spin_lock_irqsave(&priv->lock, flags);
 	if (unlikely(priv->addr != base)) {
-		nv_wr32(priv, 0x001700, base >> 16);
+		nv50_imem_wr32(priv, 0x001700, base >> 16);
 		priv->addr = base;
 	}
-	data = nv_rd32(priv, 0x700000 + addr);
+	data = nv50_imem_rd32(priv, 0x700000 + addr);
 	spin_unlock_irqrestore(&priv->lock, flags);
 	return data;
 }
@@ -108,10 +108,10 @@ nv50_instobj_wr32(struct nouveau_object *object, u32 offset, u32 data)
 
 	spin_lock_irqsave(&priv->lock, flags);
 	if (unlikely(priv->addr != base)) {
-		nv_wr32(priv, 0x001700, base >> 16);
+		nv50_imem_wr32(priv, 0x001700, base >> 16);
 		priv->addr = base;
 	}
-	nv_wr32(priv, 0x700000 + addr, data);
+	nv50_imem_wr32(priv, 0x700000 + addr, data);
 	spin_unlock_irqrestore(&priv->lock, flags);
 }
 

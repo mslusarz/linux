@@ -64,7 +64,7 @@ nv40_instmem_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	 * to fit graphics contexts for every channel, the magics come
 	 * from engine/graph/nv40.c
 	 */
-	vs = hweight8((nv_rd32(priv, 0x001540) & 0x0000ff00) >> 8);
+	vs = hweight8((nv04_imem_rd32(priv, 0x001540) & 0x0000ff00) >> 8);
 	if      (device->chipset == 0x40) priv->base.reserved = 0x6aa0 * vs;
 	else if (device->chipset  < 0x43) priv->base.reserved = 0x4f00 * vs;
 	else if (nv44_graph_class(priv))  priv->base.reserved = 0x4980 * vs;
