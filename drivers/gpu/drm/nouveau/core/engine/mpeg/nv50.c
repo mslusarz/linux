@@ -104,8 +104,8 @@ nv50_mpeg_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_wo32(chan, 0x0070, 0x00801ec1);
-	nv_wo32(chan, 0x007c, 0x0000037c);
+	nv50_mpegchan_wo32(chan, 0x0070, 0x00801ec1);
+	nv50_mpegchan_wo32(chan, 0x007c, 0x0000037c);
 	bar->flush(bar);
 	return 0;
 }
