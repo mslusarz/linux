@@ -55,7 +55,8 @@ INHERITS_NV_GPUOBJ(nv_fifob, struct nouveau_fifo_base);
 
 #define INHERITS_NV_FIFO_BASE(pfx, type) \
 	NOUVEAU_UPCAST(pfx, fifob, type, struct nouveau_fifo_base); \
-	INHERITS_NV_GPUOBJ(pfx, type)
+	INHERITS_NV_GPUOBJ(pfx, type) \
+	NOUVEAU_OBJECT_HELPERS(pfx, type);
 
 #define nouveau_fifo_context_create(p,e,c,g,s,a,f,d)                           \
 	nouveau_gpuobj_create((p), (e), (c), 0, (g), (s), (a), (f), (d))

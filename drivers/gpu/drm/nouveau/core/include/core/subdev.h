@@ -20,7 +20,8 @@ INHERITS_NV_OBJECT(nv_subdev, struct nouveau_subdev);
 
 #define INHERITS_NV_SUBDEV(pfx, type) \
 	NOUVEAU_UPCAST(pfx, subdev, type, struct nouveau_subdev) \
-	INHERITS_NV_OBJECT(pfx, type)
+	INHERITS_NV_OBJECT(pfx, type) \
+	NOUVEAU_SUBDEV_HELPERS(pfx, type)
 
 static inline struct nouveau_subdev *
 nv_subdev(void *obj)
@@ -118,6 +119,43 @@ nv_mask(void *obj, u32 addr, u32 mask, u32 data)
 	u32 temp = nv_rd32(obj, addr);
 	nv_wr32(obj, addr, (temp & ~mask) | data);
 	return temp;
+}
+
+#define NOUVEAU_SUBDEV_HELPERS(pfx, type)			\
+static inline u8 __maybe_unused					\
+pfx##_rd08(type *o, u32 addr)					\
+{								\
+	return nv_rd08(pfx##_to_subdev(o), addr);		\
+}								\
+static inline u16 __maybe_unused				\
+pfx##_rd16(type *o, u32 addr)					\
+{								\
+	return nv_rd16(pfx##_to_subdev(o), addr);		\
+}								\
+static inline u32 __maybe_unused				\
+pfx##_rd32(type *o, u32 addr)					\
+{								\
+	return nv_rd32(pfx##_to_subdev(o), addr);		\
+}								\
+static inline void __maybe_unused				\
+pfx##_wr08(type *o, u32 addr, u8 data)				\
+{								\
+	nv_wr08(pfx##_to_subdev(o), addr, data);		\
+}								\
+static inline void __maybe_unused				\
+pfx##_wr16(type *o, u32 addr, u16 data)				\
+{								\
+	nv_wr16(pfx##_to_subdev(o), addr, data);		\
+}								\
+static inline void __maybe_unused				\
+pfx##_wr32(type *o, u32 addr, u32 data)				\
+{								\
+	nv_wr32(pfx##_to_subdev(o), addr, data);		\
+}								\
+static inline u32 __maybe_unused				\
+pfx##_mask(type *o, u32 addr, u32 mask, u32 data)		\
+{								\
+	return nv_mask(pfx##_to_subdev(o), addr, mask, data);	\
 }
 
 #endif

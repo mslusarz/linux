@@ -24,6 +24,7 @@ struct nouveau_gpuobj {
 	u32 size;
 };
 INHERITS_NV_OBJECT(nv_gpuobj, struct nouveau_gpuobj);
+NOUVEAU_OBJECT_HELPERS(nv_gpuobj, struct nouveau_gpuobj);
 
 #define INHERITS_NV_GPUOBJ(pfx, type) \
 	NOUVEAU_UPCAST(pfx, gpuobj, type, struct nouveau_gpuobj); \

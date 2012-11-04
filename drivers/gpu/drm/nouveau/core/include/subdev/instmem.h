@@ -52,6 +52,7 @@ struct nouveau_instmem {
 		     u32 size, u32 align, struct nouveau_object **);
 };
 INHERITS_NV_SUBDEV(nv_imem, struct nouveau_instmem);
+NOUVEAU_OBJECT_HELPERS(nv_imem, struct nouveau_instmem);
 
 #define INHERITS_NV_INSTMEM(pfx, type) \
 	NOUVEAU_UPCAST(pfx, imem, type, struct nouveau_instmem); \

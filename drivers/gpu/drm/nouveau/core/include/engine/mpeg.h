@@ -11,7 +11,8 @@ INHERITS_NV_ENGCTX(nv_mpegchan, struct nouveau_mpeg_chan);
 
 #define INHERITS_NV_MPEGCHAN(pfx, type) \
 	NOUVEAU_UPCAST(pfx, mpegchan, type, struct nouveau_mpeg_chan); \
-	INHERITS_NV_ENGCTX(pfx, type)
+	INHERITS_NV_ENGCTX(pfx, type) \
+	NOUVEAU_OBJECT_HELPERS(pfx, type)
 
 #define nouveau_mpeg_context_create(p,e,c,g,s,a,f,d)                           \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))

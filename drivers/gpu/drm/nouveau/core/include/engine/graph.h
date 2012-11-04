@@ -12,7 +12,8 @@ INHERITS_NV_ENGCTX(nv_grchan, struct nouveau_graph_chan);
 
 #define INHERITS_NV_GRCHAN(pfx, type) \
 	NOUVEAU_UPCAST(pfx, grchan, type, struct nouveau_graph_chan); \
-	INHERITS_NV_ENGCTX(pfx, type)
+	INHERITS_NV_ENGCTX(pfx, type) \
+	NOUVEAU_OBJECT_HELPERS(pfx, type)
 
 #define nouveau_graph_context_create(p,e,c,g,s,a,f,d)                          \
 	nouveau_engctx_create((p), (e), (c), (g), (s), (a), (f), (d))

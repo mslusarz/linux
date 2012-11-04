@@ -195,4 +195,41 @@ pfx##_to_##uptype_short(downtype *o)				\
 	return (uptype *)o;					\
 }								\
 
+#define NOUVEAU_OBJECT_HELPERS(pfx, type)			\
+static inline u8 __maybe_unused					\
+pfx##_ro08(type *o, u32 addr)					\
+{								\
+	return nv_ro08(pfx##_to_object(o), addr);		\
+}								\
+static inline u16 __maybe_unused				\
+pfx##_ro16(type *o, u32 addr)					\
+{								\
+	return nv_ro16(pfx##_to_object(o), addr);		\
+}								\
+static inline u32 __maybe_unused				\
+pfx##_ro32(type *o, u32 addr)					\
+{								\
+	return nv_ro32(pfx##_to_object(o), addr);		\
+}								\
+static inline void __maybe_unused				\
+pfx##_wo08(type *o, u32 addr, u8 data)				\
+{								\
+	nv_wo08(pfx##_to_object(o), addr, data);		\
+}								\
+static inline void __maybe_unused				\
+pfx##_wo16(type *o, u32 addr, u16 data)				\
+{								\
+	nv_wo16(pfx##_to_object(o), addr, data);		\
+}								\
+static inline void __maybe_unused				\
+pfx##_wo32(type *o, u32 addr, u32 data)				\
+{								\
+	nv_wo32(pfx##_to_object(o), addr, data);		\
+}								\
+static inline u32 __maybe_unused				\
+pfx##_mo32(type *o, u32 addr, u32 mask, u32 data)		\
+{								\
+	return nv_mo32(pfx##_to_object(o), addr, mask, data);	\
+}
+
 #endif

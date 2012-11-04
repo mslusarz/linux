@@ -8,6 +8,7 @@ struct nouveau_ramht {
 	int bits;
 };
 INHERITS_NV_GPUOBJ(nv_ramht, struct nouveau_ramht);
+NOUVEAU_OBJECT_HELPERS(nv_ramht, struct nouveau_ramht);
 
 int  nouveau_ramht_insert(struct nouveau_ramht *, int chid,
 			  u32 handle, u32 context);

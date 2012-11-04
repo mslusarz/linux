@@ -20,6 +20,7 @@ struct nouveau_bios {
 	} version;
 };
 INHERITS_NV_SUBDEV(nv_bios, struct nouveau_bios);
+NOUVEAU_OBJECT_HELPERS(nv_bios, struct nouveau_bios);
 
 static inline struct nouveau_bios *
 nouveau_bios(void *obj)
