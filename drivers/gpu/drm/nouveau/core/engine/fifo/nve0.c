@@ -231,8 +231,8 @@ nve0_fifo_chan_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_parent(chan)->context_attach = nve0_fifo_context_attach;
-	nv_parent(chan)->context_detach = nve0_fifo_context_detach;
+	nve0_fifoch_to_parent(chan)->context_attach = nve0_fifo_context_attach;
+	nve0_fifoch_to_parent(chan)->context_detach = nve0_fifo_context_detach;
 	chan->engine = i;
 
 	usermem = chan->base.chid * 0x200;

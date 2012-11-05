@@ -202,10 +202,10 @@ nv50_fifo_chan_ctor_dma(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_parent(chan)->context_attach = nv50_fifo_context_attach;
-	nv_parent(chan)->context_detach = nv50_fifo_context_detach;
-	nv_parent(chan)->object_attach = nv50_fifo_object_attach;
-	nv_parent(chan)->object_detach = nv50_fifo_object_detach;
+	nv50_fifoch_to_parent(chan)->context_attach = nv50_fifo_context_attach;
+	nv50_fifoch_to_parent(chan)->context_detach = nv50_fifo_context_detach;
+	nv50_fifoch_to_parent(chan)->object_attach = nv50_fifo_object_attach;
+	nv50_fifoch_to_parent(chan)->object_detach = nv50_fifo_object_detach;
 
 	ret = nouveau_ramht_new(parent, parent, 0x8000, 16, &chan->ramht);
 	if (ret)
@@ -255,10 +255,10 @@ nv50_fifo_chan_ctor_ind(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_parent(chan)->context_attach = nv50_fifo_context_attach;
-	nv_parent(chan)->context_detach = nv50_fifo_context_detach;
-	nv_parent(chan)->object_attach = nv50_fifo_object_attach;
-	nv_parent(chan)->object_detach = nv50_fifo_object_detach;
+	nv50_fifoch_to_parent(chan)->context_attach = nv50_fifo_context_attach;
+	nv50_fifoch_to_parent(chan)->context_detach = nv50_fifo_context_detach;
+	nv50_fifoch_to_parent(chan)->object_attach = nv50_fifo_object_attach;
+	nv50_fifoch_to_parent(chan)->object_detach = nv50_fifo_object_detach;
 
 	ret = nouveau_ramht_new(parent, parent, 0x8000, 16, &chan->ramht);
 	if (ret)

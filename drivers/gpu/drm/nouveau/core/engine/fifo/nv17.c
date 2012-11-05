@@ -83,9 +83,9 @@ nv17_fifo_chan_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv_parent(chan)->object_attach = nv04_fifo_object_attach;
-	nv_parent(chan)->object_detach = nv04_fifo_object_detach;
-	nv_parent(chan)->context_attach = nv04_fifo_context_attach;
+	nv04_fifoch_to_parent(chan)->object_attach = nv04_fifo_object_attach;
+	nv04_fifoch_to_parent(chan)->object_detach = nv04_fifo_object_detach;
+	nv04_fifoch_to_parent(chan)->context_attach = nv04_fifo_context_attach;
 	chan->ramfc = chan->base.chid * 64;
 
 	nv_gpuobj_wo32(priv->ramfc, chan->ramfc + 0x00, args->offset);

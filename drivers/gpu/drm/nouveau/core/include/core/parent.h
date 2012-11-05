@@ -32,13 +32,13 @@ INHERITS_NV_OBJECT(nv_parent, struct nouveau_parent);
 	INHERITS_NV_OBJECT(pfx, type)
 
 static inline struct nouveau_parent *
-nv_parent(void *obj)
+nv_parent(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!(nv_iclass(obj, NV_PARENT_CLASS))))
 		nv_assert("BAD CAST -> NvParent, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_parent *)obj;
 }
 
 #define nouveau_parent_create(p,e,c,v,s,m,d)                                   \
