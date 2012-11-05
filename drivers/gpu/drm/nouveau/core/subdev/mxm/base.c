@@ -81,7 +81,7 @@ mxm_shadow_rom(struct nouveau_mxm *mxm, u8 version)
 static bool
 mxm_shadow_dsm(struct nouveau_mxm *mxm, u8 version)
 {
-	struct nouveau_device *device = nv_device(mxm);
+	struct nouveau_device *device = nv_dev_for_nv_mxm(mxm);
 	static char muid[] = {
 		0x00, 0xA4, 0x04, 0x40, 0x7D, 0x91, 0xF2, 0x4C,
 		0xB8, 0x9C, 0x79, 0xB6, 0x2F, 0xD5, 0x56, 0x65

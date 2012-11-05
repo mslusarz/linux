@@ -304,7 +304,7 @@ nv40_fifo_init(struct nouveau_object *object)
 		       (0x03 << 24) | ((priv->ramht->bits - 9) << 16) | (priv->ramht->base.addr >> 8));
 	nv04_fifo_wr32(priv, NV03_PFIFO_RAMRO, priv->ramro->addr >> 8);
 
-	switch (nv_device(priv)->chipset) {
+	switch (nv_dev_for_nv04_fifo(priv)->chipset) {
 	case 0x47:
 	case 0x49:
 	case 0x4b:

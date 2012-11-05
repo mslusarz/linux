@@ -70,7 +70,7 @@ nv30_fb_tile_comp(struct nouveau_fb *pfb, int i, u32 size, u32 flags,
 static int
 calc_bias(struct nv30_fb_priv *priv, int k, int i, int j)
 {
-	struct nouveau_device *device = nv_device(priv);
+	struct nouveau_device *device = nv_dev_for_nv30_fb(priv);
 	int b = (device->chipset > 0x30 ?
 		 nv30_fb_rd32(priv, 0x122c + 0x10 * k + 0x4 * j) >> (4 * (i ^ 1)) :
 		 0) & 0xf;

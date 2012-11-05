@@ -150,7 +150,7 @@ nv40_graph_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv40_grctx_fill(nv_device(priv), nv_gpuobj(chan));
+	nv40_grctx_fill(nv_dev_for_nv40_graph(priv), nv_gpuobj(chan));
 	nv40_grchan_wo32(chan, 0x00000, nv_gpuobj(chan)->addr >> 4);
 	return 0;
 }
@@ -218,7 +218,7 @@ nv40_graph_tile_prog(struct nouveau_engine *engine, int i)
 	pfifo->pause(pfifo, &flags);
 	nv04_graph_idle(priv);
 
-	switch (nv_device(priv)->chipset) {
+	switch (nv_dev_for_nv40_graph(priv)->chipset) {
 	case 0x40:
 	case 0x41:
 	case 0x42:
@@ -231,7 +231,7 @@ nv40_graph_tile_prog(struct nouveau_engine *engine, int i)
 		nv40_graph_wr32(priv, NV40_PGRAPH_TSIZE1(i), tile->pitch);
 		nv40_graph_wr32(priv, NV40_PGRAPH_TLIMIT1(i), tile->limit);
 		nv40_graph_wr32(priv, NV40_PGRAPH_TILE1(i), tile->addr);
-		switch (nv_device(priv)->chipset) {
+		switch (nv_dev_for_nv40_graph(priv)->chipset) {
 		case 0x40:
 		case 0x45:
 			nv40_graph_wr32(priv, NV20_PGRAPH_ZCOMP(i), tile->zcomp);
@@ -267,7 +267,7 @@ nv40_graph_tile_prog(struct nouveau_engine *engine, int i)
 		nv40_graph_wr32(priv, NV40_PGRAPH_TSIZE1(i), tile->pitch);
 		nv40_graph_wr32(priv, NV40_PGRAPH_TLIMIT1(i), tile->limit);
 		nv40_graph_wr32(priv, NV40_PGRAPH_TILE1(i), tile->addr);
-		switch (nv_device(priv)->chipset) {
+		switch (nv_dev_for_nv40_graph(priv)->chipset) {
 		case 0x47:
 		case 0x49:
 		case 0x4b:
@@ -378,7 +378,7 @@ nv40_graph_init(struct nouveau_object *object)
 		return ret;
 
 	/* generate and upload context program */
-	nv40_grctx_init(nv_device(priv), &priv->size);
+	nv40_grctx_init(nv_dev_for_nv40_graph(priv), &priv->size);
 
 	/* No context present currently */
 	nv40_graph_wr32(priv, NV40_PGRAPH_CTXCTL_CUR, 0x00000000);
@@ -403,7 +403,7 @@ nv40_graph_init(struct nouveau_object *object)
 		nv40_graph_wr32(priv, 0x405000, i);
 	}
 
-	if (nv_device(priv)->chipset == 0x40) {
+	if (nv_dev_for_nv40_graph(priv)->chipset == 0x40) {
 		nv40_graph_wr32(priv, 0x4009b0, 0x83280fff);
 		nv40_graph_wr32(priv, 0x4009b4, 0x000000a0);
 	} else {
@@ -411,7 +411,7 @@ nv40_graph_init(struct nouveau_object *object)
 		nv40_graph_wr32(priv, 0x400824, 0x000000a0);
 	}
 
-	switch (nv_device(priv)->chipset) {
+	switch (nv_dev_for_nv40_graph(priv)->chipset) {
 	case 0x40:
 	case 0x45:
 		nv40_graph_wr32(priv, 0x4009b8, 0x0078e366);
@@ -449,7 +449,7 @@ nv40_graph_init(struct nouveau_object *object)
 	nv40_graph_wr32(priv, 0x400b3c, 0x00006000);
 
 	/* Tiling related stuff. */
-	switch (nv_device(priv)->chipset) {
+	switch (nv_dev_for_nv40_graph(priv)->chipset) {
 	case 0x44:
 	case 0x4a:
 		nv40_graph_wr32(priv, 0x400bc4, 0x1003d888);
@@ -474,8 +474,8 @@ nv40_graph_init(struct nouveau_object *object)
 		engine->tile_prog(engine, i);
 
 	/* begin RAM config */
-	vramsz = pci_resource_len(nv_device(priv)->pdev, 0) - 1;
-	switch (nv_device(priv)->chipset) {
+	vramsz = pci_resource_len(nv_dev_for_nv40_graph(priv)->pdev, 0) - 1;
+	switch (nv_dev_for_nv40_graph(priv)->chipset) {
 	case 0x40:
 		nv40_graph_wr32(priv, 0x4009A4, nv40_graph_rd32(priv, 0x100200));
 		nv40_graph_wr32(priv, 0x4009A8, nv40_graph_rd32(priv, 0x100204));
@@ -487,7 +487,7 @@ nv40_graph_init(struct nouveau_object *object)
 		nv40_graph_wr32(priv, 0x400868, vramsz);
 		break;
 	default:
-		switch (nv_device(priv)->chipset) {
+		switch (nv_dev_for_nv40_graph(priv)->chipset) {
 		case 0x41:
 		case 0x42:
 		case 0x43:

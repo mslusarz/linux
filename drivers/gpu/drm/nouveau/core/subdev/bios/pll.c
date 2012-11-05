@@ -111,7 +111,8 @@ pll_limits_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 static struct pll_mapping *
 pll_map(struct nouveau_bios *bios)
 {
-	switch (nv_device(bios)->card_type) {
+	struct nouveau_device *dev = nv_dev_for_nv_bios(bios);
+	switch (dev->card_type) {
 	case NV_04:
 	case NV_10:
 	case NV_20:
@@ -121,12 +122,12 @@ pll_map(struct nouveau_bios *bios)
 	case NV_40:
 		return nv40_pll_mapping;
 	case NV_50:
-		if (nv_device(bios)->chipset == 0x50)
+		if (dev->chipset == 0x50)
 			return nv50_pll_mapping;
 		else
-		if (nv_device(bios)->chipset <  0xa3 ||
-		    nv_device(bios)->chipset == 0xaa ||
-		    nv_device(bios)->chipset == 0xac)
+		if (dev->chipset <  0xa3 ||
+		    dev->chipset == 0xaa ||
+		    dev->chipset == 0xac)
 			return nv84_pll_mapping;
 	default:
 		return NULL;
@@ -360,7 +361,7 @@ nvbios_pll_parse(struct nouveau_bios *bios, u32 type, struct nvbios_pll *info)
 	}
 
 	if (!info->refclk) {
-		info->refclk = nv_device(bios)->crystal;
+		info->refclk = nv_dev_for_nv_bios(bios)->crystal;
 		if (bios->version.chip == 0x51) {
 			u32 sel_clk = nv_bios_rd32(bios, 0x680524);
 			if ((info->reg == 0x680508 && sel_clk & 0x20) ||
@@ -394,7 +395,7 @@ nvbios_pll_parse(struct nouveau_bios *bios, u32 type, struct nvbios_pll *info)
 		info->vco1.max_n = 0xff;
 		info->vco1.min_m = 0x1;
 
-		if (nv_device(bios)->crystal == 13500) {
+		if (nv_dev_for_nv_bios(bios)->crystal == 13500) {
 			/* nv05 does this, nv11 doesn't, nv10 unknown */
 			if (bios->version.chip < 0x11)
 				info->vco1.min_m = 0x7;

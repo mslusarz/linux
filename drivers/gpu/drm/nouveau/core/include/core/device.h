@@ -87,9 +87,8 @@ struct nouveau_device {
 INHERITS_NV_SUBDEV(nv_device, struct nouveau_device);
 
 static inline struct nouveau_device *
-nv_device(void *obj)
+nv_device(struct nouveau_object *object)
 {
-	struct nouveau_object *object = nv_object(obj);
 	struct nouveau_object *device = object;
 
 	if (device->engine)

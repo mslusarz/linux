@@ -84,7 +84,7 @@ nouveau_bios_shadow_of(struct nouveau_bios *bios)
 static void
 nouveau_bios_shadow_pramin(struct nouveau_bios *bios)
 {
-	struct nouveau_device *device = nv_device(bios);
+	struct nouveau_device *device = nv_dev_for_nv_bios(bios);
 	u32 bar0 = 0;
 	int i;
 
@@ -122,7 +122,7 @@ out:
 static void
 nouveau_bios_shadow_prom(struct nouveau_bios *bios)
 {
-	struct nouveau_device *device = nv_device(bios);
+	struct nouveau_device *device = nv_dev_for_nv_bios(bios);
 	u32 pcireg, access;
 	u16 pcir;
 	int i;
@@ -192,7 +192,7 @@ nouveau_acpi_get_bios_chunk(uint8_t *bios, int offset, int len) {
 static void
 nouveau_bios_shadow_acpi(struct nouveau_bios *bios)
 {
-	struct pci_dev *pdev = nv_device(bios)->pdev;
+	struct pci_dev *pdev = nv_dev_for_nv_bios(bios)->pdev;
 	int ret, cnt, i;
 
 	if (!nouveau_acpi_rom_supported(pdev)) {
@@ -231,7 +231,7 @@ nouveau_bios_shadow_acpi(struct nouveau_bios *bios)
 static void
 nouveau_bios_shadow_pci(struct nouveau_bios *bios)
 {
-	struct pci_dev *pdev = nv_device(bios)->pdev;
+	struct pci_dev *pdev = nv_dev_for_nv_bios(bios)->pdev;
 	size_t size;
 
 	if (!pci_enable_rom(pdev)) {
@@ -297,8 +297,9 @@ nouveau_bios_shadow(struct nouveau_bios *bios)
 	const char *optarg;
 	int optlen, ret;
 	char *source;
+	struct nouveau_device *device = nv_dev_for_nv_bios(bios);
 
-	optarg = nouveau_stropt(nv_device(bios)->cfgopt, "NvBios", &optlen);
+	optarg = nouveau_stropt(device->cfgopt, "NvBios", &optlen);
 	source = optarg ? kstrndup(optarg, optlen, GFP_KERNEL) : NULL;
 	if (source) {
 		/* try to match one of the built-in methods */
@@ -317,7 +318,7 @@ nouveau_bios_shadow(struct nouveau_bios *bios)
 		} while ((++mthd)->shadow);
 
 		/* attempt to load firmware image */
-		ret = request_firmware(&fw, source, &nv_device(bios)->pdev->dev);
+		ret = request_firmware(&fw, source, &device->pdev->dev);
 		if (ret == 0) {
 			bios->size = fw->size;
 			bios->data = kmemdup(fw->data, fw->size, GFP_KERNEL);

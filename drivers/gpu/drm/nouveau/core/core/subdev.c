@@ -73,7 +73,7 @@ void
 nouveau_subdev_destroy(struct nouveau_subdev *subdev)
 {
 	int subidx = nv_hclass(subdev) & 0xff;
-	nv_device(subdev)->subdev[subidx] = NULL;
+	nv_dev_for_nv_subdev(subdev)->subdev[subidx] = NULL;
 	nouveau_object_destroy(&subdev->base);
 }
 

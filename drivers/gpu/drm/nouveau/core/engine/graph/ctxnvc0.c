@@ -1400,7 +1400,7 @@ nvc0_grctx_generate_90c0(struct nvc0_graph_priv *priv)
 {
 	int i;
 
-	for (i = 0; nv_device(priv)->chipset == 0xd9 && i < 4; i++) {
+	for (i = 0; nv_dev_for_nvc0_graph(priv)->chipset == 0xd9 && i < 4; i++) {
 		nv_mthd(priv, 0x90c0, 0x2700 + (i * 0x40), 0x00000000);
 		nv_mthd(priv, 0x90c0, 0x2720 + (i * 0x40), 0x00000000);
 		nv_mthd(priv, 0x90c0, 0x2704 + (i * 0x40), 0x00000000);
@@ -1416,7 +1416,7 @@ nvc0_grctx_generate_90c0(struct nvc0_graph_priv *priv)
 	nv_mthd(priv, 0x90c0, 0x27ac, 0x00000000);
 	nv_mthd(priv, 0x90c0, 0x27cc, 0x00000000);
 	nv_mthd(priv, 0x90c0, 0x27ec, 0x00000000);
-	for (i = 0; nv_device(priv)->chipset == 0xd9 && i < 4; i++) {
+	for (i = 0; nv_dev_for_nvc0_graph(priv)->chipset == 0xd9 && i < 4; i++) {
 		nv_mthd(priv, 0x90c0, 0x2710 + (i * 0x40), 0x00014000);
 		nv_mthd(priv, 0x90c0, 0x2730 + (i * 0x40), 0x00014000);
 		nv_mthd(priv, 0x90c0, 0x2714 + (i * 0x40), 0x00000040);
@@ -1616,12 +1616,12 @@ static void
 nvc0_grctx_generate_shaders(struct nvc0_graph_priv *priv)
 {
 
-	if (nv_device(priv)->chipset == 0xd9) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xd9) {
 		nvc0_graph_wr32(priv, 0x405800, 0x0f8000bf);
 		nvc0_graph_wr32(priv, 0x405830, 0x02180218);
 		nvc0_graph_wr32(priv, 0x405834, 0x08000000);
 	} else
-	if (nv_device(priv)->chipset == 0xc1) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xc1) {
 		nvc0_graph_wr32(priv, 0x405800, 0x0f8000bf);
 		nvc0_graph_wr32(priv, 0x405830, 0x02180218);
 		nvc0_graph_wr32(priv, 0x405834, 0x00000000);
@@ -1659,10 +1659,10 @@ nvc0_grctx_generate_unk64xx(struct nvc0_graph_priv *priv)
 	nvc0_graph_wr32(priv, 0x4064ac, 0x00003fff);
 	nvc0_graph_wr32(priv, 0x4064b4, 0x00000000);
 	nvc0_graph_wr32(priv, 0x4064b8, 0x00000000);
-	if (nv_device(priv)->chipset == 0xd9)
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xd9)
 		nvc0_graph_wr32(priv, 0x4064bc, 0x00000000);
-	if (nv_device(priv)->chipset == 0xc1 ||
-	    nv_device(priv)->chipset == 0xd9) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xc1 ||
+	    nv_dev_for_nvc0_graph(priv)->chipset == 0xd9) {
 		nvc0_graph_wr32(priv, 0x4064c0, 0x80140078);
 		nvc0_graph_wr32(priv, 0x4064c4, 0x0086ffff);
 	}
@@ -1697,7 +1697,7 @@ nvc0_grctx_generate_ccache(struct nvc0_graph_priv *priv)
 static void
 nvc0_grctx_generate_rop(struct nvc0_graph_priv *priv)
 {
-	int chipset = nv_device(priv)->chipset;
+	int chipset = nv_dev_for_nvc0_graph(priv)->chipset;
 
 	/* ROPC_BROADCAST */
 	nvc0_graph_wr32(priv, 0x408800, 0x02802a3c);
@@ -1726,7 +1726,7 @@ nvc0_grctx_generate_rop(struct nvc0_graph_priv *priv)
 static void
 nvc0_grctx_generate_gpc(struct nvc0_graph_priv *priv)
 {
-	int chipset = nv_device(priv)->chipset;
+	int chipset = nv_dev_for_nvc0_graph(priv)->chipset;
 	int i;
 
 	/* GPC_BROADCAST */
@@ -1822,7 +1822,7 @@ nvc0_grctx_generate_gpc(struct nvc0_graph_priv *priv)
 static void
 nvc0_grctx_generate_tp(struct nvc0_graph_priv *priv)
 {
-	int chipset = nv_device(priv)->chipset;
+	int chipset = nv_dev_for_nvc0_graph(priv)->chipset;
 
 	/* GPC_BROADCAST.TP_BROADCAST */
 	nvc0_graph_wr32(priv, 0x419818, 0x00000000);
@@ -1862,7 +1862,7 @@ nvc0_grctx_generate_tp(struct nvc0_graph_priv *priv)
 	nvc0_graph_wr32(priv, 0x419c04, 0x00000006);
 	nvc0_graph_wr32(priv, 0x419c08, 0x00000002);
 	nvc0_graph_wr32(priv, 0x419c20, 0x00000000);
-	if (nv_device(priv)->chipset == 0xd9) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xd9) {
 		nvc0_graph_wr32(priv, 0x419c24, 0x00084210);
 		nvc0_graph_wr32(priv, 0x419c28, 0x3cf3cf3c);
 		nvc0_graph_wr32(priv, 0x419cb0, 0x00020048);
@@ -1959,7 +1959,7 @@ nvc0_grctx_generate(struct nvc0_graph_priv *priv)
 	mmio_list(0x419008, 0x00000000,  0, 0);
 	mmio_list(0x418808, 0x00000000,  8, 0);
 	mmio_list(0x41880c, 0x80000018,  0, 0);
-	if (nv_device(priv)->chipset != 0xc1) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset != 0xc1) {
 		tmp = 0x02180000;
 		mmio_list(0x405830, tmp, 0, 0);
 		for (gpc = 0; gpc < priv->gpc_nr; gpc++) {
@@ -2224,7 +2224,7 @@ nvc0_grctx_generate(struct nvc0_graph_priv *priv)
 	nv_icmd(priv, 0x00000215, 0x00000040);
 	nv_icmd(priv, 0x00000216, 0x00000040);
 	nv_icmd(priv, 0x00000217, 0x00000040);
-	if (nv_device(priv)->chipset == 0xd9) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xd9) {
 		for (i = 0x0400; i <= 0x0417; i++)
 			nv_icmd(priv, i, 0x00000040);
 	}
@@ -2236,7 +2236,7 @@ nvc0_grctx_generate(struct nvc0_graph_priv *priv)
 	nv_icmd(priv, 0x0000021d, 0x0000c080);
 	nv_icmd(priv, 0x0000021e, 0x0000c080);
 	nv_icmd(priv, 0x0000021f, 0x0000c080);
-	if (nv_device(priv)->chipset == 0xd9) {
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xd9) {
 		for (i = 0x0440; i <= 0x0457; i++)
 			nv_icmd(priv, i, 0x0000c080);
 	}
@@ -2802,8 +2802,8 @@ nvc0_grctx_generate(struct nvc0_graph_priv *priv)
 	nv_icmd(priv, 0x0000053f, 0xffff0000);
 	nv_icmd(priv, 0x00000585, 0x0000003f);
 	nv_icmd(priv, 0x00000576, 0x00000003);
-	if (nv_device(priv)->chipset == 0xc1 ||
-	    nv_device(priv)->chipset == 0xd9)
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xc1 ||
+	    nv_dev_for_nvc0_graph(priv)->chipset == 0xd9)
 		nv_icmd(priv, 0x0000057b, 0x00000059);
 	nv_icmd(priv, 0x00000586, 0x00000040);
 	nv_icmd(priv, 0x00000582, 0x00000080);
@@ -2905,7 +2905,7 @@ nvc0_grctx_generate(struct nvc0_graph_priv *priv)
 	nv_icmd(priv, 0x00000957, 0x00000003);
 	nv_icmd(priv, 0x0000095e, 0x20164010);
 	nv_icmd(priv, 0x0000095f, 0x00000020);
-	if (nv_device(priv)->chipset == 0xd9)
+	if (nv_dev_for_nvc0_graph(priv)->chipset == 0xd9)
 		nv_icmd(priv, 0x0000097d, 0x00000020);
 	nv_icmd(priv, 0x00000683, 0x00000006);
 	nv_icmd(priv, 0x00000685, 0x003fffff);

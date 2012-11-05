@@ -117,7 +117,7 @@ init_nvreg(struct nvbios_init *init, u32 reg)
 	/* GF8+ display scripts need register addresses mangled a bit to
 	 * select a specific CRTC/OR
 	 */
-	if (nv_device(init->bios)->card_type >= NV_50) {
+	if (nv_dev_for_nv_bios(init->bios)->card_type >= NV_50) {
 		if (reg & 0x80000000) {
 			reg += init_crtc(init) * 0x800;
 			reg &= ~0x80000000;
@@ -197,7 +197,7 @@ static void
 init_wrvgai(struct nvbios_init *init, u16 port, u8 index, u8 value)
 {
 	/* force head 0 for updates to cr44, it only exists on first head */
-	if (nv_device(init->subdev)->card_type < NV_50) {
+	if (nv_dev_for_nv_subdev(init->subdev)->card_type < NV_50) {
 		if (port == 0x03d4 && index == 0x44)
 			init->crtc = 0;
 	}
@@ -208,7 +208,7 @@ init_wrvgai(struct nvbios_init *init, u16 port, u8 index, u8 value)
 	}
 
 	/* select head 1 if cr44 write selected it */
-	if (nv_device(init->subdev)->card_type < NV_50) {
+	if (nv_dev_for_nv_subdev(init->subdev)->card_type < NV_50) {
 		if (port == 0x03d4 && index == 0x44 && value == 3)
 			init->crtc = 1;
 	}
@@ -1500,7 +1500,7 @@ init_io(struct nvbios_init *init)
 	 * needed some day..  it's almost certainly wrong, but, it also
 	 * somehow makes things work...
 	 */
-	if (nv_device(init->bios)->card_type >= NV_50 &&
+	if (nv_dev_for_nv_bios(init->bios)->card_type >= NV_50 &&
 	    port == 0x03c3 && data == 0x01) {
 		init_mask(init, 0x614100, 0xf0800000, 0x00800000);
 		init_mask(init, 0x00e18c, 0x00020000, 0x00020000);

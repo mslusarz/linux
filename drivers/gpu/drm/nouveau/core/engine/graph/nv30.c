@@ -193,7 +193,7 @@ nv30_graph_init(struct nouveau_object *object)
 	nv20_graph_wr32(priv, 0x400ba4, 0x00231f3f);
 	nv20_graph_wr32(priv, 0x4008a4, 0x40000020);
 
-	if (nv_device(priv)->chipset == 0x34) {
+	if (nv_dev_for_nv20_graph(priv)->chipset == 0x34) {
 		nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA0004);
 		nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA, 0x00200201);
 		nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA0008);
@@ -218,7 +218,7 @@ nv30_graph_init(struct nouveau_object *object)
 	/* vramsz = pci_resource_len(priv->dev->pdev, 0) - 1; */
 	nv20_graph_wr32(priv, 0x4009A4, nv20_graph_rd32(priv, 0x100200));
 	nv20_graph_wr32(priv, 0x4009A8, nv20_graph_rd32(priv, 0x100204));
-	if (nv_device(priv)->chipset != 0x34) {
+	if (nv_dev_for_nv20_graph(priv)->chipset != 0x34) {
 		nv20_graph_wr32(priv, 0x400750, 0x00EA0000);
 		nv20_graph_wr32(priv, 0x400754, nv20_graph_rd32(priv, 0x100200));
 		nv20_graph_wr32(priv, 0x400750, 0x00EA0004);

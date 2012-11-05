@@ -112,7 +112,7 @@ nv50_gpio_intr(struct nouveau_subdev *subdev)
 	u32 hi, lo;
 
 	intr0 = nv50_gpio_rd32(priv, 0xe054) & nv50_gpio_rd32(priv, 0xe050);
-	if (nv_device(priv)->chipset >= 0x90)
+	if (nv_dev_for_nv50_gpio(priv)->chipset >= 0x90)
 		intr1 = nv50_gpio_rd32(priv, 0xe074) & nv50_gpio_rd32(priv,
 								      0xe070);
 
@@ -121,7 +121,7 @@ nv50_gpio_intr(struct nouveau_subdev *subdev)
 	priv->base.isr_run(&priv->base, 0, hi | lo);
 
 	nv50_gpio_wr32(priv, 0xe054, intr0);
-	if (nv_device(priv)->chipset >= 0x90)
+	if (nv_dev_for_nv50_gpio(priv)->chipset >= 0x90)
 		nv50_gpio_wr32(priv, 0xe074, intr1);
 }
 
@@ -166,7 +166,7 @@ nv50_gpio_init(struct nouveau_object *object)
 	/* disable, and ack any pending gpio interrupts */
 	nv50_gpio_wr32(priv, 0xe050, 0x00000000);
 	nv50_gpio_wr32(priv, 0xe054, 0xffffffff);
-	if (nv_device(priv)->chipset >= 0x90) {
+	if (nv_dev_for_nv50_gpio(priv)->chipset >= 0x90) {
 		nv50_gpio_wr32(priv, 0xe070, 0x00000000);
 		nv50_gpio_wr32(priv, 0xe074, 0xffffffff);
 	}
@@ -179,7 +179,7 @@ nv50_gpio_fini(struct nouveau_object *object, bool suspend)
 {
 	struct nv50_gpio_priv *priv = (void *)object;
 	nv50_gpio_wr32(priv, 0xe050, 0x00000000);
-	if (nv_device(priv)->chipset >= 0x90)
+	if (nv_dev_for_nv50_gpio(priv)->chipset >= 0x90)
 		nv50_gpio_wr32(priv, 0xe070, 0x00000000);
 	return nouveau_gpio_fini(&priv->base, suspend);
 }

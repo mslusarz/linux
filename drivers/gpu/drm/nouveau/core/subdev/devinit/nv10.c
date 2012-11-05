@@ -40,13 +40,14 @@ nv10_devinit_meminit(struct nouveau_devinit *devinit)
 {
 	struct nv10_devinit_priv *priv = (void *)devinit;
 	const int mem_width[] = { 0x10, 0x00, 0x20 };
-	const int mem_width_count = nv_device(priv)->chipset >= 0x17 ? 3 : 2;
+	struct nouveau_device *device = nv_dev_for_nv10_devinit(priv);
+	const int mem_width_count = device->chipset >= 0x17 ? 3 : 2;
 	uint32_t patt = 0xdeadbeef;
 	struct io_mapping *fb;
 	int i, j, k;
 
 	/* Map the framebuffer aperture */
-	fb = fbmem_init(nv_device(priv)->pdev);
+	fb = fbmem_init(device->pdev);
 	if (!fb) {
 		nv_error(priv, "failed to map fb\n");
 		return;

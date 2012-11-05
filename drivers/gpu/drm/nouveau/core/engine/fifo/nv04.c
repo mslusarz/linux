@@ -404,7 +404,7 @@ out:
 void
 nv04_fifo_intr(struct nouveau_subdev *subdev)
 {
-	struct nouveau_device *device = nv_device(subdev);
+	struct nouveau_device *device = nv_dev_for_nv_subdev(subdev);
 	struct nv04_fifo_priv *priv = (void *)subdev;
 	uint32_t status, reassign;
 	int cnt = 0;

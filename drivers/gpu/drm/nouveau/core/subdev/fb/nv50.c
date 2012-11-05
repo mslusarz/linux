@@ -96,7 +96,7 @@ nv50_fb_vram_rblock(struct nouveau_fb *pfb)
 static int
 nv50_fb_vram_init(struct nouveau_fb *pfb)
 {
-	struct nouveau_device *device = nv_device(pfb);
+	struct nouveau_device *device = nv_dev_for_nv_fb(pfb);
 	struct nouveau_bios *bios = nouveau_bios(device);
 	const u32 rsvd_head = ( 256 * 1024) >> 12; /* vga memory */
 	const u32 rsvd_tail = (1024 * 1024) >> 12; /* vbios etc */
@@ -431,7 +431,7 @@ static const struct nouveau_enum vm_fault[] = {
 void
 nv50_fb_trap(struct nouveau_fb *pfb, int display)
 {
-	struct nouveau_device *device = nv_device(pfb);
+	struct nouveau_device *device = nv_dev_for_nv_fb(pfb);
 	struct nv50_fb_priv *priv = (void *)pfb;
 	const struct nouveau_enum *en, *cl;
 	u32 trap[6], idx, chan;

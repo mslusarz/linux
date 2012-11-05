@@ -36,7 +36,7 @@ nouveau_therm_fan_get(struct nouveau_therm *therm)
 	struct nouveau_therm_priv *priv = (void *)therm;
 	struct nouveau_gpio *gpio = nouveau_gpio(therm);
 	struct dcb_gpio_func func;
-	int card_type = nv_device(therm)->card_type;
+	int card_type = nv_dev_for_nv_therm(therm)->card_type;
 	u32 divs, duty;
 	int ret;
 
@@ -65,7 +65,7 @@ nouveau_therm_fan_set(struct nouveau_therm *therm, int percent)
 	struct nouveau_therm_priv *priv = (void *)therm;
 	struct nouveau_gpio *gpio = nouveau_gpio(therm);
 	struct dcb_gpio_func func;
-	int card_type = nv_device(therm)->card_type;
+	int card_type = nv_dev_for_nv_therm(therm)->card_type;
 	u32 divs, duty;
 	int ret;
 

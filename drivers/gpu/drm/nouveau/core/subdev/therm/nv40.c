@@ -28,7 +28,7 @@
 static int
 nv40_sensor_setup(struct nouveau_therm *therm)
 {
-	struct nouveau_device *device = nv_device(therm);
+	struct nouveau_device *device = nv_dev_for_nv_therm(therm);
 
 	/* enable ADC readout and disable the ALARM threshold */
 	if (device->chipset >= 0x46) {
@@ -45,7 +45,7 @@ static int
 nv40_temp_get(struct nouveau_therm *therm)
 {
 	struct nouveau_therm_priv *priv = (void *)therm;
-	struct nouveau_device *device = nv_device(therm);
+	struct nouveau_device *device = nv_dev_for_nv_therm(therm);
 	struct nvbios_therm_sensor *sensor = &priv->bios_sensor;
 	int core_temp;
 

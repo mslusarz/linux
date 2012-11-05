@@ -158,7 +158,7 @@ nv50_graph_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv50_grctx_fill(nv_device(priv), nv_gpuobj(chan));
+	nv50_grctx_fill(nv_dev_for_nv50_graph(priv), nv_gpuobj(chan));
 	return 0;
 }
 
@@ -338,7 +338,7 @@ nv50_priv_mp_trap(struct nv50_graph_priv *priv, int tpid, int display)
 	for (i = 0; i < 4; i++) {
 		if (!(units & 1 << (i+24)))
 			continue;
-		if (nv_device(priv)->chipset < 0xa0)
+		if (nv_dev_for_nv50_graph(priv)->chipset < 0xa0)
 			addr = 0x408200 + (tpid << 12) + (i << 7);
 		else
 			addr = 0x408100 + (tpid << 11) + (i << 7);
@@ -378,7 +378,7 @@ nv50_priv_tp_trap(struct nv50_graph_priv *priv, int type, u32 ustatus_old,
 	for (i = 0; i < 16; i++) {
 		if (!(units & (1 << i)))
 			continue;
-		if (nv_device(priv)->chipset < 0xa0)
+		if (nv_dev_for_nv50_graph(priv)->chipset < 0xa0)
 			ustatus_addr = ustatus_old + (i << 12);
 		else
 			ustatus_addr = ustatus_new + (i << 11);
@@ -754,6 +754,7 @@ nv50_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	       struct nouveau_object **pobject)
 {
 	struct nv50_graph_priv *priv;
+	struct nouveau_device *device;
 	int ret;
 
 	ret = nouveau_graph_create(parent, engine, oclass, true, &priv);
@@ -764,8 +765,9 @@ nv50_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	nv50_graph_to_subdev(priv)->unit = 0x00201000;
 	nv50_graph_to_subdev(priv)->intr = nv50_graph_intr;
 	nv50_graph_to_engine(priv)->cclass = &nv50_graph_cclass;
+	device = nv_dev_for_nv50_graph(priv);
 
-	switch (nv_device(priv)->chipset) {
+	switch (device->chipset) {
 	case 0x50:
 		nv50_graph_to_engine(priv)->sclass = nv50_graph_sclass;
 		break;
@@ -793,8 +795,7 @@ nv50_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 
 	};
 
-	if (nv_device(priv)->chipset == 0x50 ||
-	    nv_device(priv)->chipset == 0xac)
+	if (device->chipset == 0x50 || device->chipset == 0xac)
 		nv50_graph_to_engine(priv)->tlb_flush = nv50_graph_tlb_flush;
 	else
 		nv50_graph_to_engine(priv)->tlb_flush = nv84_graph_tlb_flush;
@@ -807,11 +808,13 @@ static int
 nv50_graph_init(struct nouveau_object *object)
 {
 	struct nv50_graph_priv *priv = (void *)object;
+	struct nouveau_device *device;
 	int ret, units, i;
 
 	ret = nouveau_graph_init(&priv->base);
 	if (ret)
 		return ret;
+	device = nv_dev_for_nv50_graph(priv);
 
 	/* NV_PGRAPH_DEBUG_3_HW_CTX_SWITCH_ENABLED */
 	nv50_graph_wr32(priv, 0x40008c, 0x00000004);
@@ -829,7 +832,7 @@ nv50_graph_init(struct nouveau_object *object)
 		if (!(units & (1 << i)))
 			continue;
 
-		if (nv_device(priv)->chipset < 0xa0) {
+		if (device->chipset < 0xa0) {
 			nv50_graph_wr32(priv, 0x408900 + (i << 12),
 					0xc0000000);
 			nv50_graph_wr32(priv, 0x408e08 + (i << 12),
@@ -853,7 +856,7 @@ nv50_graph_init(struct nouveau_object *object)
 	nv50_graph_wr32(priv, 0x400500, 0x00010001);
 
 	/* upload context program, initialise ctxctl defaults */
-	ret = nv50_grctx_init(nv_device(priv), &priv->size);
+	ret = nv50_grctx_init(device, &priv->size);
 	if (ret)
 		return ret;
 
@@ -866,7 +869,7 @@ nv50_graph_init(struct nouveau_object *object)
 	nv50_graph_wr32(priv, 0x400320, 4);	/* CTXCTL_CMD = NEWCTXDMA */
 
 	/* some unknown zcull magic */
-	switch (nv_device(priv)->chipset & 0xf0) {
+	switch (device->chipset & 0xf0) {
 	case 0x50:
 	case 0x80:
 	case 0x90:
@@ -875,9 +878,9 @@ nv50_graph_init(struct nouveau_object *object)
 	case 0xa0:
 	default:
 		nv50_graph_wr32(priv, 0x402cc0, 0x00000000);
-		if (nv_device(priv)->chipset == 0xa0 ||
-		    nv_device(priv)->chipset == 0xaa ||
-		    nv_device(priv)->chipset == 0xac) {
+		if (device->chipset == 0xa0 ||
+		    device->chipset == 0xaa ||
+		    device->chipset == 0xac) {
 			nv50_graph_wr32(priv, 0x402ca8, 0x00000802);
 		} else {
 			nv50_graph_wr32(priv, 0x402cc0, 0x00000000);

@@ -43,7 +43,7 @@ nv1a_fb_vram_init(struct nouveau_fb *pfb)
 		return -ENODEV;
 	}
 
-	if (nv_device(pfb)->chipset == 0x1a) {
+	if (nv_dev_for_nv_fb(pfb)->chipset == 0x1a) {
 		pci_read_config_dword(bridge, 0x7c, &mem);
 		mib = ((mem >> 6) & 31) + 1;
 	} else {

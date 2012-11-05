@@ -39,13 +39,13 @@ static void
 nv20_devinit_meminit(struct nouveau_devinit *devinit)
 {
 	struct nv20_devinit_priv *priv = (void *)devinit;
-	struct nouveau_device *device = nv_device(priv);
+	struct nouveau_device *device = nv_dev_for_nv20_devinit(priv);
 	uint32_t mask = (device->chipset >= 0x25 ? 0x300 : 0x900);
 	uint32_t amount, off;
 	struct io_mapping *fb;
 
 	/* Map the framebuffer aperture */
-	fb = fbmem_init(nv_device(priv)->pdev);
+	fb = fbmem_init(device->pdev);
 	if (!fb) {
 		nv_error(priv, "failed to map fb\n");
 		return;

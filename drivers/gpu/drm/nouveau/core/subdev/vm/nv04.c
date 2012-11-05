@@ -133,7 +133,7 @@ nv04_vmmgr_dtor(struct nouveau_object *object)
 		nouveau_vm_ref(NULL, &priv->vm, NULL);
 	}
 	if (priv->nullp) {
-		pci_free_consistent(nv_device(priv)->pdev, 16 * 1024,
+		pci_free_consistent(nv_dev_for_nv04_vmmgr(priv)->pdev, 16 * 1024,
 				    priv->nullp, priv->null);
 	}
 	nouveau_vmmgr_destroy(&priv->base);

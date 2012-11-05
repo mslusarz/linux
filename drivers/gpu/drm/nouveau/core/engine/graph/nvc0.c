@@ -497,7 +497,7 @@ int
 nvc0_graph_ctor_fw(struct nvc0_graph_priv *priv, const char *fwname,
 		   struct nvc0_graph_fuc *fuc)
 {
-	struct nouveau_device *device = nv_device(priv);
+	struct nouveau_device *device = nv_dev_for_nvc0_graph(priv);
 	const struct firmware *fw;
 	char f[32];
 	int ret;
@@ -589,7 +589,7 @@ nvc0_graph_ctor(struct nouveau_object *parent, struct nouveau_object *engine,
 	}
 
 	/*XXX: these need figuring out... though it might not even matter */
-	switch (nv_device(priv)->chipset) {
+	switch (nv_dev_for_nvc0_graph(priv)->chipset) {
 	case 0xc0:
 		if (priv->tpc_total == 11) { /* 465, 3/4/4/0, 4 */
 			priv->magic_not_rop_nr = 0x07;
@@ -903,7 +903,7 @@ nvc0_graph_init_ctxctl(struct nvc0_graph_priv *priv)
 	nvc0_graph_wr32(priv, 0x000260, r000260);
 
 	/* start HUB ucode running, it'll init the GPCs */
-	nvc0_graph_wr32(priv, 0x409800, nv_device(priv)->chipset);
+	nvc0_graph_wr32(priv, 0x409800, nv_dev_for_nvc0_graph(priv)->chipset);
 	nvc0_graph_wr32(priv, 0x40910c, 0x00000000);
 	nvc0_graph_wr32(priv, 0x409100, 0x00000002);
 	if (!nv_wait(priv, 0x409800, 0x80000000, 0x80000000)) {

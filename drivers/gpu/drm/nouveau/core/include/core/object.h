@@ -27,8 +27,16 @@ struct nouveau_object {
 #endif
 };
 
+struct nouveau_device;
+static inline struct nouveau_device *nv_device(struct nouveau_object *object);
+
 #define INHERITS_NV_OBJECT(pfx, type) \
-	NOUVEAU_UPCAST(pfx, object, type, struct nouveau_object)
+	NOUVEAU_UPCAST(pfx, object, type, struct nouveau_object) \
+	static inline struct nouveau_device * __maybe_unused \
+	nv_dev_for_##pfx(type *o) \
+	{ \
+		return nv_device(pfx##_to_object(o)); \
+	}
 
 static inline struct nouveau_object *
 nv_object(void *obj)

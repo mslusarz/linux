@@ -51,11 +51,11 @@ nv50_disp_intr_vblank(struct nv50_disp_priv *priv, int crtc)
 		nv50_disp_wr32(priv, 0x001710,
 			       0x80000000 | chan->vblank.ctxdma);
 
-		if (nv_device(priv)->chipset == 0x50) {
+		if (nv_dev_for_nv50_disp(priv)->chipset == 0x50) {
 			nv50_disp_wr32(priv, 0x001570, chan->vblank.offset);
 			nv50_disp_wr32(priv, 0x001574, chan->vblank.value);
 		} else {
-			if (nv_device(priv)->chipset >= 0xc0) {
+			if (nv_dev_for_nv50_disp(priv)->chipset >= 0xc0) {
 				nv50_disp_wr32(priv, 0x06000c,
 					       upper_32_bits(chan->vblank.offset));
 			}

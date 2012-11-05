@@ -30,7 +30,7 @@
 u16
 dcb_table(struct nouveau_bios *bios, u8 *ver, u8 *hdr, u8 *cnt, u8 *len)
 {
-	struct nouveau_device *device = nv_device(bios);
+	struct nouveau_device *device = nv_dev_for_nv_bios(bios);
 	u16 dcb = 0x0000;
 
 	if (device->card_type > NV_04)

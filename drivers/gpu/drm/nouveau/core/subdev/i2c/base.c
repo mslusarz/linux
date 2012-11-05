@@ -109,7 +109,8 @@ nouveau_i2c_find(struct nouveau_i2c *i2c, u8 index)
 	if (&port->head == &i2c->ports)
 		return NULL;
 
-	if (nv_device(i2c)->card_type >= NV_50 && (port->dcb & 0x00000100)) {
+	if (nv_dev_for_nv_i2c(i2c)->card_type >= NV_50 &&
+			(port->dcb & 0x00000100)) {
 		u32 reg = 0x00e500, val;
 		if (port->type == 6) {
 			reg += port->drive * 0x50;
@@ -201,7 +202,7 @@ int
 nouveau_i2c_sense_scl(void *data)
 {
 	struct nouveau_i2c_port *port = data;
-	struct nouveau_device *device = nv_device(port->i2c);
+	struct nouveau_device *device = nv_dev_for_nv_i2c(port->i2c);
 
 	if (port->type == DCB_I2C_NV04_BIT) {
 		return !!(nv_rdvgac(port->i2c, 0, port->sense) & 0x04);
@@ -223,7 +224,7 @@ int
 nouveau_i2c_sense_sda(void *data)
 {
 	struct nouveau_i2c_port *port = data;
-	struct nouveau_device *device = nv_device(port->i2c);
+	struct nouveau_device *device = nv_dev_for_nv_i2c(port->i2c);
 
 	if (port->type == DCB_I2C_NV04_BIT) {
 		return !!(nv_rdvgac(port->i2c, 0, port->sense) & 0x08);

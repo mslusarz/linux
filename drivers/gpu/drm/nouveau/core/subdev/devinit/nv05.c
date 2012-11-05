@@ -59,7 +59,7 @@ nv05_devinit_meminit(struct nouveau_devinit *devinit)
 	int i, v;
 
 	/* Map the framebuffer aperture */
-	fb = fbmem_init(nv_device(priv)->pdev);
+	fb = fbmem_init(nv_dev_for_nv05_devinit(priv)->pdev);
 	if (!fb) {
 		nv_error(priv, "failed to map fb\n");
 		return;

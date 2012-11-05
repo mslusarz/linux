@@ -184,7 +184,7 @@ nv20_graph_tile_prog(struct nouveau_engine *engine, int i)
 	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA0010 + 4 * i);
 	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA, tile->addr);
 
-	if (nv_device(engine)->chipset != 0x34) {
+	if (nv_dev_for_nv_engine(engine)->chipset != 0x34) {
 		nv20_graph_wr32(priv, NV20_PGRAPH_ZCOMP(i), tile->zcomp);
 		nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00ea0090 + 4 * i);
 		nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA, tile->zcomp);
@@ -279,17 +279,19 @@ nv20_graph_init(struct nouveau_object *object)
 	struct nouveau_engine *engine = nv_engine(object);
 	struct nv20_graph_priv *priv = (void *)engine;
 	struct nouveau_fb *pfb = nouveau_fb(object);
+	struct nouveau_device *device;
 	u32 tmp, vramsz;
 	int ret, i;
 
 	ret = nouveau_graph_init(&priv->base);
 	if (ret)
 		return ret;
+	device = nv_dev_for_nv20_graph(priv);
 
 	nv20_graph_wr32(priv, NV20_PGRAPH_CHANNEL_CTX_TABLE,
 			priv->ctxtab->addr >> 4);
 
-	if (nv_device(priv)->chipset == 0x20) {
+	if (device->chipset == 0x20) {
 		nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x003d0000);
 		for (i = 0; i < 15; i++)
 			nv20_graph_wr32(priv, NV10_PGRAPH_RDI_DATA,
@@ -313,7 +315,7 @@ nv20_graph_init(struct nouveau_object *object)
 	nv20_graph_wr32(priv, NV10_PGRAPH_DEBUG_4, 0x00000000);
 	nv20_graph_wr32(priv, 0x40009C, 0x00000040);
 
-	if (nv_device(priv)->chipset >= 0x25) {
+	if (device->chipset >= 0x25) {
 		nv20_graph_wr32(priv, 0x400890, 0x00a8cfff);
 		nv20_graph_wr32(priv, 0x400610, 0x304B1FB6);
 		nv20_graph_wr32(priv, 0x400B80, 0x1cbd3883);
@@ -350,7 +352,7 @@ nv20_graph_init(struct nouveau_object *object)
 	nv20_graph_wr32(priv, NV10_PGRAPH_SURFACE, tmp);
 
 	/* begin RAM config */
-	vramsz = pci_resource_len(nv_device(priv)->pdev, 0) - 1;
+	vramsz = pci_resource_len(device->pdev, 0) - 1;
 	nv20_graph_wr32(priv, 0x4009A4, nv20_graph_rd32(priv, 0x100200));
 	nv20_graph_wr32(priv, 0x4009A8, nv20_graph_rd32(priv, 0x100204));
 	nv20_graph_wr32(priv, NV10_PGRAPH_RDI_INDEX, 0x00EA0000);
