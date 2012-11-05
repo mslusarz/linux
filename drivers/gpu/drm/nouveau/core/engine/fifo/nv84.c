@@ -62,7 +62,7 @@ nv84_fifo_context_attach(struct nouveau_object *parent,
 		return -EINVAL;
 	}
 
-	nv_engctx(ectx)->addr = nv_gpuobj(base)->addr >> 12;
+	nv_engctx(ectx)->addr = nv50_fifob_to_gpuobj(base)->addr >> 12;
 	nv_gpuobj_wo32(base->eng, addr + 0x00, 0x00190000);
 	nv_gpuobj_wo32(base->eng, addr + 0x04, lower_32_bits(limit));
 	nv_gpuobj_wo32(base->eng, addr + 0x08, lower_32_bits(start));
@@ -104,7 +104,7 @@ nv84_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 	bar->flush(bar);
 
 	save = nv50_fifo_mask(priv, 0x002520, 0x0000003f, 1 << engn);
-	nv50_fifo_wr32(priv, 0x0032fc, nv_gpuobj(base)->addr >> 12);
+	nv50_fifo_wr32(priv, 0x0032fc, nv50_fifob_to_gpuobj(base)->addr >> 12);
 	done = nv_wait_ne(priv, 0x0032fc, 0xffffffff, 0xffffffff);
 	nv50_fifo_wr32(priv, 0x002520, save);
 	if (!done) {
@@ -202,7 +202,8 @@ nv84_fifo_chan_ctor_dma(struct nouveau_object *parent,
 	nv_gpuobj_wo32(base->ramfc, 0x80,
 		       ((chan->ramht->bits - 9) << 27) | (4 << 24) | (chan->ramht->base.node->offset >> 4));
 	nv_gpuobj_wo32(base->ramfc, 0x88, base->cache->addr >> 10);
-	nv_gpuobj_wo32(base->ramfc, 0x98, nv_gpuobj(base)->addr >> 12);
+	nv_gpuobj_wo32(base->ramfc, 0x98,
+			nv50_fifob_to_gpuobj(base)->addr >> 12);
 	bar->flush(bar);
 	return 0;
 }
@@ -265,7 +266,8 @@ nv84_fifo_chan_ctor_ind(struct nouveau_object *parent,
 	nv_gpuobj_wo32(base->ramfc, 0x80,
 		       ((chan->ramht->bits - 9) << 27) | (4 << 24) | (chan->ramht->base.node->offset >> 4));
 	nv_gpuobj_wo32(base->ramfc, 0x88, base->cache->addr >> 10);
-	nv_gpuobj_wo32(base->ramfc, 0x98, nv_gpuobj(base)->addr >> 12);
+	nv_gpuobj_wo32(base->ramfc, 0x98,
+			nv50_fifob_to_gpuobj(base)->addr >> 12);
 	bar->flush(bar);
 	return 0;
 }

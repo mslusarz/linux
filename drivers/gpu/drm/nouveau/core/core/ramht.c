@@ -59,7 +59,7 @@ nouveau_ramht_insert(struct nouveau_ramht *ramht, int chid,
 		}
 
 		co += 8;
-		if (co >= nv_gpuobj(ramht)->size)
+		if (co >= nv_ramht_to_gpuobj(ramht)->size)
 			co = 0;
 	} while (co != ho);
 
@@ -104,6 +104,6 @@ nouveau_ramht_new(struct nouveau_object *parent, struct nouveau_object *pargpu,
 	if (ret)
 		return ret;
 
-	ramht->bits = log2i(nv_gpuobj(ramht)->size >> 3);
+	ramht->bits = log2i(nv_ramht_to_gpuobj(ramht)->size >> 3);
 	return 0;
 }

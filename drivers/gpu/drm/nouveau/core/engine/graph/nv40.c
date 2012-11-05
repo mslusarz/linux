@@ -150,8 +150,9 @@ nv40_graph_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv40_grctx_fill(nv_dev_for_nv40_graph(priv), nv_gpuobj(chan));
-	nv40_grchan_wo32(chan, 0x00000, nv_gpuobj(chan)->addr >> 4);
+	nv40_grctx_fill(nv_dev_for_nv40_graph(priv),
+			nv40_grchan_to_gpuobj(chan));
+	nv40_grchan_wo32(chan, 0x00000, nv40_grchan_to_gpuobj(chan)->addr >> 4);
 	return 0;
 }
 
@@ -160,7 +161,7 @@ nv40_graph_context_fini(struct nouveau_object *object, bool suspend)
 {
 	struct nv40_graph_priv *priv = (void *)object->engine;
 	struct nv40_graph_chan *chan = (void *)object;
-	u32 inst = 0x01000000 | nv_gpuobj(chan)->addr >> 4;
+	u32 inst = 0x01000000 | nv40_grchan_to_gpuobj(chan)->addr >> 4;
 	int ret = 0;
 
 	nv40_graph_mask(priv, 0x400720, 0x00000001, 0x00000000);

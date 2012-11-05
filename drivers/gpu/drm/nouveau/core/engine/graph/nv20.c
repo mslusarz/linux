@@ -118,7 +118,7 @@ nv20_graph_context_init(struct nouveau_object *object)
 		return ret;
 
 	nv_gpuobj_wo32(priv->ctxtab, chan->chid * 4,
-		       nv_gpuobj(chan)->addr >> 4);
+		       nv20_grchan_to_gpuobj(chan)->addr >> 4);
 	return 0;
 }
 
@@ -133,7 +133,8 @@ nv20_graph_context_fini(struct nouveau_object *object, bool suspend)
 	if (nv20_graph_rd32(priv, 0x400144) & 0x00010000)
 		chid = (nv20_graph_rd32(priv, 0x400148) & 0x1f000000) >> 24;
 	if (chan->chid == chid) {
-		nv20_graph_wr32(priv, 0x400784, nv_gpuobj(chan)->addr >> 4);
+		nv20_graph_wr32(priv, 0x400784,
+				nv20_grchan_to_gpuobj(chan)->addr >> 4);
 		nv20_graph_wr32(priv, 0x400788, 0x00000002);
 		nv_wait(priv, 0x400700, 0xffffffff, 0x00000000);
 		nv20_graph_wr32(priv, 0x400144, 0x10000000);

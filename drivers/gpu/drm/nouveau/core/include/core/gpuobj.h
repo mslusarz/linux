@@ -31,13 +31,13 @@ NOUVEAU_OBJECT_HELPERS(nv_gpuobj, struct nouveau_gpuobj);
 	INHERITS_NV_OBJECT(pfx, type)
 
 static inline struct nouveau_gpuobj *
-nv_gpuobj(void *obj)
+nv_gpuobj(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!nv_iclass(obj, NV_GPUOBJ_CLASS)))
 		nv_assert("BAD CAST -> NvGpuObj, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_gpuobj *)obj;
 }
 
 #define nouveau_gpuobj_create(p,e,c,v,g,s,a,f,d)                               \

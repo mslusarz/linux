@@ -93,7 +93,7 @@ nvc0_graph_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	ret = nouveau_gpuobj_map_vm(nv_gpuobj(chan->mmio), vm,
+	ret = nouveau_gpuobj_map_vm(chan->mmio, vm,
 				    NV_MEM_ACCESS_RW | NV_MEM_ACCESS_SYS,
 				    &chan->mmio_vma);
 	if (ret)

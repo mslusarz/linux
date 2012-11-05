@@ -158,7 +158,7 @@ nv50_graph_context_ctor(struct nouveau_object *parent,
 	if (ret)
 		return ret;
 
-	nv50_grctx_fill(nv_dev_for_nv50_graph(priv), nv_gpuobj(chan));
+	nv50_grctx_fill(nv_dev_for_nv50_graph(priv), nv50_grchan_to_gpuobj(chan));
 	return 0;
 }
 

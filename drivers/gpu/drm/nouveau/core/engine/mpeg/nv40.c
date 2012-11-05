@@ -72,7 +72,7 @@ nv40_mpeg_context_fini(struct nouveau_object *object, bool suspend)
 
 	struct nv40_mpeg_priv *priv = (void *)object->engine;
 	struct nv40_mpeg_chan *chan = (void *)object;
-	u32 inst = 0x80000000 | nv_gpuobj(chan)->addr >> 4;
+	u32 inst = 0x80000000 | nv40_mpegchan_to_gpuobj(chan)->addr >> 4;
 
 	nv40_mpeg_mask(priv, 0x00b32c, 0x00000001, 0x00000000);
 	if (nv40_mpeg_rd32(priv, 0x00b318) == inst)

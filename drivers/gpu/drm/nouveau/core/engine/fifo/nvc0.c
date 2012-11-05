@@ -111,12 +111,12 @@ nvc0_fifo_context_attach(struct nouveau_object *parent,
 	}
 
 	if (!ectx->vma.node) {
-		ret = nouveau_gpuobj_map_vm(nv_gpuobj(ectx), base->vm,
+		ret = nouveau_gpuobj_map_vm(nv_engctx_to_gpuobj(ectx), base->vm,
 					    NV_MEM_ACCESS_RW, &ectx->vma);
 		if (ret)
 			return ret;
 
-		nv_engctx(ectx)->addr = nv_gpuobj(base)->addr >> 12;
+		nv_engctx(ectx)->addr = nvc0_fifob_to_gpuobj(base)->addr >> 12;
 	}
 
 	nvc0_fifob_wo32(base, addr + 0x00,

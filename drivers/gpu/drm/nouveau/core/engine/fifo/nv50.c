@@ -81,7 +81,7 @@ nv50_fifo_context_attach(struct nouveau_object *parent,
 		return -EINVAL;
 	}
 
-	nv_engctx(ectx)->addr = nv_gpuobj(base)->addr >> 12;
+	nv_engctx(ectx)->addr = nv50_fifob_to_gpuobj(base)->addr >> 12;
 	nv_gpuobj_wo32(base->eng, addr + 0x00, 0x00190000);
 	nv_gpuobj_wo32(base->eng, addr + 0x04, lower_32_bits(limit));
 	nv_gpuobj_wo32(base->eng, addr + 0x08, lower_32_bits(start));
@@ -135,7 +135,7 @@ nv50_fifo_context_detach(struct nouveau_object *parent, bool suspend,
 	me = nv50_fifo_mask(priv, 0x00b860, 0x00000001, 0x00000001);
 
 	/* do the kickoff... */
-	nv50_fifo_wr32(priv, 0x0032fc, nv_gpuobj(base)->addr >> 12);
+	nv50_fifo_wr32(priv, 0x0032fc, nv50_fifob_to_gpuobj(base)->addr >> 12);
 	if (!nv_wait_ne(priv, 0x0032fc, 0xffffffff, 0xffffffff)) {
 		nv_error(priv, "channel %d unload timeout\n", chan->base.chid);
 		if (suspend)
