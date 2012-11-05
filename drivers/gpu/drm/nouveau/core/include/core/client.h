@@ -18,13 +18,13 @@ INHERITS_NV_NAMEDB(nv_client, struct nouveau_client);
 	INHERITS_NV_NAMEDB(pfx, type)
 
 static inline struct nouveau_client *
-nv_client(void *obj)
+nv_client(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!nv_iclass(obj, NV_CLIENT_CLASS)))
 		nv_assert("BAD CAST -> NvClient, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_client *)obj;
 }
 
 static inline struct nouveau_client *

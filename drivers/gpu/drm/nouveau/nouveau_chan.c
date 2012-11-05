@@ -260,7 +260,7 @@ nouveau_channel_dma(struct nouveau_drm *drm, struct nouveau_cli *cli,
 static int
 nouveau_channel_init(struct nouveau_channel *chan, u32 vram, u32 gart)
 {
-	struct nouveau_client *client = nv_client(chan->cli);
+	struct nouveau_client *client = nv_cli_to_client(chan->cli);
 	struct nouveau_device *device = nv_device(chan->drm->device);
 	struct nouveau_instmem *imem = nouveau_instmem(device);
 	struct nouveau_vmmgr *vmm = nouveau_vmmgr(device);

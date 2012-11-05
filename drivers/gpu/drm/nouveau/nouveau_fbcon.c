@@ -302,7 +302,7 @@ nouveau_fbcon_create(struct nouveau_fbdev *fbcon,
 
 	chan = nouveau_nofbaccel ? NULL : drm->channel;
 	if (chan && device->card_type >= NV_50) {
-		ret = nouveau_bo_vma_add(nvbo, nv_client(chan->cli)->vm,
+		ret = nouveau_bo_vma_add(nvbo, nv_cli_to_client(chan->cli)->vm,
 					&fbcon->nouveau_fb.vma);
 		if (ret) {
 			NV_ERROR(drm, "failed to map fb into chan: %d\n", ret);

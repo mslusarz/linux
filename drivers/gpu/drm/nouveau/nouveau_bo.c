@@ -949,7 +949,7 @@ nouveau_vma_getmap(struct nouveau_channel *chan, struct nouveau_bo *nvbo,
 	struct nouveau_mem *node = mem->mm_node;
 	int ret;
 
-	ret = nouveau_vm_get(nv_client(chan->cli)->vm, mem->num_pages <<
+	ret = nouveau_vm_get(nv_cli_to_client(chan->cli)->vm, mem->num_pages <<
 			     PAGE_SHIFT, node->page_shift,
 			     NV_MEM_ACCESS_RW, vma);
 	if (ret)

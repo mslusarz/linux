@@ -89,7 +89,7 @@ nv50_dma_push(struct nouveau_channel *chan, struct nouveau_bo *bo,
 	int ip = (chan->dma.ib_put * 2) + chan->dma.ib_base;
 	u64 offset;
 
-	vma = nouveau_bo_vma_find(bo, nv_client(chan->cli)->vm);
+	vma = nouveau_bo_vma_find(bo, nv_cli_to_client(chan->cli)->vm);
 	BUG_ON(!vma);
 	offset = vma->offset + delta;
 
