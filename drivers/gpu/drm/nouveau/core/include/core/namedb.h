@@ -17,13 +17,13 @@ INHERITS_NV_PARENT(nv_namedb, struct nouveau_namedb);
 	INHERITS_NV_PARENT(pfx, type)
 
 static inline struct nouveau_namedb *
-nv_namedb(void *obj)
+nv_namedb(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!nv_iclass(obj, NV_NAMEDB_CLASS)))
 		nv_assert("BAD CAST -> NvNameDB, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_namedb *)obj;
 }
 
 #define nouveau_namedb_create(p,e,c,v,s,m,d)                                   \

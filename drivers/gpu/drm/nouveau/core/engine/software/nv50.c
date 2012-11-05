@@ -31,6 +31,7 @@
 
 #include <engine/software.h>
 #include <engine/disp.h>
+#include <engine/fifo.h>
 
 struct nv50_software_priv {
 	struct nouveau_software base;
@@ -55,7 +56,7 @@ nv50_software_mthd_dma_vblsem(struct nouveau_object *object, u32 mthd,
 	struct nouveau_handle *handle;
 	int ret = -EINVAL;
 
-	handle = nouveau_namedb_get(nv_namedb(fifo), *(u32 *)args);
+	handle = nouveau_namedb_get(nv_fifoch_to_namedb(fifo), *(u32 *)args);
 	if (!handle)
 		return -ENOENT;
 

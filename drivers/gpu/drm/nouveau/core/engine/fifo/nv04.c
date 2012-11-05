@@ -367,7 +367,7 @@ nv04_fifo_swmthd(struct nv04_fifo_priv *priv, u32 chid, u32 addr, u32 data)
 
 	switch (mthd) {
 	case 0x0000:
-		bind = nouveau_namedb_get(nv_namedb(chan), data);
+		bind = nouveau_namedb_get(nv04_fifoch_to_namedb(chan), data);
 		if (unlikely(!bind))
 			break;
 
@@ -387,7 +387,7 @@ nv04_fifo_swmthd(struct nv04_fifo_priv *priv, u32 chid, u32 addr, u32 data)
 		if (unlikely(((engine >> (subc * 4)) & 0xf) != 0))
 			break;
 
-		bind = nouveau_namedb_get(nv_namedb(chan), chan->subc[subc]);
+		bind = nouveau_namedb_get(nv04_fifoch_to_namedb(chan), chan->subc[subc]);
 		if (likely(bind)) {
 			if (!nv_call(bind->object, mthd, data))
 				handled = true;

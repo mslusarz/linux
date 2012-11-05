@@ -445,7 +445,7 @@ nvc0_fifo_swmthd(struct nvc0_fifo_priv *priv, u32 chid, u32 mthd, u32 data)
 	if (unlikely(!chan))
 		goto out;
 
-	bind = nouveau_namedb_get_class(nv_namedb(chan), 0x906e);
+	bind = nouveau_namedb_get_class(nvc0_fifoch_to_namedb(chan), 0x906e);
 	if (likely(bind)) {
 		if (!mthd || !nv_call(bind->object, mthd, data))
 			ret = 0;
