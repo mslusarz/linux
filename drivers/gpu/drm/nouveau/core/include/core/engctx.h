@@ -23,13 +23,13 @@ INHERITS_NV_GPUOBJ(nv_engctx, struct nouveau_engctx);
 	INHERITS_NV_GPUOBJ(pfx, type)
 
 static inline struct nouveau_engctx *
-nv_engctx(void *obj)
+nv_engctx(struct nouveau_object *obj)
 {
 #if CONFIG_NOUVEAU_DEBUG >= NV_DBG_PARANOIA
 	if (unlikely(!nv_iclass(obj, NV_ENGCTX_CLASS)))
 		nv_assert("BAD CAST -> NvEngCtx, %08x", nv_hclass(obj));
 #endif
-	return obj;
+	return (struct nouveau_engctx *)obj;
 }
 
 #define nouveau_engctx_create(p,e,c,g,s,a,f,d)                                 \

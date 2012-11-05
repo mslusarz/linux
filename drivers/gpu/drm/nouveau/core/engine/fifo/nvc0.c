@@ -116,7 +116,7 @@ nvc0_fifo_context_attach(struct nouveau_object *parent,
 		if (ret)
 			return ret;
 
-		nv_engctx(ectx)->addr = nvc0_fifob_to_gpuobj(base)->addr >> 12;
+		ectx->addr = nvc0_fifob_to_gpuobj(base)->addr >> 12;
 	}
 
 	nvc0_fifob_wo32(base, addr + 0x00,
