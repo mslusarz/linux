@@ -156,7 +156,7 @@ nv50_vm_flush(struct nouveau_vm *vm)
 
 	for (i = 0; i < NVDEV_SUBDEV_NR; i++) {
 		if (atomic_read(&vm->engref[i])) {
-			engine = nouveau_engine(vm->vmm, i);
+			engine = nouveau_engine(nv_vmmgr_to_object(vm->vmm), i);
 			if (engine && engine->tlb_flush)
 				engine->tlb_flush(engine);
 		}

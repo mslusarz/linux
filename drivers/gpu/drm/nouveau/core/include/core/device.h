@@ -108,7 +108,7 @@ nv_device(struct nouveau_object *object)
 }
 
 static inline struct nouveau_subdev *
-nouveau_subdev(void *obj, int sub)
+nouveau_subdev(struct nouveau_object *obj, int sub)
 {
 	if (nv_device(obj)->subdev[sub])
 		return nv_subdev(nv_device(obj)->subdev[sub]);
@@ -116,7 +116,7 @@ nouveau_subdev(void *obj, int sub)
 }
 
 static inline struct nouveau_engine *
-nouveau_engine(void *obj, int sub)
+nouveau_engine(struct nouveau_object *obj, int sub)
 {
 	struct nouveau_subdev *subdev = nouveau_subdev(obj, sub);
 	if (subdev && nv_iclass(subdev, NV_ENGINE_CLASS))

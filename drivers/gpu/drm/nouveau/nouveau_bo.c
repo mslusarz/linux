@@ -54,6 +54,7 @@ nv10_bo_update_tile_region(struct drm_device *dev, struct nouveau_drm_tile *reg,
 	struct nouveau_fb *pfb = nouveau_fb(drm->device);
 	struct nouveau_fb_tile *tile = &pfb->tile.region[i];
 	struct nouveau_engine *engine;
+	struct nouveau_object *pfbobj;
 
 	nouveau_fence_unref(&reg->fence);
 
@@ -65,9 +66,10 @@ nv10_bo_update_tile_region(struct drm_device *dev, struct nouveau_drm_tile *reg,
 
 	pfb->tile.prog(pfb, i, tile);
 
-	if ((engine = nouveau_engine(pfb, NVDEV_ENGINE_GR)))
+	pfbobj = nv_fb_to_object(pfb);
+	if ((engine = nouveau_engine(pfbobj, NVDEV_ENGINE_GR)))
 		engine->tile_prog(engine, i);
-	if ((engine = nouveau_engine(pfb, NVDEV_ENGINE_MPEG)))
+	if ((engine = nouveau_engine(pfbobj, NVDEV_ENGINE_MPEG)))
 		engine->tile_prog(engine, i);
 }
 

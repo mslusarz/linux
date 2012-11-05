@@ -35,7 +35,7 @@ nouveau_mc_intr(struct nouveau_subdev *subdev)
 	stat = nv_mc_rd32(pmc, 0x000100);
 	while (stat && map->stat) {
 		if (stat & map->stat) {
-			unit = nouveau_subdev(subdev, map->unit);
+			unit = nouveau_subdev(&subdev->base, map->unit);
 			if (unit && unit->intr)
 				unit->intr(unit);
 			stat &= ~map->stat;
