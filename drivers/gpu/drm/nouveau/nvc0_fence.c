@@ -137,7 +137,8 @@ static int
 nvc0_fence_context_new(struct nouveau_channel *chan)
 {
 	struct nouveau_fifo_chan *fifo = (void *)chan->object;
-	struct nouveau_client *client = nouveau_client(fifo);
+	struct nouveau_client *client =
+			nouveau_client(nv_fifoch_to_object(fifo));
 	struct nvc0_fence_priv *priv = chan->drm->fence;
 	struct nvc0_fence_chan *fctx;
 	int ret, i;

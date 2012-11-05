@@ -114,7 +114,8 @@ nouveau_engctx_destroy(struct nouveau_engctx *engctx)
 {
 	struct nouveau_object *engobj = nv_object(engctx)->engine;
 	struct nouveau_engine *engine = nv_engine(engobj);
-	struct nouveau_client *client = nouveau_client(engctx);
+	struct nouveau_client *client =
+			nouveau_client(nv_engctx_to_object(engctx));
 	unsigned long save;
 
 	nouveau_gpuobj_unmap(&engctx->vma);

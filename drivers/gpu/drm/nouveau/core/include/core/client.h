@@ -28,12 +28,11 @@ nv_client(struct nouveau_object *obj)
 }
 
 static inline struct nouveau_client *
-nouveau_client(void *obj)
+nouveau_client(struct nouveau_object *client)
 {
-	struct nouveau_object *client = nv_object(obj);
 	while (client && !(nv_iclass(client, NV_CLIENT_CLASS)))
 		client = client->parent;
-	return (void *)client;
+	return (struct nouveau_client *)client;
 }
 
 #define nouveau_client_create(n,c,oc,od,d)                                     \
