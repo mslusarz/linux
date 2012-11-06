@@ -34,7 +34,7 @@ INHERITS_NV_FB(nv4e_fb, struct nv4e_fb_priv);
 static int
 nv4e_fb_vram_init(struct nouveau_fb *pfb)
 {
-	pfb->ram.size = nv_rd32(pfb, 0x10020c) & 0xff000000;
+	pfb->ram.size = nv_fb_rd32(pfb, 0x10020c) & 0xff000000;
 	pfb->ram.type = NV_MEM_TYPE_STOLEN;
 	return 0;
 }

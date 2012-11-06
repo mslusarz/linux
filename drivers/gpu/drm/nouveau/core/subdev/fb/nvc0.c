@@ -68,23 +68,24 @@ nvc0_fb_vram_init(struct nouveau_fb *pfb)
 	struct nouveau_bios *bios = nouveau_bios(pfb);
 	const u32 rsvd_head = ( 256 * 1024) >> 12; /* vga memory */
 	const u32 rsvd_tail = (1024 * 1024) >> 12; /* vbios etc */
-	u32 parts = nv_rd32(pfb, 0x022438);
-	u32 pmask = nv_rd32(pfb, 0x022554);
-	u32 bsize = nv_rd32(pfb, 0x10f20c);
+	u32 parts = nv_fb_rd32(pfb, 0x022438);
+	u32 pmask = nv_fb_rd32(pfb, 0x022554);
+	u32 bsize = nv_fb_rd32(pfb, 0x10f20c);
 	u32 offset, length;
 	bool uniform = true;
 	int ret, part;
 
-	nv_debug(pfb, "0x100800: 0x%08x\n", nv_rd32(pfb, 0x100800));
+	nv_debug(pfb, "0x100800: 0x%08x\n", nv_fb_rd32(pfb, 0x100800));
 	nv_debug(pfb, "parts 0x%08x mask 0x%08x\n", parts, pmask);
 
 	pfb->ram.type = nouveau_fb_bios_memtype(bios);
-	pfb->ram.ranks = (nv_rd32(pfb, 0x10f200) & 0x00000004) ? 2 : 1;
+	pfb->ram.ranks = (nv_fb_rd32(pfb, 0x10f200) & 0x00000004) ? 2 : 1;
 
 	/* read amount of vram attached to each memory controller */
 	for (part = 0; part < parts; part++) {
 		if (!(pmask & (1 << part))) {
-			u32 psize = nv_rd32(pfb, 0x11020c + (part * 0x1000));
+			u32 psize = nv_fb_rd32(pfb,
+					       0x11020c + (part * 0x1000));
 			if (psize != bsize) {
 				if (psize < bsize)
 					bsize = psize;
@@ -179,7 +180,7 @@ nvc0_fb_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, 0x100c10, priv->r100c10 >> 8);
+	nvc0_fb_wr32(priv, 0x100c10, priv->r100c10 >> 8);
 	return 0;
 }
 

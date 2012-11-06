@@ -59,7 +59,7 @@ nv04_fb_memtype_valid(struct nouveau_fb *pfb, u32 tile_flags)
 static int
 nv04_fb_vram_init(struct nouveau_fb *pfb)
 {
-	u32 boot0 = nv_rd32(pfb, NV04_PFB_BOOT_0);
+	u32 boot0 = nv_fb_rd32(pfb, NV04_PFB_BOOT_0);
 	if (boot0 & 0x00000100) {
 		pfb->ram.size  = ((boot0 >> 12) & 0xf) * 2 + 2;
 		pfb->ram.size *= 1024 * 1024;
@@ -101,7 +101,7 @@ nv04_fb_init(struct nouveau_object *object)
 	 * nvidia reading PFB_CFG_0, then writing back its original value.
 	 * (which was 0x701114 in this case)
 	 */
-	nv_wr32(priv, NV04_PFB_CFG0, 0x1114);
+	nv04_fb_wr32(priv, NV04_PFB_CFG0, 0x1114);
 	return 0;
 }
 

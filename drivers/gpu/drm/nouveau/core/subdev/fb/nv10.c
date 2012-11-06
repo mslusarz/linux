@@ -34,13 +34,13 @@ INHERITS_NV_FB(nv10_fb, struct nv10_fb_priv);
 static int
 nv10_fb_vram_init(struct nouveau_fb *pfb)
 {
-	u32 cfg0 = nv_rd32(pfb, 0x100200);
+	u32 cfg0 = nv_fb_rd32(pfb, 0x100200);
 	if (cfg0 & 0x00000001)
 		pfb->ram.type = NV_MEM_TYPE_DDR1;
 	else
 		pfb->ram.type = NV_MEM_TYPE_SDRAM;
 
-	pfb->ram.size = nv_rd32(pfb, 0x10020c) & 0xff000000;
+	pfb->ram.size = nv_fb_rd32(pfb, 0x10020c) & 0xff000000;
 	return 0;
 }
 
@@ -65,10 +65,10 @@ nv10_fb_tile_fini(struct nouveau_fb *pfb, int i, struct nouveau_fb_tile *tile)
 void
 nv10_fb_tile_prog(struct nouveau_fb *pfb, int i, struct nouveau_fb_tile *tile)
 {
-	nv_wr32(pfb, 0x100244 + (i * 0x10), tile->limit);
-	nv_wr32(pfb, 0x100248 + (i * 0x10), tile->pitch);
-	nv_wr32(pfb, 0x100240 + (i * 0x10), tile->addr);
-	nv_rd32(pfb, 0x100240 + (i * 0x10));
+	nv_fb_wr32(pfb, 0x100244 + (i * 0x10), tile->limit);
+	nv_fb_wr32(pfb, 0x100248 + (i * 0x10), tile->pitch);
+	nv_fb_wr32(pfb, 0x100240 + (i * 0x10), tile->addr);
+	nv_fb_rd32(pfb, 0x100240 + (i * 0x10));
 }
 
 static int

@@ -59,10 +59,10 @@ nv50_fb_vram_rblock(struct nouveau_fb *pfb)
 	u64 rowsize, predicted;
 	u32 r0, r4, rt, ru, rblock_size;
 
-	r0 = nv_rd32(pfb, 0x100200);
-	r4 = nv_rd32(pfb, 0x100204);
-	rt = nv_rd32(pfb, 0x100250);
-	ru = nv_rd32(pfb, 0x001540);
+	r0 = nv_fb_rd32(pfb, 0x100200);
+	r4 = nv_fb_rd32(pfb, 0x100204);
+	rt = nv_fb_rd32(pfb, 0x100250);
+	ru = nv_fb_rd32(pfb, 0x001540);
 	nv_debug(pfb, "memcfg 0x%08x 0x%08x 0x%08x 0x%08x\n", r0, r4, rt, ru);
 
 	for (i = 0, parts = 0; i < 8; i++) {
@@ -103,7 +103,7 @@ nv50_fb_vram_init(struct nouveau_fb *pfb)
 	u32 size;
 	int ret;
 
-	pfb->ram.size = nv_rd32(pfb, 0x10020c);
+	pfb->ram.size = nv_fb_rd32(pfb, 0x10020c);
 	pfb->ram.size = (pfb->ram.size & 0xffffff00) |
 		       ((pfb->ram.size & 0x000000ff) << 32);
 
@@ -117,10 +117,10 @@ nv50_fb_vram_init(struct nouveau_fb *pfb)
 			return ret;
 
 		pfb->ram.type   = NV_MEM_TYPE_STOLEN;
-		pfb->ram.stolen = (u64)nv_rd32(pfb, 0x100e10) << 12;
+		pfb->ram.stolen = (u64)nv_fb_rd32(pfb, 0x100e10) << 12;
 		break;
 	default:
-		switch (nv_rd32(pfb, 0x100714) & 0x00000007) {
+		switch (nv_fb_rd32(pfb, 0x100714) & 0x00000007) {
 		case 0: pfb->ram.type = NV_MEM_TYPE_DDR1; break;
 		case 1:
 			if (nouveau_fb_bios_memtype(bios) == NV_MEM_TYPE_DDR3)
@@ -140,11 +140,11 @@ nv50_fb_vram_init(struct nouveau_fb *pfb)
 		if (ret)
 			return ret;
 
-		pfb->ram.ranks = (nv_rd32(pfb, 0x100200) & 0x4) ? 2 : 1;
+		pfb->ram.ranks = (nv_fb_rd32(pfb, 0x100200) & 0x4) ? 2 : 1;
 		break;
 	}
 
-	return nv_rd32(pfb, 0x100320);
+	return nv_fb_rd32(pfb, 0x100320);
 }
 
 static int
@@ -298,24 +298,24 @@ nv50_fb_init(struct nouveau_object *object)
 	 * scratch page, VRAM->GART blits with M2MF (as in DDX DFS)
 	 * cause IOMMU "read from address 0" errors (rh#561267)
 	 */
-	nv_wr32(priv, 0x100c08, priv->r100c08 >> 8);
+	nv50_fb_wr32(priv, 0x100c08, priv->r100c08 >> 8);
 
 	/* This is needed to get meaningful information from 100c90
 	 * on traps. No idea what these values mean exactly. */
 	switch (device->chipset) {
 	case 0x50:
-		nv_wr32(priv, 0x100c90, 0x000707ff);
+		nv50_fb_wr32(priv, 0x100c90, 0x000707ff);
 		break;
 	case 0xa3:
 	case 0xa5:
 	case 0xa8:
-		nv_wr32(priv, 0x100c90, 0x000d0fff);
+		nv50_fb_wr32(priv, 0x100c90, 0x000d0fff);
 		break;
 	case 0xaf:
-		nv_wr32(priv, 0x100c90, 0x089d1fff);
+		nv50_fb_wr32(priv, 0x100c90, 0x089d1fff);
 		break;
 	default:
-		nv_wr32(priv, 0x100c90, 0x001d07ff);
+		nv50_fb_wr32(priv, 0x100c90, 0x001d07ff);
 		break;
 	}
 
@@ -438,16 +438,16 @@ nv50_fb_trap(struct nouveau_fb *pfb, int display)
 	u8 st0, st1, st2, st3;
 	int i;
 
-	idx = nv_rd32(priv, 0x100c90);
+	idx = nv50_fb_rd32(priv, 0x100c90);
 	if (!(idx & 0x80000000))
 		return;
 	idx &= 0x00ffffff;
 
 	for (i = 0; i < 6; i++) {
-		nv_wr32(priv, 0x100c90, idx | i << 24);
-		trap[i] = nv_rd32(priv, 0x100c94);
+		nv50_fb_wr32(priv, 0x100c90, idx | i << 24);
+		trap[i] = nv50_fb_rd32(priv, 0x100c94);
 	}
-	nv_wr32(priv, 0x100c90, idx | 0x80000000);
+	nv50_fb_wr32(priv, 0x100c90, idx | 0x80000000);
 
 	if (!display)
 		return;

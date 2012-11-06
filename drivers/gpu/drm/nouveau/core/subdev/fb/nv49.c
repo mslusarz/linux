@@ -34,7 +34,7 @@ INHERITS_NV_FB(nv49_fb, struct nv49_fb_priv);
 static int
 nv49_fb_vram_init(struct nouveau_fb *pfb)
 {
-	u32 pfb914 = nv_rd32(pfb, 0x100914);
+	u32 pfb914 = nv_fb_rd32(pfb, 0x100914);
 
 	switch (pfb914 & 0x00000003) {
 	case 0x00000000: pfb->ram.type = NV_MEM_TYPE_DDR1; break;
@@ -43,9 +43,9 @@ nv49_fb_vram_init(struct nouveau_fb *pfb)
 	case 0x00000003: break;
 	}
 
-	pfb->ram.size =   nv_rd32(pfb, 0x10020c) & 0xff000000;
-	pfb->ram.parts = (nv_rd32(pfb, 0x100200) & 0x00000003) + 1;
-	return nv_rd32(pfb, 0x100320);
+	pfb->ram.size =   nv_fb_rd32(pfb, 0x10020c) & 0xff000000;
+	pfb->ram.parts = (nv_fb_rd32(pfb, 0x100200) & 0x00000003) + 1;
+	return nv_fb_rd32(pfb, 0x100320);
 }
 
 static int

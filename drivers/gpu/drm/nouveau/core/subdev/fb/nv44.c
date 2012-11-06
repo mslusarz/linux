@@ -34,7 +34,7 @@ INHERITS_NV_FB(nv44_fb, struct nv44_fb_priv);
 int
 nv44_fb_vram_init(struct nouveau_fb *pfb)
 {
-	u32 pfb474 = nv_rd32(pfb, 0x100474);
+	u32 pfb474 = nv_fb_rd32(pfb, 0x100474);
 	if (pfb474 & 0x00000004)
 		pfb->ram.type = NV_MEM_TYPE_GDDR3;
 	if (pfb474 & 0x00000002)
@@ -42,7 +42,7 @@ nv44_fb_vram_init(struct nouveau_fb *pfb)
 	if (pfb474 & 0x00000001)
 		pfb->ram.type = NV_MEM_TYPE_DDR1;
 
-	pfb->ram.size = nv_rd32(pfb, 0x10020c) & 0xff000000;
+	pfb->ram.size = nv_fb_rd32(pfb, 0x10020c) & 0xff000000;
 	return 0;
 }
 
@@ -59,10 +59,10 @@ nv44_fb_tile_init(struct nouveau_fb *pfb, int i, u32 addr, u32 size, u32 pitch,
 void
 nv44_fb_tile_prog(struct nouveau_fb *pfb, int i, struct nouveau_fb_tile *tile)
 {
-	nv_wr32(pfb, 0x100604 + (i * 0x10), tile->limit);
-	nv_wr32(pfb, 0x100608 + (i * 0x10), tile->pitch);
-	nv_wr32(pfb, 0x100600 + (i * 0x10), tile->addr);
-	nv_rd32(pfb, 0x100600 + (i * 0x10));
+	nv_fb_wr32(pfb, 0x100604 + (i * 0x10), tile->limit);
+	nv_fb_wr32(pfb, 0x100608 + (i * 0x10), tile->pitch);
+	nv_fb_wr32(pfb, 0x100600 + (i * 0x10), tile->addr);
+	nv_fb_rd32(pfb, 0x100600 + (i * 0x10));
 }
 
 int
@@ -75,8 +75,8 @@ nv44_fb_init(struct nouveau_object *object)
 	if (ret)
 		return ret;
 
-	nv_wr32(priv, 0x100850, 0x80000000);
-	nv_wr32(priv, 0x100800, 0x00000001);
+	nv44_fb_wr32(priv, 0x100850, 0x80000000);
+	nv44_fb_wr32(priv, 0x100800, 0x00000001);
 	return 0;
 }
 

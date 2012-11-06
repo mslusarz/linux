@@ -34,7 +34,7 @@ INHERITS_NV_FB(nv20_fb, struct nv20_fb_priv);
 int
 nv20_fb_vram_init(struct nouveau_fb *pfb)
 {
-	u32 pbus1218 = nv_rd32(pfb, 0x001218);
+	u32 pbus1218 = nv_fb_rd32(pfb, 0x001218);
 
 	switch (pbus1218 & 0x00000300) {
 	case 0x00000000: pfb->ram.type = NV_MEM_TYPE_SDRAM; break;
@@ -42,10 +42,10 @@ nv20_fb_vram_init(struct nouveau_fb *pfb)
 	case 0x00000200: pfb->ram.type = NV_MEM_TYPE_GDDR3; break;
 	case 0x00000300: pfb->ram.type = NV_MEM_TYPE_GDDR2; break;
 	}
-	pfb->ram.size  = (nv_rd32(pfb, 0x10020c) & 0xff000000);
-	pfb->ram.parts = (nv_rd32(pfb, 0x100200) & 0x00000003) + 1;
+	pfb->ram.size  = (nv_fb_rd32(pfb, 0x10020c) & 0xff000000);
+	pfb->ram.parts = (nv_fb_rd32(pfb, 0x100200) & 0x00000003) + 1;
 
-	return nv_rd32(pfb, 0x100320);
+	return nv_fb_rd32(pfb, 0x100320);
 }
 
 void
@@ -91,11 +91,11 @@ nv20_fb_tile_fini(struct nouveau_fb *pfb, int i, struct nouveau_fb_tile *tile)
 void
 nv20_fb_tile_prog(struct nouveau_fb *pfb, int i, struct nouveau_fb_tile *tile)
 {
-	nv_wr32(pfb, 0x100244 + (i * 0x10), tile->limit);
-	nv_wr32(pfb, 0x100248 + (i * 0x10), tile->pitch);
-	nv_wr32(pfb, 0x100240 + (i * 0x10), tile->addr);
-	nv_rd32(pfb, 0x100240 + (i * 0x10));
-	nv_wr32(pfb, 0x100300 + (i * 0x04), tile->zcomp);
+	nv_fb_wr32(pfb, 0x100244 + (i * 0x10), tile->limit);
+	nv_fb_wr32(pfb, 0x100248 + (i * 0x10), tile->pitch);
+	nv_fb_wr32(pfb, 0x100240 + (i * 0x10), tile->addr);
+	nv_fb_rd32(pfb, 0x100240 + (i * 0x10));
+	nv_fb_wr32(pfb, 0x100300 + (i * 0x04), tile->zcomp);
 }
 
 static int
