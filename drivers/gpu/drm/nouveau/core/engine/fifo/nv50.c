@@ -423,6 +423,30 @@ nv50_fifo_cclass = {
 	},
 };
 
+static const struct nouveau_bitfield
+nv50_cache1_pull0_bits[] = {
+	{0x00000001, "ACCESS"},
+	{0x00000010, "HASH_FAILED"},
+	{0x00000100, "DEVICE_SOFTWARE"},
+	{0x00001000, "HASH_BUSY"},
+	{0x00010000, "ACQUIRE_BUSY"},
+	{0x01000000, "INVALID_ENGINE"},
+	{}
+};
+
+static const char * const
+nv50_sem_error_codes[] = {
+	"NONE", "ADDRESS_UNALIGNED", "INVALID_STATE",
+	"ADDRESS_TOO_LARGE", "MEM_FAULT"
+};
+
+static void
+nv50_decode_cache1_pull0(u32 reg)
+{
+	nouveau_decode_cache1_pull0(reg, nv50_cache1_pull0_bits,
+			nv50_sem_error_codes, ARRAY_SIZE(nv50_sem_error_codes));
+}
+
 static void
 nv50_fifo_cache_error(struct nouveau_device *device,
 		struct nv50_fifo_priv *priv, u32 chid, u32 get)
@@ -430,6 +454,7 @@ nv50_fifo_cache_error(struct nouveau_device *device,
 	const char *client_name;
 	u32 mthd, data;
 	int ptr;
+	u32 c1p0;
 
 	/* NV_PFIFO_CACHE1_GET actually goes to 0xffc before wrapping on my
 	 * G80 chips, but CACHE1 isn't big enough for this much data.. Tests
@@ -445,22 +470,28 @@ nv50_fifo_cache_error(struct nouveau_device *device,
 		goto cleanup;
 
 	client_name = nouveau_client_name_for_fifo_chid(&priv->base, chid);
+	c1p0 = nv_rd32(priv, NV04_PFIFO_CACHE1_PULL0);
 	nv_error(priv,
-		 "CACHE_ERROR - ch %d [%s] subc %d mthd 0x%04x data 0x%08x\n",
+		 "CACHE_ERROR - ch %d [%s] subc %d mthd 0x%04x data 0x%08x",
 		 chid, client_name, (mthd >> 13) & 7, mthd & 0x1ffc, data);
+	nv50_decode_cache1_pull0(c1p0);
+	if (c1p0 & 0x00000010) /* HASH_FAILED */
+		pr_cont(" cache1_hash 0x%08x",
+			nv_rd32(priv, NV04_PFIFO_CACHE1_HASH));
+	pr_cont("\n");
 
 cleanup:
 	nouveau_fifo_cache_error_cleanup(&priv->base, get);
 }
 
-static const char *
-nv50_dma_state_err(u32 state)
+static void
+nv50_decode_dma_state(u32 state)
 {
 	static const char * const desc[] = {
 		"NONE", "CALL_SUBR_ACTIVE", "INVALID_MTHD", "RET_SUBR_INACTIVE",
 		"INVALID_CMD", "IB_EMPTY", "MEM_FAULT", "UNK7"
 	};
-	return desc[(state >> 29) & 0x7];
+	nouveau_decode_dma_state(state, desc[(state >> 29) & 0x7]);
 }
 
 static void
@@ -481,9 +512,10 @@ nv50_fifo_dma_pusher(struct nouveau_device *device, struct nv50_fifo_priv *priv,
 	client_name = nouveau_client_name_for_fifo_chid(&priv->base, chid);
 
 	nv_error(priv,
-		 "DMA_PUSHER - ch %d [%s] get 0x%02x%08x put 0x%02x%08x ib_get 0x%08x ib_put 0x%08x state 0x%08x (err: %s) push 0x%08x\n",
+		 "DMA_PUSHER - ch %d [%s] get 0x%02x%08x put 0x%02x%08x ib_get 0x%08x ib_put 0x%08x push 0x%08x ",
 		 chid, client_name, ho_get, dma_get, ho_put, dma_put,
-		 ib_get, ib_put, state, nv50_dma_state_err(state), push);
+		 ib_get, ib_put, push);
+	nv50_decode_dma_state(state);
 
 	/* METHOD_COUNT, in DMA_STATE on earlier chipsets */
 	nv_wr32(priv, 0x003364, 0x00000000);
@@ -500,12 +532,27 @@ nv50_fifo_dma_pusher(struct nouveau_device *device, struct nv50_fifo_priv *priv,
 }
 
 static void
+nv50_fifo_sem_err(struct nouveau_fifo *fifo, u32 chid, u32 get)
+{
+	const char *client_name;
+
+	client_name = nouveau_client_name_for_fifo_chid(fifo, chid);
+
+	nv_error(fifo, "SEM_ERROR - ch %d [%s]", chid, client_name);
+	nv50_decode_cache1_pull0(nv_rd32(fifo, NV04_PFIFO_CACHE1_PULL0));
+	pr_cont("\n");
+
+	nouveau_fifo_sem_err(fifo, get);
+}
+
+void
 nv50_fifo_intr(struct nouveau_subdev *subdev)
 {
 	struct nouveau_device *device = nv_device(subdev);
 	struct nv50_fifo_priv *priv = (void *)subdev;
 	uint32_t status, reassign;
 	int cnt = 0;
+	const char *client_name = NULL;
 
 	reassign = nv_rd32(priv, NV03_PFIFO_CACHES) & 1;
 	while ((status = nv_rd32(priv, NV03_PFIFO_INTR_0)) && (cnt++ < 100)) {
@@ -527,13 +574,33 @@ nv50_fifo_intr(struct nouveau_subdev *subdev)
 		}
 
 		if (status & NV_PFIFO_INTR_SEMAPHORE) {
-			nouveau_fifo_sem_err(&priv->base, get);
+			nv50_fifo_sem_err(&priv->base, chid, get);
 			status &= ~NV_PFIFO_INTR_SEMAPHORE;
 		}
 
-		if (status & 0x00000010) {
-			status &= ~0x00000010;
-			nv_wr32(priv, 0x002100, 0x00000010);
+		if (status)
+			client_name = nouveau_client_name_for_fifo_chid(
+					&priv->base, chid);
+
+		if (status & NV50_PFIFO_INTR_BAR_FAULT) {
+			nv_error(priv, "BAR_FAULT ch %d [%s]\n",
+				 chid, client_name);
+			status &= ~NV50_PFIFO_INTR_BAR_FAULT;
+			nv_wr32(priv, 0x002100, NV50_PFIFO_INTR_BAR_FAULT);
+		}
+
+		if (status & NV50_PFIFO_INTR_PEEPHOLE_FAULT) {
+			nv_error(priv, "PEEPHOLE_FAULT ch %d [%s]\n",
+				 chid, client_name);
+			nv_wr32(priv, 0x002100, NV50_PFIFO_INTR_PEEPHOLE_FAULT);
+			status &= ~NV50_PFIFO_INTR_PEEPHOLE_FAULT;
+		}
+
+		if (status & NV50_PFIFO_INTR_PIO_ERROR) {
+			nv_error(priv, "PIO_ERROR ch %d [%s]\n",
+				 chid, client_name);
+			nv_wr32(priv, 0x002100, NV50_PFIFO_INTR_PIO_ERROR);
+			status &= ~NV50_PFIFO_INTR_PIO_ERROR;
 		}
 
 		if (status & 0x40000000) {
@@ -543,8 +610,8 @@ nv50_fifo_intr(struct nouveau_subdev *subdev)
 		}
 
 		if (status) {
-			nv_warn(priv, "unknown intr 0x%08x, ch %d\n",
-				status, chid);
+			nv_warn(priv, "unknown intr 0x%08x, ch %d [%s]\n",
+				status, chid, client_name);
 			nv_wr32(priv, NV03_PFIFO_INTR_0, status);
 			status = 0;
 		}
@@ -553,7 +620,9 @@ nv50_fifo_intr(struct nouveau_subdev *subdev)
 	}
 
 	if (status) {
-		nv_error(priv, "still angry after %d spins, halt\n", cnt);
+		nv_error(priv,
+			 "still angry after %d spins (status 0x%08x), halt\n",
+			 cnt, status);
 		nv_wr32(priv, 0x002140, 0);
 		nv_wr32(priv, 0x000140, 0);
 	}

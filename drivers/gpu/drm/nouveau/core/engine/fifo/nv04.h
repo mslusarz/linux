@@ -1,6 +1,7 @@
 #ifndef __NV04_FIFO_H__
 #define __NV04_FIFO_H__
 
+#include <core/enum.h>
 #include <engine/fifo.h>
 
 #define NV04_PFIFO_DELAY_0                                 0x00002040
@@ -10,9 +11,12 @@
 #define NV03_PFIFO_INTR_EN_0                               0x00002140
 #    define NV_PFIFO_INTR_CACHE_ERROR                          (1<<0)
 #    define NV_PFIFO_INTR_RUNOUT                               (1<<4)
+#    define NV50_PFIFO_INTR_BAR_FAULT                          (1<<4)
+#    define NV50_PFIFO_INTR_PEEPHOLE_FAULT                     (1<<6)
 #    define NV_PFIFO_INTR_RUNOUT_OVERFLOW                      (1<<8)
+#    define NV50_PFIFO_INTR_PIO_ERROR                          (1<<8)
 #    define NV_PFIFO_INTR_DMA_PUSHER                          (1<<12)
-#    define NV_PFIFO_INTR_DMA_PT                              (1<<16)
+#    define NV_PFIFO_INTR_DMA_PTE                             (1<<16)
 #    define NV_PFIFO_INTR_SEMAPHORE                           (1<<20)
 #    define NV_PFIFO_INTR_ACQUIRE_TIMEOUT                     (1<<24)
 #define NV03_PFIFO_RAMHT                                   0x00002210
@@ -178,5 +182,8 @@ bool nouveau_fifo_swmthd(struct nouveau_fifo *fifo, u32 chid, u32 addr,
 		u32 data);
 void nouveau_fifo_sem_err(struct nouveau_fifo *fifo, u32 get);
 void nouveau_fifo_cache_error_cleanup(struct nouveau_fifo *fifo, u32 get);
+void nouveau_decode_dma_state(u32 state, const char *desc);
+void nouveau_decode_cache1_pull0(u32 reg, const struct nouveau_bitfield *bits,
+		const char * const error_codes[], u8 size);
 
 #endif
