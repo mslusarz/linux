@@ -10,6 +10,7 @@ struct nouveau_fifo_chan {
 	struct nouveau_dmaobj *pushdma;
 	struct nouveau_gpuobj *pushgpu;
 	void __iomem *user;
+	u32 subc[8]; /* < nvc0 */
 	u32 size;
 	u16 chid;
 	atomic_t refcnt; /* NV04_NVSW_SET_REF */

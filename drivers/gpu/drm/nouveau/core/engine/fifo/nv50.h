@@ -18,7 +18,6 @@ struct nv50_fifo_base {
 
 struct nv50_fifo_chan {
 	struct nouveau_fifo_chan base;
-	u32 subc[8];
 	struct nouveau_ramht *ramht;
 };
 
@@ -32,5 +31,7 @@ void nv50_fifo_context_dtor(struct nouveau_object *);
 
 void nv50_fifo_dtor(struct nouveau_object *);
 int  nv50_fifo_init(struct nouveau_object *);
+
+void nv50_fifo_intr(struct nouveau_subdev *subdev);
 
 #endif

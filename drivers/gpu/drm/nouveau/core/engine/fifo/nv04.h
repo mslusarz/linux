@@ -154,7 +154,6 @@ struct nv04_fifo_base {
 
 struct nv04_fifo_chan {
 	struct nouveau_fifo_chan base;
-	u32 subc[8];
 	u32 ramfc;
 };
 
@@ -174,5 +173,10 @@ void nv04_fifo_dtor(struct nouveau_object *);
 int  nv04_fifo_init(struct nouveau_object *);
 void nv04_fifo_pause(struct nouveau_fifo *, unsigned long *);
 void nv04_fifo_start(struct nouveau_fifo *, unsigned long *);
+
+bool nouveau_fifo_swmthd(struct nouveau_fifo *fifo, u32 chid, u32 addr,
+		u32 data);
+void nouveau_fifo_sem_err(struct nouveau_fifo *fifo, u32 get);
+void nouveau_fifo_cache_error_cleanup(struct nouveau_fifo *fifo, u32 get);
 
 #endif
